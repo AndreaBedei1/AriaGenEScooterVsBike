@@ -1,0 +1,82 @@
+# =============================================================================
+# AriaGenEScooter .gitignore
+# Principle: code, configs, docs and the small SYNTHETIC test dataset are
+# versioned; real data, models, environments and outputs never are.
+# =============================================================================
+
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+.ipynb_checkpoints/
+
+# --- Virtual environments: never copy them between Windows and Linux --------
+# Recreate with setup_windows.ps1 / setup_linux.sh instead.
+.venv/
+venv/
+env/
+.venv-*/
+
+# --- Data tiers (see data/README.md) -----------------------------------------
+# raw: identifiable data (VRS, video, precise GPS) - NEVER versioned
+data/raw/*
+!data/raw/README.md
+# interim: extracted streams, label maps, annotations - NEVER versioned
+data/interim/*
+!data/interim/README.md
+# processed: analysis outputs - NEVER versioned (synthetic examples live in data/synthetic)
+data/processed/*
+!data/processed/README.md
+# public: staging of explicitly reviewed releases - published through a data
+# repository, not through git
+data/public/*
+!data/public/README.md
+
+# --- Heavy or sensitive file types, anywhere -----------------------------------
+*.vrs
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.h264
+*.h265
+*.hevc
+*.wav
+*.opus
+# model weights (EgoBlur .jit, torch, ONNX ...)
+*.jit
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+models/
+
+# --- Local / private configuration ----------------------------------------------
+# Privacy zones, machine-specific overrides, credentials. The participant
+# pseudonymisation key must NEVER be stored in this repository.
+configs/local/
+*.local.yaml
+.env
+.env.*
+secrets/
+*participant_key*
+*pseudonym_key*
+
+# --- OS / editors / Office ----------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+~$*

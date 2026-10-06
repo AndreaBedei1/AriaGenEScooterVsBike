@@ -1,0 +1,90 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ariagen-escooter"
+version = "0.1.0"
+description = "Naturalistic e-scooter riding study with Project Aria Gen 2: ride trimming, synchronisation, rider kinematics, semantic gaze and perception-action analysis."
+readme = "README.md"
+# projectaria-tools 2.3.0 publishes wheels for CPython 3.10-3.12 only (Linux, macOS arm64).
+requires-python = ">=3.10,<3.13"
+authors = [{ name = "AriaGenEScooter contributors" }]
+keywords = ["project aria", "eye tracking", "egocentric vision", "e-scooter", "micromobility", "naturalistic study"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+]
+# CORE: portable scientific stack, installs on Windows and Linux.
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scipy>=1.11",       # Savitzky-Golay filtering, image blurring
+  "pyyaml>=6.0",       # configuration and manifests
+  "pydantic>=2.7",     # strict validation of configs and manifests
+  "matplotlib>=3.8",   # diagnostic figures
+]
+
+[project.optional-dependencies]
+# ARIA: reading Gen 2 VRS files. No Windows wheels exist: the marker skips it there.
+aria = [
+  "projectaria-tools>=2.3.0,<2.4; sys_platform == 'linux' or sys_platform == 'darwin'",
+]
+# CV: experimental segmentation back-end (Hugging Face transformers) and image I/O.
+# On Linux the default PyPI torch wheel is a CUDA build (large download).
+cv = [
+  "torch>=2.6",
+  "torchvision>=0.21",
+  "transformers>=4.56",
+  "pillow>=10.3",
+  "opencv-python-headless>=4.9",
+]
+# NOTE: Meta EgoBlur (face / licence-plate blurring) is NOT an extra: egoblur 2.0.1
+# requires moviepy<2 while projectaria-tools 2.3.0 requires moviepy>=2, so they
+# cannot share an environment. setup_linux.sh --egoblur creates a separate
+# .venv-egoblur (see docs/privacy_pipeline.md).
+# DEV: tests and linting.
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+# PRESENTATION: regenerate docs/presentation/AriaGenEScooter_overview.pptx.
+presentation = [
+  "python-pptx>=1.0",
+]
+
+[project.scripts]
+ariagen-escooter = "ariagen_escooter.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ariagen_escooter"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/", "configs/", "tests/", "README.md", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "aria: requires projectaria-tools (Linux/macOS only)",
+  "slow: end-to-end tests on the synthetic session",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "PTH"]
+ignore = ["E501", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]
+"docs/presentation/*" = ["E402"]
