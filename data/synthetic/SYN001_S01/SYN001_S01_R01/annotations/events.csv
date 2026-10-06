@@ -1,0 +1,9 @@
+event_id,t_start_ns,t_end_ns,t_reference_ns,event_type,tags,target_class,target_instance_id,source,annotator,notes
+SYN001_S01_R01_EV001,12387000000000,12397000000000,12394000000000,pedestrian_interaction,,pedestrian,1,synthetic,SYNTH,pedestrian crosses the cycle path
+SYN001_S01_R01_EV002,12403000000000,12413000000000,,crossing,,,,synthetic,SYNTH,crossing with stop
+SYN001_S01_R01_EV003,12406000000000,12410000000000,,stopping,,,,synthetic,SYNTH,stop before the crossing
+SYN001_S01_R01_EV004,12416000000000,12422500000000,12420000000000,parked_vehicle,,parked_vehicle,3,synthetic,SYNTH,parked car narrows the road
+SYN001_S01_R01_EV005,12423500000000,12431000000000,12425300000000,vehicle_interaction,overtaking,car,2,synthetic,SYNTH,rider overtaken by a car
+SYN001_S01_R01_EV006,12435000000000,12451500000000,12438100000000,roundabout,vehicle_interaction,car,9,synthetic,SYNTH,car crossing at roundabout entry
+SYN001_S01_R01_EV007,12458000000000,12466000000000,12460600000000,cyclist_interaction,overtaking,cyclist,4,synthetic,SYNTH,rider overtaken by a cyclist
+SYN001_S01_R01_EV008,12466000000000,12473000000000,12471000000000,pedestrian_interaction,,pedestrian,,synthetic,SYNTH,pedestrians walking ahead on shared path

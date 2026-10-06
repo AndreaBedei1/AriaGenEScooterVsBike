@@ -1,0 +1,6 @@
+segment_id,t_start_ns,t_end_ns,infrastructure_class,source,annotator,notes
+SYN001_S01_R01_SEG001,12370000000000,12404000000000,protected_cycle_path,synthetic,SYNTH,synthetic
+SYN001_S01_R01_SEG002,12404000000000,12412000000000,crossing,synthetic,SYNTH,synthetic
+SYN001_S01_R01_SEG003,12412000000000,12436500000000,road_shared_with_traffic,synthetic,SYNTH,synthetic
+SYN001_S01_R01_SEG004,12436500000000,12451500000000,roundabout,synthetic,SYNTH,synthetic
+SYN001_S01_R01_SEG005,12451500000000,12479500000000,shared_pedestrian_cycle_path,synthetic,SYNTH,synthetic
