@@ -1,0 +1,76 @@
+# Mapping: Mapillary Vistas v1.2 (65 classes, as in the id2label of the Hugging Face
+# checkpoint facebook/mask2former-swin-large-mapillary-vistas-semantic, verified
+# 2026-10) -> project semantic classes (configs/taxonomy.yaml).
+#
+# STATUS: provisional, not validated on Aria imagery. Entries marked
+# "provisional" have no verified official definition or are ambiguous.
+# Licence note: Mapillary Vistas is released for research / non-commercial use
+# (CC BY-NC-SA); check the terms before any commercial use of models or outputs.
+backend: mask2former-swin-large-mapillary-vistas-semantic
+default: unknown
+map:
+  "Bird": other
+  "Ground Animal": other
+  "Curb": curb
+  "Fence": other
+  "Guard Rail": other
+  "Barrier": obstacle
+  "Wall": other
+  "Bike Lane": cycle_lane
+  "Crosswalk - Plain": crossing
+  "Curb Cut": curb
+  "Parking": road
+  "Pedestrian Area": sidewalk
+  "Rail Track": other
+  "Road": road
+  "Service Lane": road
+  "Sidewalk": sidewalk
+  "Bridge": other
+  "Building": building
+  "Tunnel": other
+  "Person": pedestrian
+  "Bicyclist": cyclist
+  "Motorcyclist": motorcycle
+  "Other Rider": escooter          # provisional: closest class; official definition unverified
+  "Lane Marking - Crosswalk": crossing
+  "Lane Marking - General": road
+  "Mountain": other
+  "Sand": other
+  "Sky": sky
+  "Snow": other
+  "Terrain": vegetation
+  "Vegetation": vegetation
+  "Water": other
+  "Banner": other
+  "Bench": other
+  "Bike Rack": other
+  "Billboard": other
+  "Catch Basin": road
+  "CCTV Camera": other
+  "Fire Hydrant": other
+  "Junction Box": other
+  "Mailbox": other
+  "Manhole": road
+  "Phone Booth": other
+  "Pothole": obstacle
+  "Street Light": other
+  "Pole": other
+  "Traffic Sign Frame": traffic_sign
+  "Utility Pole": other
+  "Traffic Light": traffic_light
+  "Traffic Sign (Back)": traffic_sign
+  "Traffic Sign (Front)": traffic_sign
+  "Trash Can": obstacle
+  "Bicycle": bicycle
+  "Boat": other
+  "Bus": large_vehicle
+  "Car": car                       # parked vs moving needs temporal reasoning (planned)
+  "Caravan": large_vehicle
+  "Motorcycle": motorcycle
+  "On Rails": large_vehicle        # trams / trains
+  "Other Vehicle": large_vehicle   # provisional
+  "Trailer": large_vehicle
+  "Truck": large_vehicle
+  "Wheeled Slow": other            # provisional: definition unverified (may include scooters)
+  "Car Mount": other
+  "Ego Vehicle": other             # e.g. handlebar of the rider's own e-scooter

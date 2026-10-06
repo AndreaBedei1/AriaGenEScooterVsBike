@@ -1,0 +1,74 @@
+# =============================================================================
+# Example session manifest (template for a REAL session)
+# =============================================================================
+# Create a new session folder with this structure using:
+#   python -m ariagen_escooter new-session --participant P001
+# which writes data/raw/<session_id>/manifest.yaml. This file documents every
+# field and is validated by the test suite.
+#
+# NEVER write names, e-mail addresses, phone numbers, fiscal codes or exact
+# home/work locations in a manifest (`validate` rejects them). The key that
+# links a pseudonymous participant_id to a person is kept by the study team
+# OUTSIDE this repository and outside the data folders.
+# Paths are relative to the recording folder and use '/' separators.
+# =============================================================================
+manifest_version: 1
+synthetic: false
+
+participant_id: P001              # pseudonym: P001..P999
+session_id: P001_S01              # participant + session number
+protocol_version: "0.1-draft"     # version of the acquisition/ethics procedure (TBD until approved)
+
+route:
+  route_id: ROUTE_A               # identifier in the route catalogue (TBD)
+  variant: null                   # e.g. direction or alternative branch
+  description: "TBD"              # no private addresses
+
+timing:
+  date: null                      # YYYY-MM-DD; may be generalised before any sharing
+  start_time_local: null          # "HH:MM"
+  timezone: Europe/Rome
+
+conditions:                       # coarse, researcher-rated categories
+  weather: unknown                # dry | drizzle | rain | fog | snow | unknown
+  road_surface: unknown           # dry | wet | mixed | unknown
+  light: unknown                  # daylight | twilight | dark | unknown
+  traffic_density: unknown        # low | medium | high | unknown (subjective rating)
+  temperature_c: null
+  notes: ""
+
+equipment:
+  aria_device_code: ARIA_G2_01    # internal device code (not the serial number)
+  recording_profile: TBD          # e.g. profile8 (RGB 2560x1920 @ 10 Hz, gaze 30 Hz, GNSS 1 Hz) - to be decided
+  escooter_code: ESC_01           # internal code of the e-scooter used
+  escooter_model: TBD
+  external_gps_logger: null       # e.g. code of a phone/logger, if any
+
+recordings:
+  - recording_id: P001_S01_R01    # one entry per VRS file (a restarted recording gets R02, ...)
+    files:
+      vrs: recording.vrs          # data/raw/P001_S01/P001_S01_R01/recording.vrs
+      mps_dir: null               # only if MPS was requested (requires uploading the VRS to Meta: see privacy docs)
+      external_gps: null
+    streams:                      # available | partial | missing | unknown (update after extract-aria)
+      rgb: unknown
+      eye_gaze: unknown
+      imu: unknown
+      pose: unknown               # on-device VIO or MPS SLAM
+      gps_device: unknown         # GNSS on the glasses ('gps')
+      gps_phone: unknown          # companion-app GNSS ('gps-app')
+      gps_external: missing
+      mps_slam: missing
+      mps_eye_gaze: missing
+    clock:
+      external_gps_offset_ns: null  # only for external loggers: offset added to logger time
+      method: null
+      uncertainty_s: null
+    device_time_start_ns: null
+    device_time_end_ns: null
+    trimming_override: null       # e.g. {start_rel_s: 41.0, end_rel_s: 1250.0, reason: "...", decided_by: "R01"}
+    notes: ""
+    technical_issues: []          # e.g. [{description: "gaze calibration repeated", severity: minor, streams: [eye_gaze]}]
+
+notes: ""
+technical_issues: []

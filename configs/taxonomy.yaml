@@ -1,0 +1,129 @@
+# =============================================================================
+# AriaGenEScooter - analysis taxonomy
+# =============================================================================
+# Controlled vocabularies used by annotations, synthetic data and metrics.
+# Names are stable identifiers (snake_case): never rename a class once real
+# data have been annotated - add a new class and document the change instead.
+#
+# These definitions are DRAFT operational definitions. They must be refined
+# (with examples and edge cases) in an annotation guide before the pilot, and
+# inter-annotator agreement must be checked on a subset of recordings.
+# =============================================================================
+taxonomy_version: 1
+
+# -----------------------------------------------------------------------------
+# Infrastructure classes of a ROUTE SEGMENT (main unit of analysis).
+# A route segment is a semantically homogeneous stretch of the ride. Exactly
+# one class per segment; segments must not overlap in time.
+# -----------------------------------------------------------------------------
+infrastructure_classes:
+  protected_cycle_path: >-
+    Cycle path physically separated from motor traffic (kerb, barrier,
+    verge or parking row) and not shared with pedestrians.
+  painted_cycle_lane: >-
+    Cycle lane on the carriageway, separated from motor traffic by road
+    markings only.
+  shared_pedestrian_cycle_path: >-
+    Path legally or de facto shared by pedestrians and cyclists/e-scooters,
+    without separation between the two flows.
+  road_shared_with_traffic: >-
+    Carriageway shared with motor vehicles, without a dedicated cycling
+    facility.
+  pedestrian_or_shared_space: >-
+    Pedestrian area, plaza or shared space where riding is permitted, usually
+    with reduced speed.
+  crossing: >-
+    Pedestrian and/or cycle crossing traversed by the rider (zebra or cycle
+    crossing), from entry to exit of the crossing area.
+  intersection: >-
+    Junction of two or more roads or paths (signalised or not), excluding
+    roundabouts, from entry to exit of the junction area.
+  roundabout: >-
+    Roundabout, from entry (yield line) to exit of the circulating
+    carriageway.
+  other: >-
+    Identified infrastructure not covered by the classes above (describe it
+    in the segment notes).
+  unknown: >-
+    Infrastructure cannot be determined (e.g. video unavailable).
+
+# -----------------------------------------------------------------------------
+# Event / interaction types. Events are time intervals that may OVERLAP each
+# other and any route segment (e.g. protected_cycle_path + pedestrian_interaction).
+# Neutral terms only: no event is labelled "hazard" or "near miss" unless a
+# validated definition is adopted by the study.
+# -----------------------------------------------------------------------------
+event_types:
+  pedestrian_interaction: >-
+    A pedestrian is relevant to the rider's path (crossing, walking ahead,
+    entering or leaving the path).
+  cyclist_interaction: >-
+    A cyclist is relevant to the rider's path (oncoming, overtaking, being
+    overtaken, crossing).
+  escooter_interaction: >-
+    Another e-scooter rider is relevant to the rider's path.
+  vehicle_interaction: >-
+    A moving motor vehicle (car, motorcycle, van, truck, bus) is relevant to
+    the rider's path.
+  crossing: >-
+    The rider negotiates a pedestrian/cycle crossing (approach, possible
+    stop, traversal).
+  intersection: >-
+    The rider negotiates an intersection (approach, possible stop,
+    traversal).
+  roundabout: >-
+    The rider negotiates a roundabout (approach, entry, circulation, exit).
+  parked_vehicle: >-
+    A parked or stationary vehicle affects the rider's path or visibility.
+  obstacle: >-
+    A static object or surface defect on or near the path (bollard, bin,
+    works, pothole) affects the rider.
+  narrow_section: >-
+    The available path width is reduced (works, parked objects, narrow
+    passage).
+  overtaking: >-
+    Overtaking manoeuvre involving the rider (rider overtakes or is
+    overtaken); usually combined with another interaction type via tags.
+  stopping: >-
+    The rider comes to a stop (traffic light, yielding, congestion).
+  other_interaction: >-
+    Any other relevant interaction (describe it in the event notes).
+
+# -----------------------------------------------------------------------------
+# Semantic classes of the scene (pixel/object level), used by segmentation
+# back-ends and by the semantic gaze module. Ids must be 0..N-1, unique.
+# Back-end specific labels are mapped onto these names by mapping files.
+# -----------------------------------------------------------------------------
+semantic_classes:
+  - {id: 0, name: unknown, description: "Unlabelled, void or uncertain region."}
+  - {id: 1, name: road, description: "Carriageway for motor traffic."}
+  - {id: 2, name: cycle_lane, description: "Cycle lane or cycle path surface."}
+  - {id: 3, name: sidewalk, description: "Sidewalk / pedestrian surface."}
+  - {id: 4, name: crossing, description: "Zebra or cycle crossing markings/area."}
+  - {id: 5, name: curb, description: "Kerb or curb cut."}
+  - {id: 6, name: pedestrian, description: "Person on foot."}
+  - {id: 7, name: cyclist, description: "Person riding a bicycle."}
+  - {id: 8, name: bicycle, description: "Bicycle (ridden or parked)."}
+  - {id: 9, name: escooter, description: "E-scooter and/or its rider (rider vs vehicle split is TBD)."}
+  - {id: 10, name: motorcycle, description: "Motorcycle or moped."}
+  - {id: 11, name: car, description: "Passenger car."}
+  - {id: 12, name: large_vehicle, description: "Van, truck or bus, when distinguishable."}
+  - {id: 13, name: parked_vehicle, description: "Stationary/parked vehicle (needs temporal reasoning; single-frame models usually output car)."}
+  - {id: 14, name: traffic_sign, description: "Traffic sign."}
+  - {id: 15, name: traffic_light, description: "Traffic light."}
+  - {id: 16, name: obstacle, description: "Static object on or near the path (bollard, bin, works barrier)."}
+  - {id: 17, name: vegetation, description: "Trees, hedges, grass, terrain."}
+  - {id: 18, name: building, description: "Buildings and walls of buildings."}
+  - {id: 19, name: sky, description: "Sky."}
+  - {id: 20, name: other, description: "Known class not listed above (pole, fence, wall, ...)."}
+
+# Groups used for aggregated gaze metrics (a class may belong to several groups).
+semantic_groups:
+  pedestrians: [pedestrian]
+  other_vulnerable_road_users: [cyclist, bicycle, escooter]
+  vehicles: [motorcycle, car, large_vehicle, parked_vehicle]
+  path_surface: [road, cycle_lane, sidewalk, crossing, curb]
+  traffic_control: [traffic_sign, traffic_light]
+  infrastructure: [road, cycle_lane, sidewalk, crossing, curb, traffic_sign, traffic_light]
+  obstacles: [obstacle]
+  surroundings: [vegetation, building, sky, other]

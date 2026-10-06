@@ -1,0 +1,248 @@
+# =============================================================================
+# AriaGenEScooter - default analysis configuration
+# =============================================================================
+# Every number below is an ANALYSIS PARAMETER, not a validated scientific
+# constant. Values marked "provisional" must be reviewed on pilot data and
+# justified in docs/methodology.md before confirmatory analyses.
+#
+# Units are part of every key name:
+#   _s seconds, _hz hertz, _m metres, _mps m/s, _mps2 m/s^2, _mps3 m/s^3,
+#   _deg degrees, _px pixels of the full-resolution RGB image.
+#
+# Override any subset of keys with your own YAML file (deep merge):
+#   python -m ariagen_escooter run <session_dir> --config my_overrides.yaml
+# The merged, effective configuration is saved with every run
+# (<output>/effective_config.yaml) together with its SHA-256.
+# All keys are required in this file: the code contains no hidden defaults.
+# =============================================================================
+config_version: 1
+
+paths:
+  # Root of raw/, interim/, processed/, public/. Relative paths are resolved
+  # against the project root. The environment variable ARIAGEN_DATA_ROOT
+  # overrides this value (e.g. a dedicated data disk on the Linux machine).
+  data_root: data
+  # Taxonomy file, relative to the directory of THIS file.
+  taxonomy_file: taxonomy.yaml
+
+timestamps:
+  # An inter-sample interval is reported as a gap when it is longer than
+  # gap_factor x the median interval of that stream (1.5 flags a single
+  # dropped sample while tolerating normal timestamp jitter).
+  gap_factor: 1.5
+  # Maximum number of individual gaps listed in reports (all are counted).
+  max_reported_gaps: 20
+
+synchronization:
+  # A gaze sample is attached to the nearest RGB frame only if
+  # |t_gaze - t_frame| <= tolerance; otherwise its lookup status is "no_frame".
+  # Provisional: half the frame period at 10 Hz. Keep <= half the frame period
+  # of the recording profile actually used.
+  gaze_frame_tolerance_s: 0.05
+  # Continuous signals are interpolated linearly, but NEVER across gaps longer
+  # than these values (no data are invented inside long gaps).
+  pose_max_gap_s: 0.5
+  gps_max_gap_s: 3.0
+  # Residual clock offset of the GPS stream w.r.t. the device clock, estimated
+  # by cross-correlating speed profiles (GPS speed vs pose speed). Useful for
+  # external GPS loggers whose clock is mapped to device time approximately.
+  clock_offset:
+    enabled: true
+    max_lag_s: 5.0
+    grid_rate_hz: 10.0
+    min_overlap_s: 30.0
+    min_correlation: 0.9
+    # The estimate is always reported; it is applied only if it is reliable
+    # (correlation >= min_correlation and peak not at the search boundary).
+    apply_if_reliable: true
+
+trimming:
+  # raw session -> detected riding interval -> trimmed session.
+  # The raw data are never modified; the decision is saved in trimming.json.
+  enabled: true
+  # Speed signal used for detection: auto (pose if available, else GPS), pose, gps.
+  speed_source: auto
+  grid_rate_hz: 10.0
+  # Smoothing window of the speed signal (Savitzky-Golay, see kinematics).
+  smoothing_window_s: 2.0
+  # "Moving" = smoothed speed above this threshold. Provisional: above typical
+  # walking speed (walking the scooter must not count as riding) and below
+  # typical e-scooter cruising speed.
+  speed_threshold_mps: 2.0
+  # A movement run counts as riding only if it lasts at least this long.
+  min_moving_duration_s: 10.0
+  # first_to_last: from the first to the last qualifying run (stops at traffic
+  # lights stay inside the ride); longest: longest block of runs merged when
+  # separated by less than merge_gap_s.
+  selection: first_to_last
+  merge_gap_s: 30.0
+  # Margins added around the detected riding interval (clipped to the recording).
+  buffer_before_s: 2.0
+  buffer_after_s: 2.0
+  # Optional, EXPERIMENTAL: also require head-IMU vibration consistent with
+  # riding (rolling std of |acceleration|). Not validated: disabled by default.
+  imu_check:
+    enabled: false
+    window_s: 2.0
+    min_accel_std_mps2: 0.3
+    min_active_fraction: 0.5
+  # A manual override can be declared per recording in the session manifest
+  # (recordings[].trimming_override); it always takes precedence and the
+  # automatic result is still reported for comparison.
+
+kinematics:
+  # Trajectory source: auto (pose/VIO if available, else GPS), pose, gps.
+  # NOTE: Aria is head-mounted. Positions/speeds describe the HEAD, which
+  # translates with the scooter but also sways; head rotation is NOT the
+  # scooter heading (heading is derived from the direction of travel).
+  source: auto
+  grid_rate_hz: 10.0
+  # Savitzky-Golay smoothing/differentiation window and polynomial order.
+  # Order 2 gives smoother first derivatives than order 3 (less overshoot at
+  # abrupt speed changes); it must be >= 2 because jerk is a 2nd derivative.
+  smoothing_window_s: 1.0
+  savgol_polyorder: 2
+  # Direction of travel is undefined below this speed (heading set to NaN).
+  min_speed_for_heading_mps: 1.0
+  # Stop = speed below threshold for at least min_stop_duration_s.
+  stop_speed_threshold_mps: 0.3
+  min_stop_duration_s: 1.0
+  braking:
+    # Deceleration event = acceleration <= -decel_threshold for >= min_duration;
+    # its onset is extended backwards while acceleration <= -onset_threshold.
+    # Provisional values; neutral naming ("deceleration event", not "hard braking").
+    decel_threshold_mps2: 1.0
+    onset_threshold_mps2: 0.3
+    min_duration_s: 0.3
+  # Lateral oscillation proxy: deviation from a path smoothed over this window.
+  lateral_reference_window_s: 5.0
+  # Behaviour approaching these segment classes is summarised over the
+  # approach_window_s preceding segment entry.
+  approach_window_s: 5.0
+  approach_classes: [crossing, intersection, roundabout]
+
+gaze:
+  # Samples with confidence below this value are excluded (null = the
+  # confidence column is not used, e.g. when the source provides none).
+  min_confidence: null
+  # Each sample represents the time until the next sample, capped at this value
+  # (time inside longer gaps is "unobserved", never attributed to a class).
+  max_sample_weight_s: 0.1
+  # 0 = class of the single pixel under the gaze point; > 0 = majority class in
+  # a disc of this radius (full-resolution pixels), e.g. to reflect gaze
+  # accuracy. Provisional; must be derived from the eye-tracker accuracy.
+  lookup_radius_px: 0.0
+  # Invalid/unlabelled interruptions up to this length (e.g. blinks) do not
+  # split a dwell when the class before and after is the same.
+  dwell_bridge_gap_s: 0.15
+  fixation:
+    # I-VT (velocity threshold) on gaze direction. reference_frame:
+    # auto (world if pose is available, else eye_in_head), world, eye_in_head.
+    # Provisional: the threshold depends on the sampling rate and must be
+    # validated on pilot data (head-mounted tracking in a moving vehicle).
+    reference_frame: auto
+    velocity_threshold_deg_s: 50.0
+    min_duration_s: 0.1
+  forward:
+    # Forward-looking = gaze within this window around the reference direction.
+    # reference: auto (travel direction if pose available, else head), travel, head.
+    reference: auto
+    yaw_half_width_deg: 15.0
+    pitch_min_deg: -30.0
+    pitch_max_deg: 10.0
+  lateral_glance:
+    # Lateral glance = |gaze yaw w.r.t. reference| above threshold for >= min_duration.
+    yaw_threshold_deg: 30.0
+    min_duration_s: 0.2
+  dispersion:
+    # Bivariate contour ellipse area probability, and bin size of the 2-D
+    # histogram used for spatial gaze entropy.
+    bcea_probability: 0.682
+    entropy_bin_deg: 5.0
+  # Vertical gaze bands (elevation in the forward reference frame). Lower bands
+  # roughly correspond to nearer ground regions when the head is level: this
+  # is a PROXY for near/far gaze, not a distance estimate.
+  vertical_bands:
+    - {name: low, min_deg: -90.0, max_deg: -20.0}
+    - {name: middle, min_deg: -20.0, max_deg: -5.0}
+    - {name: high, min_deg: -5.0, max_deg: 90.0}
+
+events:
+  # First observation of an interaction target: searched from
+  # (event start - lookback) to the event end. Visual anticipation =
+  # reference time - first gaze (negative if the target was first seen after
+  # the reference instant, e.g. a vehicle overtaking from behind).
+  first_gaze_lookback_s: 5.0
+  # Minimum continuous gaze on the target to count as an observation.
+  first_gaze_min_dwell_s: 0.1
+  # Action onset = first deceleration below -threshold lasting >= min_duration,
+  # searched from (event start - lookback) to (event end + search_after).
+  action_decel_threshold_mps2: 0.5
+  action_min_duration_s: 0.2
+  action_search_after_s: 3.0
+
+aria:
+  # Extraction of canonical streams from Aria Gen 2 VRS files (Linux/macOS only,
+  # projectaria-tools >= 2.3.0). Labels verified against the official Gen 2
+  # StreamId-label mapping; streams are always resolved BY LABEL.
+  rgb_label: camera-rgb
+  eye_gaze_label: eyegaze
+  # The body IMU used by on-device VIO is often imu-left (official tutorial).
+  imu_label: imu-left
+  # First available label is used: glasses GNSS, then companion-app GNSS.
+  gps_labels: [gps, gps-app]
+  # Pose source: vio (on-device, 10 Hz, only VALID + GOOD samples kept),
+  # vio_high_frequency (on-device, ~800 Hz, decimated to pose_rate_hz),
+  # mps_closed_loop (cloud MPS SLAM: requires uploading the VRS to Meta - see
+  # docs/privacy_pipeline.md before using it).
+  pose_source: vio
+  pose_rate_hz: 20.0
+  # IMU (800 Hz in the standard profiles) is block-averaged to this rate.
+  imu_rate_hz: 100.0
+  # Gaze projection into the RGB image. spatial_point_if_valid follows the
+  # official tutorial (vergence-based 3-D gaze point when valid, otherwise the
+  # yaw/pitch ray at gaze_fallback_depth_m); fixed_depth always uses the ray.
+  # Provisional: the depth choice causes small parallax errors (CPF vs camera
+  # offset); a sensitivity analysis is planned.
+  gaze_projection: spatial_point_if_valid
+  gaze_fallback_depth_m: 5.0
+
+segmentation:
+  # precomputed: label maps already computed (or synthetic), read from
+  # <recording>/semantic/labels.npz. huggingface: EXPERIMENTAL back-end
+  # (requires the 'cv' extra and a model download; not validated).
+  backend: precomputed
+  label_maps_file: semantic/labels.npz
+  huggingface:
+    model_id: null
+    label_mapping_file: null
+    device: cpu
+
+privacy:
+  # Manifest keys that must never appear (direct identifiers).
+  forbidden_manifest_keys:
+    [name, first_name, last_name, surname, full_name, nome, cognome, email,
+     e_mail, phone, telephone, telefono, cellulare, address, indirizzo,
+     birth_date, date_of_birth, data_di_nascita, fiscal_code, codice_fiscale,
+     tax_code]
+  gps:
+    # Points within this radius of the first/last fix are removed from
+    # shareable trajectories (protects home/work locations).
+    endpoint_radius_m: 200.0
+    # Grid used to generalise coordinates in shareable data.
+    generalization_grid_m: 50.0
+  blur:
+    # Region blurring for faces / licence plates (detections from a detector
+    # back-end). method: gaussian or pixelate. Box enlarged by margin_fraction.
+    method: gaussian
+    margin_fraction: 0.15
+    gaussian_sigma_fraction: 0.2
+    pixelate_blocks: 8
+
+reporting:
+  # Decimal places in CSV outputs (keeps outputs compact and deterministic).
+  float_decimals: 6
+  # Diagnostic figures (PNG) - require matplotlib (core dependency).
+  plots: true
+  # Write sample-level tables (semantic gaze per sample, kinematics grid).
+  sample_level_tables: true

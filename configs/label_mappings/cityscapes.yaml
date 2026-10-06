@@ -1,0 +1,31 @@
+# Mapping: Cityscapes 19 train ids (id2label of e.g. nvidia/segformer-*-finetuned-cityscapes-*
+# and facebook/mask2former-*-cityscapes-semantic, verified 2026-10) -> project classes.
+#
+# STATUS: provisional, not validated on Aria imagery. Known limits of the
+# Cityscapes vocabulary (official class definitions):
+#  * "road" includes bike lanes delimited only by markings -> no cycle_lane / crossing;
+#  * "sidewalk" includes the curb -> no separate curb;
+#  * "rider" includes riders of bicycles, motorcycles and scooters -> mapped to cyclist.
+# Licence note: Cityscapes data are for non-commercial use; check model licences too.
+backend: cityscapes-19
+default: unknown
+map:
+  "road": road
+  "sidewalk": sidewalk
+  "building": building
+  "wall": other
+  "fence": other
+  "pole": other
+  "traffic light": traffic_light
+  "traffic sign": traffic_sign
+  "vegetation": vegetation
+  "terrain": vegetation
+  "sky": sky
+  "person": pedestrian
+  "rider": cyclist      # provisional: also motorcyclists and scooter riders
+  "car": car
+  "truck": large_vehicle
+  "bus": large_vehicle
+  "train": large_vehicle
+  "motorcycle": motorcycle
+  "bicycle": bicycle
