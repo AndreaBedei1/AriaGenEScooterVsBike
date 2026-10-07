@@ -12,12 +12,18 @@ from ariagen_escooter.io import read_yaml
 
 TEXT_SUFFIXES = {".py", ".yaml", ".yml", ".toml", ".md", ".ps1", ".sh", ".csv", ".json", ".cfg", ".txt"}
 SKIP_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache", "raw", "interim", "processed", "public"}
-# Built from pieces so that this file does not match itself.
+# Typical user-specific locations; built from pieces so that this file does not match itself.
 ABSOLUTE_PATTERNS = [
-    re.compile(r"\b[A-Za-z]:" + r"[\\/](?:Users|Andrea|home|Documents|Desktop)", re.IGNORECASE),
+    re.compile(r"\b[A-Za-z]:" + r"[\\/](?:Users|home|Documents|Desktop)", re.IGNORECASE),
     re.compile(r"(?<![\w.])/" + r"home/[a-z_][\w.-]*/", re.IGNORECASE),
     re.compile(r"(?<![\w.])/" + r"Users/[A-Za-z][\w.-]*/"),
 ]
+
+
+def _local_path_patterns(root: Path) -> list[re.Pattern[str]]:
+    """The checkout's own absolute location (and its parent), whatever the machine."""
+    variants = {str(root), root.as_posix(), str(root.parent), root.parent.as_posix()}
+    return [re.compile(re.escape(v), re.IGNORECASE) for v in variants if len(v) > 3]
 
 
 def _repo_text_files(root: Path):
@@ -30,9 +36,10 @@ def _repo_text_files(root: Path):
 
 def test_no_hardcoded_absolute_paths(project_root: Path) -> None:
     offenders = []
+    patterns = ABSOLUTE_PATTERNS + _local_path_patterns(project_root)
     for path in _repo_text_files(project_root):
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for pattern in ABSOLUTE_PATTERNS:
+        for pattern in patterns:
             match = pattern.search(text)
             if match:
                 offenders.append(f"{path.relative_to(project_root).as_posix()}: {match.group(0)!r}")
