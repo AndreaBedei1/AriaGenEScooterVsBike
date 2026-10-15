@@ -2,7 +2,10 @@
 
 This document describes how data are acquired, processed and analysed, which choices are
 **provisional**, and what is **implemented**, **tested**, **planned** or **TBD**. Every numeric
-parameter mentioned here lives in `configs/default.yaml` and is saved with each run.
+parameter mentioned here lives in `configs/default.yaml` (shared by both vehicles) and is saved
+with each run. Detailed plans live in `docs/methodology/`: metrics catalog and feasibility,
+validation plan, CV benchmark plan, hand-tracking validation, pilot protocol, statistical
+analysis plan.
 
 Contents: 1 design - 2 sensors - 3 pipeline - 4 time - 5 trimming - 6 segments and events -
 7 kinematics - 8 scene understanding - 9 semantic gaze - 10 perception -> action -
@@ -10,54 +13,73 @@ Contents: 1 design - 2 sensors - 3 pipeline - 4 time - 5 trimming - 6 segments a
 
 ## 1. Study design
 
-- Naturalistic riding on real urban routes, during normal traffic, with the participant's normal
+- Naturalistic riding on a fixed urban route in normal traffic, with the participant's normal
   riding style. No manoeuvre is requested, no situation is provoked (see the ethics documents).
-- Within-subject comparison across infrastructure classes along the route(s), plus
-  between-subject comparison of riders in the same contexts.
-- Unit of analysis: **route segment** (one infrastructure class, non-overlapping). Overlapping
-  **events/interactions** are annotated separately.
-- Route(s), number of participants, sessions per participant, inclusion criteria: **TBD**.
+- **Within-participant comparison of two vehicles**: every participant rides an electric
+  kick-scooter and a conventional bicycle on the same route (Cesena candidate CES_A, desk draft,
+  `docs/route/`), same direction, counterbalanced order, 1 or 2 trials per vehicle
+  (`configs/protocol/pilot.yaml`; ABBA/BAAB with two trials).
+- Shared analysis logic for both vehicles; vehicle-specific characteristics and (optional)
+  parameter overrides in `configs/vehicles.yaml`; vehicle, trial number and ride order carried
+  in every table.
+- Units of analysis: **route segments** referenced to the planned route (the same physical place
+  across rides and vehicles; `map-segments`), approach windows, and overlapping
+  **events/interactions** (annotated). Spontaneous events may occur in one ride and not another:
+  segment-matched comparisons are primary, event analyses conditional.
+- Pilot: 3 participants, feasibility only (`docs/methodology/pilot_protocol.md`); main-study
+  sample size after the pilot.
 
 ## 2. Sensors and data (Project Aria Gen 2)
 
 Facts below were checked on the official Gen 2 documentation (Oct 2026); see
 `aria_gen2_integration.md` for sources.
 
-| Signal | Gen 2 stream label | Rate (standard profiles) | Use |
-|---|---|---|---|
-| RGB video | `camera-rgb` | profile8: 2560x1920 @ 10 Hz; profile10: 2016x1512 @ 30 Hz | scene understanding, semantic gaze, privacy processing |
-| On-device eye gaze | `eyegaze` | 30 Hz | gaze angles (CPF), projection into RGB |
-| IMU (x2) | `imu-left`, `imu-right` | 800 Hz | head motion, vibration (experimental trimming check) |
-| On-device VIO | `vio`, `vio_high_frequency` | 10 Hz / ~800 Hz | head trajectory -> kinematics |
-| GNSS | `gps` (glasses), `gps-app` (phone) | 1 Hz (profile8/10) | positioning, external clock checks |
-| MPS (cloud, optional) | SLAM, eye gaze, hand tracking | MPS gaze only 5 Hz with standard profiles | optional; requires uploading VRS to Meta |
+Rates of the study profile `driver_dataset_v1_raw_for_ht` (`configs/recording_profiles/`):
 
-Other streams (SLAM/ET cameras, microphones, PPG, ALS, barometer, magnetometer) are not used by
-the current analysis. Audio is not needed: the recording profile should avoid it if possible
-(**TBD**, see `privacy_pipeline.md`).
+| Signal | Gen 2 stream label | Rate | Use |
+|---|---|---|---|
+| RGB video | `camera-rgb` | 15 Hz, 2016x1512 | scene understanding, semantic gaze, privacy processing |
+| On-device eye gaze | `eyegaze` | 30 Hz | gaze angles (CPF), projection into RGB |
+| IMU (x2) | `imu-left`, `imu-right` | 800 Hz | head rotation, vibration |
+| On-device VIO | `vio` | 10 Hz | head trajectory -> kinematics (valid samples only) |
+| High-frequency VIO | `vio_high_frequency` | ~800 Hz (IMU pre-integration on the 10 Hz VIO) | smooth orientation/velocity; not independent evidence |
+| On-device hand tracking | `handtracking` | 10 Hz (from the CV cameras) | exploratory hand descriptors |
+| GNSS | `gps` | 1 Hz | route alignment, speed reference |
+| CV cameras, ET cameras | `slam-*`, `camera-et-*` | 10 Hz, 5 Hz | input of on-device HT/ET; never exported; removed from released data |
+| PPG, barometer, magnetometer, ALS, temperature | | 256 / 50 / 100 / 9.4 / 1 Hz | quality checks; PPG exploratory |
+| MPS (cloud, optional) | SLAM, eye gaze, hand tracking | MPS gaze at 5 Hz with this profile | not used by default (upload of the raw VRS) |
+
+The profile records no audio, Wi-Fi or Bluetooth. Verified facts and open points:
+`aria_gen2_integration.md`, `aria/aria_gen2_technical_notes.md`.
 
 **Head-mounted sensor caveat.** Aria measures the rider's head. Head translation follows the
-e-scooter but includes body sway; head rotation is *not* the vehicle heading. Hence the direction
-of travel is derived from the trajectory, and lateral metrics are proxies mixing vehicle motion
-and body sway. A rigidly mounted vehicle IMU/GNSS (e.g. a smartphone on the handlebar) would
-separate them: **TBD** (equipment decision).
+vehicle but includes body sway; head rotation is *not* the vehicle heading; pedalling adds
+periodic head motion on the bicycle that is absent on the e-scooter, and posture differs
+(seated vs standing). Hence the direction of travel is derived from the trajectory, speed and
+decelerations are **estimates** of the riding dynamics, and lateral metrics are proxies mixing
+vehicle motion and body sway. No sensor is mounted on the vehicles (study decision): brake
+force, steering, pedalling and frame motion are not identifiable
+(`methodology/metrics_catalog.md`).
 
 ## 3. Processing pipeline
 
 ```
-raw VRS (+ optional MPS / external GPS)            data/raw        restricted
-  -> extract-aria: canonical streams                data/interim    (Linux, projectaria-tools)
-  -> anonymised copies for any video use            EgoBlur (separate environment)
+raw VRS                                            data/raw        restricted, never modified
+  -> stream inventory + integrity                   extract-aria: inventory.csv, extraction_quality.json
+  -> privacy-reviewed copies for any video use      EgoBlur + stream filtering (separate environment)
+  -> extract-aria: canonical streams                data/interim    (Linux, projectaria-tools 2.3.x)
+  -> map-segments: GNSS -> planned route segments   data/interim/annotations/segments_route.csv (review)
   -> label maps (segmentation back-end)             data/interim/semantic
   -> annotations: route segments + events           data/interim/annotations
-  -> run: validate -> sync -> trim -> kinematics -> semantic gaze -> metrics
-                                                     data/processed  (report, tables, figures)
-  -> aggregate: study-level long tables             data/processed/_study
+  -> run: validate -> quality -> sync -> trim -> kinematics -> semantic gaze -> hands -> metrics
+       (configuration of the ride's vehicle)         data/processed  (report, quality, tables, figures)
+  -> aggregate: study-level long tables,            data/processed/_study
+     vehicle x infrastructure, within-participant contrasts
 ```
 
-The MVP (`python -m ariagen_escooter run`) implements everything from "validate" onwards and is
-tested end-to-end on the synthetic session. Extraction is implemented against the official API
-but not yet validated on a real Gen 2 recording; segmentation inference is experimental.
+`run` is tested end-to-end on the synthetic session (also relabelled as a two-vehicle session
+in the tests). Extraction follows the official API and has been smoke-tested on official Gen 2
+test recordings, not on riding data; segmentation inference is experimental.
 
 ## 4. Timestamps and synchronisation
 
@@ -68,8 +90,17 @@ but not yet validated on a real Gen 2 recording; segmentation inference is exper
 - `validate` and `run` report per stream: sample count, duration, median interval, estimated
   rate, decreasing timestamps (error), duplicates (warning, removed), gaps (interval >
   `gap_factor` x median; 1.5 flags single dropped samples).
-- Gaze -> RGB frame: nearest frame within `gaze_frame_tolerance_s` (0.05 s, half the 10 Hz
-  frame period); otherwise status `no_frame`. No interpolation of gaze.
+- Gaze -> RGB frame: nearest frame within `gaze_frame_tolerance_s` (default: half the median
+  frame interval measured in the recording, i.e. 0.033 s at 15 Hz); otherwise status
+  `no_frame`. No interpolation of gaze.
+- Data quality (`quality.py`, every run): per stream effective vs nominal rate (nominal from the
+  recording profile), dropout fraction, duplicated / out-of-order / invalid timestamps, gaps
+  classified (short <= `short_gap_s`: interpolable for smooth signals; medium <= `medium_gap_s`:
+  degraded, never interpolated; long: unusable), VIO status/quality/resets and pose
+  discontinuities, high-frequency VIO quality score, gaze validity, hand detection, GNSS fixes
+  and accuracy. Output: `quality.json`, `tables/quality_intervals.csv`, and per-window
+  `q_<stream>_<status>` fractions with a `quality_flag`. Only valid VIO samples are used and
+  nothing is interpolated across a tracking reset.
 - Continuous signals (pose, GPS) are interpolated linearly only across gaps shorter than
   `pose_max_gap_s` / `gps_max_gap_s`; longer gaps stay empty.
 - External GPS loggers: a declared offset maps logger time to device time; the residual offset
@@ -111,10 +142,12 @@ modified. **Validation planned:** compare automatic and manual trimming on pilot
 - Segments: one infrastructure class, no overlaps; events: may overlap anything, have optional
   reference instant (e.g. closest approach), target class/instance and tags (e.g.
   `cyclist_interaction` + `overtaking`).
-- Annotation source: manual annotation of the (anonymised) video is assumed; tool and procedure
-  **TBD**. A double-coded subset with agreement statistics (e.g. Cohen's kappa for classes,
-  boundary tolerance for times) is recommended. Map-matching of GNSS to a road network
-  (e.g. OpenStreetMap) could pre-fill segments: **planned/optional**.
+- Route segments from the planned route: `map-segments` projects GNSS fixes onto the route line
+  (monotonic search robust to the self-crossing loop, off-route fixes left unmatched) and writes
+  `annotations/segments_route.csv` with `route_segment_id` and boundary uncertainty, to be
+  reviewed before use (implemented, tested on synthetic loops).
+- Events: manual annotation of the anonymised video; tool and guide **TBD**; a double-coded
+  subset with agreement statistics (Cohen's kappa for classes, boundary tolerance for times).
 - Annotation times can be given in seconds from recording start (`*_rel_s`) and are converted.
 
 ## 7. Kinematics and behaviour metrics
@@ -211,14 +244,16 @@ confirmatory use. Only deceleration is considered as action; steering responses 
 
 ## 11. Rider effect vs infrastructure effect
 
-- `segment_metrics.csv` (one row per segment) carries participant, session, recording, route,
-  conditions and all metrics; `aggregate` concatenates sessions and can join pseudonymous
-  participant covariates. This long format supports mixed-effects models such as
-  `metric ~ infrastructure + conditions + (1 + infrastructure | participant)`, intraclass
-  correlations and descriptive rider x infrastructure tables (`rider_by_infrastructure.csv`).
+- `segment_metrics.csv` (one row per segment) carries participant, session, recording, vehicle,
+  trial number, ride order, route segment, conditions, quality columns and all metrics;
+  `aggregate` concatenates sessions, can join pseudonymous participant covariates and writes
+  `rider_vehicle_by_infrastructure.csv` and `within_participant_vehicle_contrasts.csv`. This
+  long format supports mixed-effects models such as
+  `metric ~ vehicle * infrastructure + ride_order + (1 + vehicle | participant) + (1 | route_segment)`,
+  intraclass correlations across trials, and descriptive tables.
 - Synthetic and real data are never aggregated together.
-- Model specification, covariates, multiple-comparison strategy and software are **TBD**
-  (statistical analysis plan after the pilot).
+- Draft statistical analysis plan: `methodology/statistical_analysis_plan.md` (to be finalised
+  and registered after the pilot).
 
 ## 12. Validation strategy
 
@@ -226,12 +261,16 @@ confirmatory use. Only deceleration is considered as action; steering responses 
 |---|---|---|
 | Synthetic ground truth | trimming, GPS clock residual, first gaze, action onset, metrics on analytic signals | **done** (automated tests) |
 | Determinism and portability | byte-identical outputs on repeated runs; Windows and Linux runs | **done** (tests; WSL Ubuntu run) |
-| Extraction | stream inventory, rates, gaze overlay on frames, VIO validity on the first pilot VRS | planned |
+| Extraction | stream inventory, rates, quality report on official Gen 2 test recordings | **done** (smoke test) |
+| Extraction on riding data | rates, gaze overlay on frames, VIO validity on the first pilot VRS | planned |
+| Data-quality classification, route alignment, two-vehicle identifiers | synthetic and analytic cases | **done** (automated tests) |
 | Trimming | automatic vs manual start/end on pilot sessions | planned |
 | Segmentation | IoU on a labelled frame subset | planned |
 | Gaze | accuracy check with targets at known positions (calibration routine TBD) | planned |
 | Annotations | double coding, agreement statistics | planned |
 | Parameters | sensitivity analyses for thresholds marked provisional | planned |
+
+Full plan with references, metrics and acceptance rules: `methodology/validation_plan.md`.
 
 ## 13. Key parameters (provisional unless stated)
 
@@ -242,7 +281,8 @@ confirmatory use. Only deceleration is considered as action; steering responses 
 | `trimming.buffer_before_s` / `after` | 2 / 2 | keep departure/arrival dynamics |
 | `kinematics.smoothing_window_s`, `savgol_polyorder` | 1.0 s, 2 | noise vs temporal resolution |
 | `kinematics.braking.decel_threshold_mps2` | 1.0 | descriptive event detection, not a safety threshold |
-| `synchronization.gaze_frame_tolerance_s` | 0.05 | half frame period at 10 Hz |
+| `synchronization.gaze_frame_tolerance_s` | null (auto) | half the measured frame period (0.033 s at 15 Hz) |
+| `quality.streams.*.short_gap_s` / `medium_gap_s` | e.g. pose 0.5 / 2.0 s, gaze 0.1 / 0.5 s | gap classes: interpolable / degraded / unusable |
 | `gaze.max_sample_weight_s` | 0.1 | ~3 samples at 30 Hz; longer gaps unobserved |
 | `gaze.dwell_bridge_gap_s` | 0.15 | typical blink duration order |
 | `gaze.fixation.velocity_threshold_deg_s` | 50 | to validate (sampling rate 30 Hz, head motion) |
@@ -253,9 +293,11 @@ confirmatory use. Only deceleration is considered as action; steering responses 
 
 ## 14. Main limitations (current)
 
-Head-mounted kinematics; 10 Hz RGB vs 30 Hz gaze; fisheye RGB vs rectilinear training data;
-no distance-to-target yet; provisional thresholds; extraction not yet run on a real Gen 2 VRS;
-annotation procedure not yet defined.
+Head-mounted kinematics (estimates, not vehicle measurements); 15 Hz RGB vs 30 Hz gaze; fisheye
+RGB vs rectilinear training data; no public segmentation class for e-scooters; no
+distance-to-target yet; provisional thresholds; extractor smoke-tested only on short official
+Gen 2 test recordings (not on riding data); hand tracking validity while riding unknown;
+annotation procedure not yet defined; route not yet verified on site.
 
 ## 15. References
 

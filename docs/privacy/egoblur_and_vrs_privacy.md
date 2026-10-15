@@ -50,7 +50,7 @@ Compiled 2026-10-15. Scope: Raw Aria Gen 2 VRS → face/plate anonymisation → 
 
 **F1.3 — The code is Apache-2.0. VERIFIED (source)**
 - The repo `LICENSE` is Apache License 2.0, and the GitHub API reports `apache-2.0`.
-- README: "The model is licensed under the [Apache 2.0 license](LICENSE)."
+- README: "The model is licensed under the Apache 2.0 license" (link to the repository's LICENSE file).
 
 **F1.4 — The model weights are Apache-2.0 (Gen 2 explicitly; Gen 1 via the shared model licence page and the Hugging Face card). DOCS ONLY**
 - https://www.projectaria.com/tools/egoblur/ (FAQ): "Yes. Both the Gen 2 face and license plate models are licensed under Apache 2.0, meaning they are available for both research and commercial applications."
@@ -355,7 +355,7 @@ egoblur-vrs-blur --input_vrs_path IN --output_vrs_path OUT
 | File and stream tags | **copied unchanged** | device serial, session UUID, capture time, free-text recording name/notes, project and cohort names |
 
 ## 9. Reproduction (all paths under `<workdir>`)
-- Upstream sources: `src/egoblur_repo`, `src/vrs_repo`, `src/pyvrs_repo`. Saved web pages: `web/*.txt`, `web/arxiv/egoblur.txt`, `web/arxiv/aea.txt`.
+- Upstream sources (clones in the working directory, not in this repository): `<workdir>/src/egoblur_repo`, `<workdir>/src/vrs_repo`, `<workdir>/src/pyvrs_repo`. Saved web pages: `web/*.txt`, `web/arxiv/egoblur.txt`, `web/arxiv/aea.txt`.
 - Debug blur run:
   `TMPDIR=<workdir>/vrstest/tmp venvs/egoblur/bin/egoblur-vrs-blur --input_vrs_path vrstest/in.vrs --output_vrs_path vrstest/out_debug.vrs --debug_encoding_only`
 - Stream comparison:

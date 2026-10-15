@@ -16,7 +16,7 @@
 #   ./setup_linux.sh --egoblur             # also create .venv-egoblur (Meta EgoBlur, separate env)
 #   ./setup_linux.sh --recreate --skip-tests
 # Options:
-#   --extras LIST   comma-separated extras (default: aria). Available: aria, cv, presentation
+#   --extras LIST   comma-separated extras (default: aria). Available: aria, cv, route, presentation
 #   --no-dev        do not install pytest/ruff (tests skipped)
 #   --recreate      delete .venv first
 #   --skip-tests    do not run the test suite

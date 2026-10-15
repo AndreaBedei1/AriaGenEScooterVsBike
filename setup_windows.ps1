@@ -15,7 +15,7 @@
   Windows wheels. Aria VRS processing runs on Linux.
 
 .PARAMETER Extras
-  Comma-separated optional extras: cv, presentation ('dev' is added unless -NoDev).
+  Comma-separated optional extras: cv, route, presentation ('dev' is added unless -NoDev).
 
 .PARAMETER NoDev
   Do not install the dev extra (pytest, ruff); tests are then skipped.
