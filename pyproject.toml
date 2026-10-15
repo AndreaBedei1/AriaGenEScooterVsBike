@@ -94,3 +94,5 @@ ignore = ["E501", "B905"]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["B011"]
 "docs/presentation/*" = ["E402"]
+# Stand-alone re-analysis scripts of external data (kept as verified; style rules relaxed).
+"replication/*" = ["PTH", "I001", "UP031", "E402"]
