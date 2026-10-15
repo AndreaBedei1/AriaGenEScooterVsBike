@@ -77,7 +77,7 @@ class ClockOffsetConfig(_Strict):
 
 
 class SynchronizationConfig(_Strict):
-    gaze_frame_tolerance_s: PositiveFloat
+    gaze_frame_tolerance_s: PositiveFloat | None
     pose_max_gap_s: PositiveFloat
     gps_max_gap_s: PositiveFloat
     clock_offset: ClockOffsetConfig

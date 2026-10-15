@@ -39,9 +39,9 @@ timestamps:
 synchronization:
   # A gaze sample is attached to the nearest RGB frame only if
   # |t_gaze - t_frame| <= tolerance; otherwise its lookup status is "no_frame".
-  # Provisional: half the frame period at 10 Hz. Keep <= half the frame period
-  # of the recording profile actually used.
-  gaze_frame_tolerance_s: 0.05
+  # null = half the median frame interval measured in the recording (0.033 s at
+  # 15 Hz, 0.05 s at 10 Hz); a number fixes it. Never larger than half a period.
+  gaze_frame_tolerance_s: null
   # Continuous signals are interpolated linearly, but NEVER across gaps longer
   # than these values (no data are invented inside long gaps).
   pose_max_gap_s: 0.5

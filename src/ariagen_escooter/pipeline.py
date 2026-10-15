@@ -487,7 +487,15 @@ def process_recording(
         streams["pose_hf"], _ = _valid_pose(streams["pose_hf"])
 
     # --- GPS clock offset ------------------------------------------------------
-    sync: dict[str, object] = {"gaze_frame_tolerance_s": a.synchronization.gaze_frame_tolerance_s}
+    frame_tolerance_s = a.synchronization.gaze_frame_tolerance_s
+    if frame_tolerance_s is None:
+        frames = streams.get("frames")
+        dt = np.diff(frames["t_ns"].to_numpy(dtype=np.int64)) if frames is not None and len(frames) > 1 else None
+        frame_tolerance_s = 0.5 * float(np.median(dt[dt > 0])) / NS_PER_S if dt is not None and (dt > 0).any() else 0.05
+    sync: dict[str, object] = {
+        "gaze_frame_tolerance_s": frame_tolerance_s,
+        "gaze_frame_tolerance_source": "config" if a.synchronization.gaze_frame_tolerance_s else "half median frame interval",
+    }
     if "gps" in streams and "pose" in streams and a.synchronization.clock_offset.enabled:
         estimate, _ = _gps_offset(streams["pose"], streams["gps"], a, pose_breaks)
         applied = bool(estimate.reliable and a.synchronization.clock_offset.apply_if_reliable)
@@ -565,7 +573,7 @@ def process_recording(
             pose=trimmed.get("pose"),
             kinematics=kin,
             cfg=a.gaze,
-            frame_tolerance_s=a.synchronization.gaze_frame_tolerance_s,
+            frame_tolerance_s=frame_tolerance_s,
             pose_max_gap_s=a.synchronization.pose_max_gap_s,
         )
         derived = derive_gaze(table, a.gaze)
