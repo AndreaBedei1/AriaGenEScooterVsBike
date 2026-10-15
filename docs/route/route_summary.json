@@ -1,0 +1,334 @@
+{
+  "metadata": {
+    "generated_utc": "2026-10-15T19:16:42+00:00",
+    "generator": "tools/route/build_route.py",
+    "config": "configs/route/cesena_routes.yaml",
+    "osmnx_version": "2.1.1",
+    "osm_source": "OpenStreetMap via Overpass API (osmnx cache in .cache/osmnx)",
+    "attribution": "Map data (c) OpenStreetMap contributors, ODbL 1.0",
+    "bbox_wsen": [
+      12.218,
+      44.126,
+      12.258,
+      44.158
+    ],
+    "network_nodes": 8238,
+    "network_edges": 16606,
+    "legal_graph_nodes": 5152,
+    "legal_graph_edges": 10028,
+    "verification_status": "desk_draft_not_verified_on_site",
+    "official_data": "Comune di Cesena / Unione dei Comuni Valle del Savio open data (CC BY 4.0): 'Piste Ciclabili' (2019 layer) and 'Zone Traffico Limitato'"
+  },
+  "routes": [
+    {
+      "route_id": "CES_A",
+      "name": "Savio loop (recommended draft)",
+      "recommended": true,
+      "length_m": 4250.3,
+      "n_segments": 32,
+      "infrastructure_composition_m": {
+        "road_shared_with_traffic": 2102.2,
+        "shared_pedestrian_cycle_path": 1547.0,
+        "protected_cycle_path": 384.0,
+        "roundabout": 177.0,
+        "crossing": 40.1
+      },
+      "osm_class_composition_m": {
+        "road_shared_with_traffic": 2053.8,
+        "footway_bicycle_allowed": 935.9,
+        "shared_pedestrian_cycle_path": 611.0,
+        "protected_cycle_path": 384.0,
+        "road_30": 217.9,
+        "pedestrian_crossing": 32.0,
+        "cycle_crossing": 8.1,
+        "service_road": 7.6
+      },
+      "surface_composition_m": {
+        "asphalt": 1678.9,
+        "unknown": 1382.6,
+        "paving_stones": 642.9,
+        "wood": 306.1,
+        "concrete": 205.0,
+        "paved": 34.8
+      },
+      "points": {
+        "intersection": 12,
+        "crossing_node": 16,
+        "traffic_signals": 5,
+        "roundabout_entry": 3
+      },
+      "official_cycle_overlap_m": 2774.5,
+      "official_zones_m": {
+        "B": 609.3
+      },
+      "major_roads_crossed": [
+        "Ponte del Risorgimento;Via Zuccherificio",
+        "Via Zuccherificio;Viale Europa"
+      ],
+      "duration_estimate": {
+        "riding_time_min_low": 15.9,
+        "riding_time_min_high": 23.8,
+        "assumed_speed_range_kmh": [
+          12.0,
+          16.0
+        ],
+        "n_traffic_signal_nodes": 5
+      },
+      "waypoint_snapping": [
+        {
+          "label": "Cycle path along Via Machiavelli (north)",
+          "snap": "cycle_edge",
+          "snap_distance_m": 9.4,
+          "n_nodes": 17
+        },
+        {
+          "label": "Cycle path along Via Machiavelli (south)",
+          "snap": "cycle_edge",
+          "snap_distance_m": 16.3,
+          "n_nodes": 15
+        },
+        {
+          "label": "Rotonda dei Mulini",
+          "snap": "node",
+          "snap_distance_m": 10.0,
+          "n_nodes": 24
+        },
+        {
+          "label": "Piazzetta Porta Trova",
+          "snap": "node",
+          "snap_distance_m": 0.1,
+          "n_nodes": 37
+        },
+        {
+          "label": "Via Mura Federico Comandini (south end)",
+          "snap": "node",
+          "snap_distance_m": 0.3,
+          "n_nodes": 10
+        },
+        {
+          "label": "Via Mura Porta Fiume",
+          "snap": "node",
+          "snap_distance_m": 20.6,
+          "n_nodes": 11
+        },
+        {
+          "label": "Via Cesare Battisti",
+          "snap": "edge",
+          "snap_distance_m": 0.3,
+          "n_nodes": 11
+        },
+        {
+          "label": "Ponte del Risorgimento cycle path",
+          "snap": "cycle_edge",
+          "snap_distance_m": 5.4,
+          "n_nodes": 5
+        },
+        {
+          "label": "Cycle path along Viale Matteotti",
+          "snap": "cycle_edge",
+          "snap_distance_m": 14.8,
+          "n_nodes": 14
+        },
+        {
+          "label": "Shared path along Viale della Resistenza",
+          "snap": "edge",
+          "snap_distance_m": 6.9,
+          "n_nodes": 24
+        },
+        {
+          "label": "Ponte Europa Unita",
+          "snap": "cycle_edge",
+          "snap_distance_m": 0.9,
+          "n_nodes": 14
+        },
+        {
+          "label": "Cycle path along Via Calvino",
+          "snap": "cycle_edge",
+          "snap_distance_m": 18.7,
+          "n_nodes": 19
+        },
+        {
+          "label": "Via Salvatore Quasimodo",
+          "snap": "edge",
+          "snap_distance_m": 0.2,
+          "n_nodes": 6
+        },
+        {
+          "label": "End: campus",
+          "snap": "node",
+          "snap_distance_m": 29.3,
+          "n_nodes": 16
+        }
+      ],
+      "elevation": {
+        "source": "OpenTopoData eudem25m (EU-DEM v1.1, 25 m)",
+        "n_samples": 65,
+        "min_m": 24.974090576171875,
+        "max_m": 41.539405822753906,
+        "total_ascent_m": 30.74734115600586,
+        "max_abs_grade_percent_over_samples": 8.11813618553394,
+        "note": "25 m DEM: bridges and short ramps are not resolved; check on site."
+      },
+      "brouter_crosscheck": {
+        "engine": "BRouter (brouter.de)",
+        "profile": "trekking",
+        "track_length_m": 3963.0,
+        "note": "independent bicycle router through the same waypoints; it does not apply this project's e-scooter rules, so only the order of magnitude is comparable"
+      }
+    },
+    {
+      "route_id": "CES_B",
+      "name": "East loop (alternative draft, no river crossing)",
+      "recommended": false,
+      "length_m": 3656.2,
+      "n_segments": 27,
+      "infrastructure_composition_m": {
+        "road_shared_with_traffic": 2291.0,
+        "shared_pedestrian_cycle_path": 957.4,
+        "roundabout": 215.5,
+        "protected_cycle_path": 151.5,
+        "crossing": 40.8
+      },
+      "osm_class_composition_m": {
+        "road_shared_with_traffic": 2328.9,
+        "footway_bicycle_allowed": 812.0,
+        "road_30": 170.0,
+        "protected_cycle_path": 151.5,
+        "shared_pedestrian_cycle_path": 145.5,
+        "pedestrian_crossing": 24.7,
+        "cycle_crossing": 16.0,
+        "service_road": 7.6
+      },
+      "surface_composition_m": {
+        "unknown": 1703.4,
+        "asphalt": 1310.6,
+        "paving_stones": 596.3,
+        "paved": 42.8,
+        "concrete": 3.1
+      },
+      "points": {
+        "intersection": 13,
+        "crossing_node": 13,
+        "traffic_signals": 5,
+        "roundabout_entry": 2
+      },
+      "official_cycle_overlap_m": 2095.2,
+      "official_zones_m": {
+        "B": 609.3
+      },
+      "major_roads_crossed": [
+        "Via Zuccherificio;Viale Europa"
+      ],
+      "duration_estimate": {
+        "riding_time_min_low": 13.7,
+        "riding_time_min_high": 20.8,
+        "assumed_speed_range_kmh": [
+          12.0,
+          16.0
+        ],
+        "n_traffic_signal_nodes": 5
+      },
+      "waypoint_snapping": [
+        {
+          "label": "Cycle path along Via Machiavelli (north)",
+          "snap": "cycle_edge",
+          "snap_distance_m": 9.4,
+          "n_nodes": 17
+        },
+        {
+          "label": "Cycle path along Via Machiavelli (south)",
+          "snap": "cycle_edge",
+          "snap_distance_m": 16.3,
+          "n_nodes": 15
+        },
+        {
+          "label": "Rotonda dei Mulini",
+          "snap": "node",
+          "snap_distance_m": 10.0,
+          "n_nodes": 24
+        },
+        {
+          "label": "Piazzetta Porta Trova",
+          "snap": "node",
+          "snap_distance_m": 0.1,
+          "n_nodes": 37
+        },
+        {
+          "label": "Via Mura Federico Comandini (south end)",
+          "snap": "node",
+          "snap_distance_m": 0.3,
+          "n_nodes": 10
+        },
+        {
+          "label": "Via Mura Porta Fiume",
+          "snap": "node",
+          "snap_distance_m": 20.6,
+          "n_nodes": 11
+        },
+        {
+          "label": "Via Cesare Battisti",
+          "snap": "edge",
+          "snap_distance_m": 0.3,
+          "n_nodes": 11
+        },
+        {
+          "label": "Piazzale del Risorgimento",
+          "snap": "node",
+          "snap_distance_m": 6.3,
+          "n_nodes": 4
+        },
+        {
+          "label": "Via Carlo Pisacane",
+          "snap": "edge",
+          "snap_distance_m": 11.0,
+          "n_nodes": 7
+        },
+        {
+          "label": "Rotonda dei Mulini",
+          "snap": "node",
+          "snap_distance_m": 10.0,
+          "n_nodes": 13
+        },
+        {
+          "label": "Cycle path along Via Machiavelli (northbound)",
+          "snap": "cycle_edge",
+          "snap_distance_m": 16.3,
+          "n_nodes": 15
+        },
+        {
+          "label": "Cycle path along Via Calvino",
+          "snap": "cycle_edge",
+          "snap_distance_m": 18.7,
+          "n_nodes": 15
+        },
+        {
+          "label": "Via Salvatore Quasimodo",
+          "snap": "edge",
+          "snap_distance_m": 0.2,
+          "n_nodes": 6
+        },
+        {
+          "label": "End: campus",
+          "snap": "node",
+          "snap_distance_m": 29.3,
+          "n_nodes": 16
+        }
+      ],
+      "elevation": {
+        "source": "OpenTopoData eudem25m (EU-DEM v1.1, 25 m)",
+        "n_samples": 61,
+        "min_m": 24.974090576171875,
+        "max_m": 41.539405822753906,
+        "total_ascent_m": 26.70449447631836,
+        "max_abs_grade_percent_over_samples": 6.073798926366311,
+        "note": "25 m DEM: bridges and short ramps are not resolved; check on site."
+      },
+      "brouter_crosscheck": {
+        "engine": "BRouter (brouter.de)",
+        "profile": "trekking",
+        "track_length_m": 3626.0,
+        "note": "independent bicycle router through the same waypoints; it does not apply this project's e-scooter rules, so only the order of magnitude is comparable"
+      }
+    }
+  ]
+}

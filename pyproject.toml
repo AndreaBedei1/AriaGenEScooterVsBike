@@ -54,6 +54,12 @@ dev = [
   "pytest>=8.0",
   "ruff>=0.6",
 ]
+# ROUTE: rebuild the candidate routes and the interactive map from OpenStreetMap
+# (tools/route/build_route.py). Needs network access to the Overpass API.
+route = [
+  "osmnx>=2.0",
+  "requests>=2.31",
+]
 # PRESENTATION: regenerate docs/presentation/AriaGenEScooter_overview.pptx.
 presentation = [
   "python-pptx>=1.0",

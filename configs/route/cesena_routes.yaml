@@ -1,0 +1,119 @@
+# =============================================================================
+# Candidate experimental routes in Cesena (input of tools/route/build_route.py)
+# =============================================================================
+# STATUS: DESK DRAFT, NOT VERIFIED ON SITE. The geometry is computed from
+# OpenStreetMap data with the rules below; OSM tags can be incomplete or out of
+# date and do not prove the legal regime of a facility (signs, ordinances).
+# Every segment must be checked on site (docs/route/route_validation_checklist.md)
+# before any acquisition.
+#
+# Waypoints force the route through specific places. `snap` decides how a
+# waypoint is attached to the network:
+#   node        nearest routable node
+#   cycle_edge  nearest edge of a cycle facility (the route then traverses it)
+#   edge        nearest routable edge of any class (the route then traverses it)
+# Between waypoints the cheapest LEGAL path is computed (cost = length x class
+# weight x surface penalty); edges already used get a re-use penalty so that
+# the loop does not double back unless unavoidable.
+# =============================================================================
+route_config_version: 1
+
+area:
+  # west, south, east, north (WGS84) of the OSM download
+  bbox: [12.218, 44.126, 12.258, 44.158]
+  start_label: "Campus universitario di Cesena (ex Zuccherificio), Via dell'Universita 50"
+  start: {lat: 44.14775, lon: 12.23590}
+
+rules:
+  # OSM highway values treated as major traffic axes: never ridden along
+  # (crossing them at junctions is allowed and reported).
+  major_highways: [motorway, motorway_link, trunk, trunk_link, primary, primary_link, secondary, secondary_link]
+  # Roads with a posted limit above this value are excluded (Italian rules for
+  # e-scooters restrict them to urban roads with limits <= 50 km/h; see
+  # docs/route/route_description.md for the legal notes).
+  max_speed_limit_kmh: 50
+  # Surfaces unsuitable for the small wheels of an e-scooter: excluded.
+  excluded_surfaces: [gravel, fine_gravel, dirt, grass, unpaved, compacted, ground, earth, mud, sand,
+                      pebblestone, sett, cobblestone, unhewn_cobblestone, woodchips]
+  # Surfaces allowed but flagged for on-site checks (vibration, wet grip).
+  caution_surfaces: [wood, paving_stones, concrete:plates, metal]
+  # Contraflow riding (oneway:bicycle=no) is NOT used: both vehicles must ride
+  # every segment in the same direction and e-scooter contraflow rules are not
+  # assumed.
+  allow_contraflow: false
+  # Pedestrian areas (highway=pedestrian) are excluded by default: whether an
+  # e-scooter may ride there depends on national rules and local signs.
+  allow_pedestrian_areas: false
+  # Relative cost per metre of each OSM-derived class (lower = preferred).
+  class_weights:
+    protected_cycle_path: 1.0
+    cycle_crossing: 1.0
+    shared_pedestrian_cycle_path: 1.15
+    footway_bicycle_allowed: 1.1
+    painted_cycle_lane: 1.2
+    road_30: 1.25
+    living_street: 1.4
+    road_shared_with_traffic: 1.5
+    service_road: 2.5
+    pedestrian_crossing: 3.0
+  tertiary_penalty: 1.15
+  caution_surface_penalty: 1.1
+  wood_surface_penalty: 1.3
+  unknown_surface_penalty_on_paths: 1.15
+  reuse_penalty: 4.0
+  # Typical riding speeds used ONLY to estimate durations (to be replaced by
+  # pilot measurements). Bicycle: urban cycle-path speeds of 12-16 km/h are
+  # typical (e.g. Cameli et al. 2025); e-scooters are limited to 20 km/h.
+  duration_speed_range_kmh: [12.0, 16.0]
+  # Extra time per signalised junction on the route (s), lower/upper bound.
+  signal_delay_range_s: [0.0, 30.0]
+
+routes:
+  - route_id: CES_A
+    name: "Savio loop (recommended draft)"
+    recommended: true
+    description: >-
+      Clockwise loop: Machiavelli cycle path -> Rotonda dei Mulini -> Via Mulini ->
+      north-east edge of the historic centre (Via Mura F. Comandini, Via Mura Porta Fiume) ->
+      Via Cesare Battisti -> Ponte del Risorgimento cycle path -> Viale della Resistenza
+      shared path -> Ponte Europa Unita -> Via Calvino / Via Quasimodo -> campus.
+    waypoints:
+      - {lat: 44.14775, lon: 12.23590, snap: node, label: "Start: campus, Via dell'Universita"}
+      - {lat: 44.14600, lon: 12.23500, snap: cycle_edge, label: "Cycle path along Via Machiavelli (north)"}
+      - {lat: 44.14300, lon: 12.23620, snap: cycle_edge, label: "Cycle path along Via Machiavelli (south)"}
+      - {lat: 44.14200, lon: 12.23810, snap: node, label: "Rotonda dei Mulini"}
+      - {lat: 44.14156, lon: 12.24221, snap: node, label: "Piazzetta Porta Trova"}
+      - {lat: 44.13956, lon: 12.24198, snap: node, label: "Via Mura Federico Comandini (south end)"}
+      - {lat: 44.13800, lon: 12.24000, snap: node, label: "Via Mura Porta Fiume"}
+      - {lat: 44.13927, lon: 12.23698, snap: edge, label: "Via Cesare Battisti"}
+      - {lat: 44.13965, lon: 12.23520, snap: cycle_edge, label: "Ponte del Risorgimento cycle path"}
+      - {lat: 44.13990, lon: 12.23300, snap: cycle_edge, label: "Cycle path along Viale Matteotti"}
+      - {lat: 44.14200, lon: 12.23220, snap: edge, label: "Shared path along Viale della Resistenza"}
+      - {lat: 44.14340, lon: 12.23400, snap: cycle_edge, label: "Ponte Europa Unita"}
+      - {lat: 44.14410, lon: 12.23720, snap: cycle_edge, label: "Cycle path along Via Calvino"}
+      - {lat: 44.14519, lon: 12.23706, snap: edge, label: "Via Salvatore Quasimodo"}
+      - {lat: 44.14775, lon: 12.23590, snap: node, label: "End: campus"}
+  - route_id: CES_B
+    name: "East loop (alternative draft, no river crossing)"
+    recommended: false
+    description: >-
+      Clockwise loop that stays east of the Savio: Machiavelli cycle path -> Rotonda dei Mulini ->
+      Via Mulini -> north-east edge of the historic centre -> Via Cesare Battisti -> Piazzale del
+      Risorgimento -> Via Pisacane -> Rotonda dei Mulini -> Machiavelli cycle path (northbound) ->
+      Via Calvino / Via Quasimodo -> campus.
+    waypoints:
+      - {lat: 44.14775, lon: 12.23590, snap: node, label: "Start: campus, Via dell'Universita"}
+      - {lat: 44.14600, lon: 12.23500, snap: cycle_edge, label: "Cycle path along Via Machiavelli (north)"}
+      - {lat: 44.14300, lon: 12.23620, snap: cycle_edge, label: "Cycle path along Via Machiavelli (south)"}
+      - {lat: 44.14200, lon: 12.23810, snap: node, label: "Rotonda dei Mulini"}
+      - {lat: 44.14156, lon: 12.24221, snap: node, label: "Piazzetta Porta Trova"}
+      - {lat: 44.13956, lon: 12.24198, snap: node, label: "Via Mura Federico Comandini (south end)"}
+      - {lat: 44.13800, lon: 12.24000, snap: node, label: "Via Mura Porta Fiume"}
+      - {lat: 44.13927, lon: 12.23698, snap: edge, label: "Via Cesare Battisti"}
+      - {lat: 44.13970, lon: 12.23620, snap: node, label: "Piazzale del Risorgimento"}
+      - {lat: 44.14100, lon: 12.23720, snap: edge, label: "Via Carlo Pisacane"}
+      - {lat: 44.14200, lon: 12.23810, snap: node, label: "Rotonda dei Mulini"}
+      - {lat: 44.14300, lon: 12.23620, snap: cycle_edge, label: "Cycle path along Via Machiavelli (northbound)"}
+      - {lat: 44.14410, lon: 12.23720, snap: cycle_edge, label: "Cycle path along Via Calvino"}
+      - {lat: 44.14519, lon: 12.23706, snap: edge, label: "Via Salvatore Quasimodo"}
+      - {lat: 44.14775, lon: 12.23590, snap: node, label: "End: campus"}

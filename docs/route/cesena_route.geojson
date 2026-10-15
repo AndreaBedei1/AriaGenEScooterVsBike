@@ -1,0 +1,6317 @@
+{
+ "type": "FeatureCollection",
+ "name": "cesena_route",
+ "metadata": {
+  "generated_utc": "2026-10-15T19:16:42+00:00",
+  "generator": "tools/route/build_route.py",
+  "config": "configs/route/cesena_routes.yaml",
+  "osmnx_version": "2.1.1",
+  "osm_source": "OpenStreetMap via Overpass API (osmnx cache in .cache/osmnx)",
+  "attribution": "Map data (c) OpenStreetMap contributors, ODbL 1.0",
+  "bbox_wsen": [
+   12.218,
+   44.126,
+   12.258,
+   44.158
+  ],
+  "network_nodes": 8238,
+  "network_edges": 16606,
+  "legal_graph_nodes": 5152,
+  "legal_graph_edges": 10028,
+  "verification_status": "desk_draft_not_verified_on_site",
+  "official_data": "Comune di Cesena / Unione dei Comuni Valle del Savio open data (CC BY 4.0): 'Piste Ciclabili' (2019 layer) and 'Zone Traffico Limitato'"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2362059,
+      44.1476039
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362619,
+      44.1476793
+     ],
+     [
+      12.2353255,
+      44.1474176
+     ],
+     [
+      12.2353013,
+      44.1474172
+     ],
+     [
+      12.2351914,
+      44.1474155
+     ],
+     [
+      12.2351308,
+      44.1474335
+     ],
+     [
+      12.2350719,
+      44.1474511
+     ],
+     [
+      12.2349641,
+      44.1475117
+     ],
+     [
+      12.2348854,
+      44.1475849
+     ],
+     [
+      12.2348679,
+      44.1476707
+     ],
+     [
+      12.2347414,
+      44.1476643
+     ],
+     [
+      12.2346248,
+      44.147658
+     ],
+     [
+      12.2347109,
+      44.1469058
+     ],
+     [
+      12.2347133,
+      44.1468845
+     ],
+     [
+      12.2347869,
+      44.1464064
+     ],
+     [
+      12.2350009,
+      44.1454755
+     ],
+     [
+      12.2351497,
+      44.1449851
+     ],
+     [
+      12.2355438,
+      44.1438481
+     ],
+     [
+      12.2355457,
+      44.143799
+     ],
+     [
+      12.2354741,
+      44.1437413
+     ],
+     [
+      12.2354371,
+      44.1437325
+     ],
+     [
+      12.235466,
+      44.1436703
+     ],
+     [
+      12.2354947,
+      44.1436071
+     ],
+     [
+      12.2355214,
+      44.1436135
+     ],
+     [
+      12.2356119,
+      44.1436321
+     ],
+     [
+      12.2356486,
+      44.1436228
+     ],
+     [
+      12.2356805,
+      44.1435855
+     ],
+     [
+      12.2357991,
+      44.1432505
+     ],
+     [
+      12.2358814,
+      44.143098
+     ],
+     [
+      12.2361385,
+      44.1427868
+     ],
+     [
+      12.2362828,
+      44.142647
+     ],
+     [
+      12.236593,
+      44.142432
+     ],
+     [
+      12.2366741,
+      44.1424905
+     ],
+     [
+      12.2367963,
+      44.1424047
+     ],
+     [
+      12.2370618,
+      44.1422822
+     ],
+     [
+      12.2375266,
+      44.1421287
+     ],
+     [
+      12.2376877,
+      44.1420882
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2382441,
+      44.1420122
+     ],
+     [
+      12.2382155,
+      44.142045
+     ],
+     [
+      12.2381759,
+      44.1420711
+     ],
+     [
+      12.2381247,
+      44.1420899
+     ],
+     [
+      12.2380681,
+      44.1420976
+     ],
+     [
+      12.2380108,
+      44.1420936
+     ],
+     [
+      12.2379574,
+      44.1420783
+     ],
+     [
+      12.237912,
+      44.1420529
+     ],
+     [
+      12.2378831,
+      44.1420256
+     ],
+     [
+      12.2378639,
+      44.1419942
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2383335,
+      44.1420491
+     ],
+     [
+      12.2384368,
+      44.1421296
+     ],
+     [
+      12.238555,
+      44.1421563
+     ],
+     [
+      12.23873,
+      44.1421894
+     ],
+     [
+      12.2389054,
+      44.1422109
+     ],
+     [
+      12.2390442,
+      44.142213
+     ],
+     [
+      12.2391916,
+      44.1421976
+     ],
+     [
+      12.2394971,
+      44.1421537
+     ],
+     [
+      12.2402988,
+      44.1418996
+     ],
+     [
+      12.240603,
+      44.1418169
+     ],
+     [
+      12.240872,
+      44.1417582
+     ],
+     [
+      12.2415031,
+      44.1417183
+     ],
+     [
+      12.2419706,
+      44.1417263
+     ],
+     [
+      12.2420883,
+      44.1417278
+     ],
+     [
+      12.2421843,
+      44.1416734
+     ],
+     [
+      12.2422114,
+      44.1415601
+     ],
+     [
+      12.2421091,
+      44.1414814
+     ],
+     [
+      12.2420405,
+      44.1413893
+     ],
+     [
+      12.2419468,
+      44.1411501
+     ],
+     [
+      12.2419189,
+      44.1410058
+     ],
+     [
+      12.2419292,
+      44.1408223
+     ],
+     [
+      12.2419549,
+      44.1406012
+     ],
+     [
+      12.2419847,
+      44.1403229
+     ],
+     [
+      12.2420105,
+      44.1400487
+     ],
+     [
+      12.2419796,
+      44.1395626
+     ],
+     [
+      12.2419884,
+      44.1394524
+     ],
+     [
+      12.2420265,
+      44.1392537
+     ],
+     [
+      12.2419057,
+      44.1390102
+     ],
+     [
+      12.2416801,
+      44.1387359
+     ],
+     [
+      12.2414797,
+      44.1385606
+     ],
+     [
+      12.2412605,
+      44.1384244
+     ],
+     [
+      12.2410989,
+      44.1382816
+     ],
+     [
+      12.2408228,
+      44.1381282
+     ],
+     [
+      12.2405123,
+      44.1380173
+     ],
+     [
+      12.2397461,
+      44.1380329
+     ],
+     [
+      12.239983,
+      44.1386796
+     ],
+     [
+      12.2391765,
+      44.1388487
+     ],
+     [
+      12.2390263,
+      44.1388802
+     ],
+     [
+      12.238749,
+      44.1389367
+     ],
+     [
+      12.238424,
+      44.1390029
+     ],
+     [
+      12.2381234,
+      44.1390641
+     ],
+     [
+      12.2378652,
+      44.139115
+     ],
+     [
+      12.2375895,
+      44.1391623
+     ],
+     [
+      12.2371946,
+      44.1392301
+     ],
+     [
+      12.2363648,
+      44.1393939
+     ],
+     [
+      12.2360929,
+      44.1394496
+     ],
+     [
+      12.2357879,
+      44.139512
+     ],
+     [
+      12.2357677,
+      44.1395855
+     ],
+     [
+      12.2346277,
+      44.1398158
+     ],
+     [
+      12.2357677,
+      44.1395855
+     ],
+     [
+      12.2357879,
+      44.139512
+     ],
+     [
+      12.2357719,
+      44.1394628
+     ],
+     [
+      12.2356797,
+      44.1394809
+     ],
+     [
+      12.2345575,
+      44.1397014
+     ],
+     [
+      12.234431,
+      44.1397374
+     ],
+     [
+      12.2340203,
+      44.1397723
+     ],
+     [
+      12.2338218,
+      44.1398208
+     ],
+     [
+      12.2337542,
+      44.139883
+     ],
+     [
+      12.2336672,
+      44.1398993
+     ],
+     [
+      12.2334503,
+      44.1399458
+     ],
+     [
+      12.2331998,
+      44.1399995
+     ],
+     [
+      12.2330189,
+      44.1400335
+     ],
+     [
+      12.2328488,
+      44.140037
+     ],
+     [
+      12.232728,
+      44.1400243
+     ],
+     [
+      12.2326241,
+      44.1400086
+     ],
+     [
+      12.2324836,
+      44.1399719
+     ],
+     [
+      12.2323162,
+      44.1398945
+     ],
+     [
+      12.2322702,
+      44.1399065
+     ],
+     [
+      12.2322141,
+      44.1399561
+     ],
+     [
+      12.2322542,
+      44.1400442
+     ],
+     [
+      12.2322424,
+      44.1401035
+     ],
+     [
+      12.2322004,
+      44.1401522
+     ],
+     [
+      12.2321509,
+      44.1401766
+     ],
+     [
+      12.2321106,
+      44.1401865
+     ],
+     [
+      12.2321453,
+      44.1402684
+     ],
+     [
+      12.2321581,
+      44.1403042
+     ],
+     [
+      12.2322554,
+      44.1402858
+     ],
+     [
+      12.2323152,
+      44.1402834
+     ],
+     [
+      12.2323886,
+      44.140314
+     ],
+     [
+      12.2324194,
+      44.1403483
+     ],
+     [
+      12.2324194,
+      44.14039
+     ],
+     [
+      12.2321876,
+      44.1414072
+     ],
+     [
+      12.2322537,
+      44.1414186
+     ],
+     [
+      12.2322061,
+      44.1416124
+     ],
+     [
+      12.2319505,
+      44.1426619
+     ],
+     [
+      12.2319764,
+      44.1427499
+     ],
+     [
+      12.2319898,
+      44.142789
+     ],
+     [
+      12.2320193,
+      44.1428027
+     ],
+     [
+      12.2320415,
+      44.1428222
+     ],
+     [
+      12.2320544,
+      44.1428456
+     ],
+     [
+      12.2320567,
+      44.1428707
+     ],
+     [
+      12.2321423,
+      44.1429069
+     ],
+     [
+      12.2321325,
+      44.1429275
+     ],
+     [
+      12.2321153,
+      44.142976
+     ],
+     [
+      12.2324771,
+      44.1430406
+     ],
+     [
+      12.232674,
+      44.1430819
+     ],
+     [
+      12.2330348,
+      44.1431632
+     ],
+     [
+      12.2354371,
+      44.1437325
+     ],
+     [
+      12.235466,
+      44.1436703
+     ],
+     [
+      12.2355935,
+      44.1436979
+     ],
+     [
+      12.2356344,
+      44.1436819
+     ],
+     [
+      12.2356594,
+      44.1436599
+     ],
+     [
+      12.2356923,
+      44.1436443
+     ],
+     [
+      12.2357302,
+      44.1436364
+     ],
+     [
+      12.2357767,
+      44.1436035
+     ],
+     [
+      12.2358739,
+      44.1436246
+     ],
+     [
+      12.2358606,
+      44.1436648
+     ],
+     [
+      12.2359005,
+      44.1436896
+     ],
+     [
+      12.2359323,
+      44.1437052
+     ],
+     [
+      12.2361142,
+      44.1437334
+     ],
+     [
+      12.2361283,
+      44.1437041
+     ],
+     [
+      12.2362842,
+      44.1437369
+     ],
+     [
+      12.2365675,
+      44.1437935
+     ],
+     [
+      12.2370884,
+      44.1439018
+     ],
+     [
+      12.2372157,
+      44.1439288
+     ],
+     [
+      12.2378387,
+      44.1440578
+     ],
+     [
+      12.2378065,
+      44.1441452
+     ],
+     [
+      12.237904,
+      44.1441638
+     ],
+     [
+      12.2379615,
+      44.1441983
+     ],
+     [
+      12.2378685,
+      44.1443008
+     ],
+     [
+      12.2368891,
+      44.1453812
+     ],
+     [
+      12.2368385,
+      44.1454363
+     ],
+     [
+      12.2364279,
+      44.1458834
+     ],
+     [
+      12.2363859,
+      44.1459291
+     ],
+     [
+      12.2363158,
+      44.146006
+     ],
+     [
+      12.2361569,
+      44.1461805
+     ],
+     [
+      12.2358543,
+      44.1465128
+     ],
+     [
+      12.2359489,
+      44.1465583
+     ],
+     [
+      12.2367515,
+      44.1469442
+     ],
+     [
+      12.2368409,
+      44.1469872
+     ],
+     [
+      12.2364024,
+      44.1474702
+     ],
+     [
+      12.2363377,
+      44.1475399
+     ],
+     [
+      12.2363104,
+      44.1475717
+     ],
+     [
+      12.236284,
+      44.1475929
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362059,
+      44.1476039
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "route",
+    "route_id": "CES_A",
+    "name": "Savio loop (recommended draft)",
+    "recommended": true,
+    "length_m": 4250.3,
+    "direction": "as drawn (first to last coordinate)",
+    "verification_status": "desk_draft_not_verified_on_site"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2362059,
+      44.1476039
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362619,
+      44.1476793
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S001",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "service_road",
+    "street_name": "Via dell'Università",
+    "from_m": 0.0,
+    "to_m": 11.1,
+    "length_m": 11.1,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "719463166;689431811"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2362619,
+      44.1476793
+     ],
+     [
+      12.2353255,
+      44.1474176
+     ],
+     [
+      12.2353013,
+      44.1474172
+     ],
+     [
+      12.2351914,
+      44.1474155
+     ],
+     [
+      12.2351308,
+      44.1474335
+     ],
+     [
+      12.2350719,
+      44.1474511
+     ],
+     [
+      12.2349641,
+      44.1475117
+     ],
+     [
+      12.2348854,
+      44.1475849
+     ],
+     [
+      12.2348679,
+      44.1476707
+     ],
+     [
+      12.2347414,
+      44.1476643
+     ],
+     [
+      12.2346248,
+      44.147658
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S002",
+    "infrastructure_class": "protected_cycle_path",
+    "osm_class": "protected_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 11.1,
+    "to_m": 162.6,
+    "length_m": 151.5,
+    "surface": "paving_stones",
+    "maxspeed": "not_tagged",
+    "flags": "surface_paving_stones_check_grip_and_vibration",
+    "official_cycle_overlap": 0.9655172413793104,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "689431810"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2346248,
+      44.147658
+     ],
+     [
+      12.2347109,
+      44.1469058
+     ],
+     [
+      12.2347133,
+      44.1468845
+     ],
+     [
+      12.2347869,
+      44.1464064
+     ],
+     [
+      12.2350009,
+      44.1454755
+     ],
+     [
+      12.2351497,
+      44.1449851
+     ],
+     [
+      12.2355438,
+      44.1438481
+     ],
+     [
+      12.2355457,
+      44.143799
+     ],
+     [
+      12.2354741,
+      44.1437413
+     ],
+     [
+      12.2354371,
+      44.1437325
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S003",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 162.6,
+    "to_m": 610.6,
+    "length_m": 447.9,
+    "surface": "paving_stones",
+    "maxspeed": "not_tagged",
+    "flags": "surface_paving_stones_check_grip_and_vibration;osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 0.9886363636363636,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "23775245;25626899;137735231"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2354371,
+      44.1437325
+     ],
+     [
+      12.235466,
+      44.1436703
+     ],
+     [
+      12.2354947,
+      44.1436071
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S004",
+    "infrastructure_class": "crossing",
+    "osm_class": "pedestrian_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 610.6,
+    "to_m": 625.3,
+    "length_m": 14.7,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "pedestrian_crossing_without_cycle_crossing_in_osm_verify_marking_or_dismount",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "1505664755"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2354947,
+      44.1436071
+     ],
+     [
+      12.2355214,
+      44.1436135
+     ],
+     [
+      12.2356119,
+      44.1436321
+     ],
+     [
+      12.2356486,
+      44.1436228
+     ],
+     [
+      12.2356805,
+      44.1435855
+     ],
+     [
+      12.2357991,
+      44.1432505
+     ],
+     [
+      12.2358814,
+      44.143098
+     ],
+     [
+      12.2361385,
+      44.1427868
+     ],
+     [
+      12.2362828,
+      44.142647
+     ],
+     [
+      12.236593,
+      44.142432
+     ],
+     [
+      12.2366741,
+      44.1424905
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S005",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 625.3,
+    "to_m": 802.8,
+    "length_m": 177.5,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "137735218;137735225;137735240"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2366741,
+      44.1424905
+     ],
+     [
+      12.2367963,
+      44.1424047
+     ],
+     [
+      12.2370618,
+      44.1422822
+     ],
+     [
+      12.2375266,
+      44.1421287
+     ],
+     [
+      12.2376877,
+      44.1420882
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S006",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Niccolò Machiavelli",
+    "from_m": 802.8,
+    "to_m": 915.6,
+    "length_m": 112.8,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;oneway_same_direction_for_both_vehicles;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "70792317;70792258"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2382441,
+      44.1420122
+     ],
+     [
+      12.2382155,
+      44.142045
+     ],
+     [
+      12.2381759,
+      44.1420711
+     ],
+     [
+      12.2381247,
+      44.1420899
+     ],
+     [
+      12.2380681,
+      44.1420976
+     ],
+     [
+      12.2380108,
+      44.1420936
+     ],
+     [
+      12.2379574,
+      44.1420783
+     ],
+     [
+      12.237912,
+      44.1420529
+     ],
+     [
+      12.2378831,
+      44.1420256
+     ],
+     [
+      12.2378639,
+      44.1419942
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S007",
+    "infrastructure_class": "roundabout",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Rotonda dei Mulini",
+    "from_m": 915.6,
+    "to_m": 1071.9,
+    "length_m": 156.4,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.8611111111111112,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "22773339"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2383335,
+      44.1420491
+     ],
+     [
+      12.2384368,
+      44.1421296
+     ],
+     [
+      12.238555,
+      44.1421563
+     ],
+     [
+      12.23873,
+      44.1421894
+     ],
+     [
+      12.2389054,
+      44.1422109
+     ],
+     [
+      12.2390442,
+      44.142213
+     ],
+     [
+      12.2391916,
+      44.1421976
+     ],
+     [
+      12.2394971,
+      44.1421537
+     ],
+     [
+      12.2402988,
+      44.1418996
+     ],
+     [
+      12.240603,
+      44.1418169
+     ],
+     [
+      12.240872,
+      44.1417582
+     ],
+     [
+      12.2415031,
+      44.1417183
+     ],
+     [
+      12.2419706,
+      44.1417263
+     ],
+     [
+      12.2420883,
+      44.1417278
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S008",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Mulini",
+    "from_m": 1071.9,
+    "to_m": 1396.1,
+    "length_m": 324.2,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.41379310344827586,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "70792305;847463933;847463936;69738403;1388751421"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2420883,
+      44.1417278
+     ],
+     [
+      12.2421843,
+      44.1416734
+     ],
+     [
+      12.2422114,
+      44.1415601
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S009",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Piazzetta Porta Trova",
+    "from_m": 1396.1,
+    "to_m": 1418.7,
+    "length_m": 22.5,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.0,
+    "official_cycle_category": "",
+    "official_zone": "B",
+    "osm_way_ids": "23047049"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2422114,
+      44.1415601
+     ],
+     [
+      12.2421091,
+      44.1414814
+     ],
+     [
+      12.2420405,
+      44.1413893
+     ],
+     [
+      12.2419468,
+      44.1411501
+     ],
+     [
+      12.2419189,
+      44.1410058
+     ],
+     [
+      12.2419292,
+      44.1408223
+     ],
+     [
+      12.2419549,
+      44.1406012
+     ],
+     [
+      12.2419847,
+      44.1403229
+     ],
+     [
+      12.2420105,
+      44.1400487
+     ],
+     [
+      12.2419796,
+      44.1395626
+     ],
+     [
+      12.2419884,
+      44.1394524
+     ],
+     [
+      12.2420265,
+      44.1392537
+     ],
+     [
+      12.2419057,
+      44.1390102
+     ],
+     [
+      12.2416801,
+      44.1387359
+     ],
+     [
+      12.2414797,
+      44.1385606
+     ],
+     [
+      12.2412605,
+      44.1384244
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S010",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Mura Federico Comandini",
+    "from_m": 1418.7,
+    "to_m": 1794.0,
+    "length_m": 375.3,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;restricted_traffic_zone_verify_ztl_rules;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.04285714285714286,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "B",
+    "osm_way_ids": "23047051"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2412605,
+      44.1384244
+     ],
+     [
+      12.2410989,
+      44.1382816
+     ],
+     [
+      12.2408228,
+      44.1381282
+     ],
+     [
+      12.2405123,
+      44.1380173
+     ],
+     [
+      12.2397461,
+      44.1380329
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S011",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Mura Porta Fiume",
+    "from_m": 1794.0,
+    "to_m": 1931.1,
+    "length_m": 137.2,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.18518518518518517,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "B",
+    "osm_way_ids": "23574994"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2397461,
+      44.1380329
+     ],
+     [
+      12.239983,
+      44.1386796
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S012",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Carlo Armellini",
+    "from_m": 1931.1,
+    "to_m": 2005.5,
+    "length_m": 74.4,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.3333333333333333,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "B",
+    "osm_way_ids": "23047056"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.239983,
+      44.1386796
+     ],
+     [
+      12.2391765,
+      44.1388487
+     ],
+     [
+      12.2390263,
+      44.1388802
+     ],
+     [
+      12.238749,
+      44.1389367
+     ],
+     [
+      12.238424,
+      44.1390029
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S013",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Cesare Battisti",
+    "from_m": 2005.5,
+    "to_m": 2135.0,
+    "length_m": 129.5,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "",
+    "osm_way_ids": "198967058;717182143"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.238424,
+      44.1390029
+     ],
+     [
+      12.2381234,
+      44.1390641
+     ],
+     [
+      12.2378652,
+      44.139115
+     ],
+     [
+      12.2375895,
+      44.1391623
+     ],
+     [
+      12.2371946,
+      44.1392301
+     ],
+     [
+      12.2363648,
+      44.1393939
+     ],
+     [
+      12.2360929,
+      44.1394496
+     ],
+     [
+      12.2357879,
+      44.139512
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S014",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_30",
+    "street_name": "Via Cesare Battisti",
+    "from_m": 2135.0,
+    "to_m": 2352.9,
+    "length_m": 217.9,
+    "surface": "asphalt",
+    "maxspeed": "30",
+    "flags": "official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.7073170731707317,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "",
+    "osm_way_ids": "23577862;716941549;847463940"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2357879,
+      44.139512
+     ],
+     [
+      12.2357677,
+      44.1395855
+     ],
+     [
+      12.2346277,
+      44.1398158
+     ],
+     [
+      12.2357677,
+      44.1395855
+     ],
+     [
+      12.2357879,
+      44.139512
+     ],
+     [
+      12.2357719,
+      44.1394628
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S015",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "shared_pedestrian_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 2352.9,
+    "to_m": 2564.2,
+    "length_m": 211.3,
+    "surface": "wood",
+    "maxspeed": "not_tagged",
+    "flags": "surface_wood_check_grip_and_vibration;shared_with_pedestrians_verify_signs;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.9,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "57046020;1119057219"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2357719,
+      44.1394628
+     ],
+     [
+      12.2356797,
+      44.1394809
+     ],
+     [
+      12.2345575,
+      44.1397014
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S016",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "shared_pedestrian_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 2564.2,
+    "to_m": 2664.6,
+    "length_m": 100.5,
+    "surface": "wood",
+    "maxspeed": "not_tagged",
+    "flags": "surface_wood_check_grip_and_vibration;shared_with_pedestrians_verify_signs",
+    "official_cycle_overlap": 0.9,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "24919881;742001393"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2345575,
+      44.1397014
+     ],
+     [
+      12.234431,
+      44.1397374
+     ],
+     [
+      12.2340203,
+      44.1397723
+     ],
+     [
+      12.2338218,
+      44.1398208
+     ],
+     [
+      12.2337542,
+      44.139883
+     ],
+     [
+      12.2336672,
+      44.1398993
+     ],
+     [
+      12.2334503,
+      44.1399458
+     ],
+     [
+      12.2331998,
+      44.1399995
+     ],
+     [
+      12.2330189,
+      44.1400335
+     ],
+     [
+      12.2328488,
+      44.140037
+     ],
+     [
+      12.232728,
+      44.1400243
+     ],
+     [
+      12.2326241,
+      44.1400086
+     ],
+     [
+      12.2324836,
+      44.1399719
+     ],
+     [
+      12.2323162,
+      44.1398945
+     ],
+     [
+      12.2322702,
+      44.1399065
+     ],
+     [
+      12.2322141,
+      44.1399561
+     ],
+     [
+      12.2322542,
+      44.1400442
+     ],
+     [
+      12.2322424,
+      44.1401035
+     ],
+     [
+      12.2322004,
+      44.1401522
+     ],
+     [
+      12.2321509,
+      44.1401766
+     ],
+     [
+      12.2321106,
+      44.1401865
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S017",
+    "infrastructure_class": "protected_cycle_path",
+    "osm_class": "protected_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 2664.6,
+    "to_m": 2897.2,
+    "length_m": 232.5,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "716919793;742001352;37559871"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2321106,
+      44.1401865
+     ],
+     [
+      12.2321453,
+      44.1402684
+     ],
+     [
+      12.2321581,
+      44.1403042
+     ],
+     [
+      12.2322554,
+      44.1402858
+     ],
+     [
+      12.2323152,
+      44.1402834
+     ],
+     [
+      12.2323886,
+      44.140314
+     ],
+     [
+      12.2324194,
+      44.1403483
+     ],
+     [
+      12.2324194,
+      44.14039
+     ],
+     [
+      12.2321876,
+      44.1414072
+     ],
+     [
+      12.2322537,
+      44.1414186
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S018",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "shared_pedestrian_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 2897.2,
+    "to_m": 3059.6,
+    "length_m": 162.4,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "shared_with_pedestrians_verify_signs;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "136881211;25627185"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2322537,
+      44.1414186
+     ],
+     [
+      12.2322061,
+      44.1416124
+     ],
+     [
+      12.2319505,
+      44.1426619
+     ],
+     [
+      12.2319764,
+      44.1427499
+     ],
+     [
+      12.2319898,
+      44.142789
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S019",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Viale Antonio Gramsci",
+    "from_m": 3059.6,
+    "to_m": 3214.4,
+    "length_m": 154.8,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;oneway_same_direction_for_both_vehicles;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.9032258064516129,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "183649254;711388109"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2319898,
+      44.142789
+     ],
+     [
+      12.2320193,
+      44.1428027
+     ],
+     [
+      12.2320415,
+      44.1428222
+     ],
+     [
+      12.2320544,
+      44.1428456
+     ],
+     [
+      12.2320567,
+      44.1428707
+     ],
+     [
+      12.2321423,
+      44.1429069
+     ],
+     [
+      12.2321325,
+      44.1429275
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S020",
+    "infrastructure_class": "roundabout",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "(unnamed)",
+    "from_m": 3214.4,
+    "to_m": 3236.0,
+    "length_m": 21.5,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;surface_unknown_in_osm;shared_with_pedestrians_verify_signs",
+    "official_cycle_overlap": 0.0,
+    "official_cycle_category": "",
+    "official_zone": "",
+    "osm_way_ids": "862981953;711388114;1343588482"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2321325,
+      44.1429275
+     ],
+     [
+      12.2321153,
+      44.142976
+     ],
+     [
+      12.2324771,
+      44.1430406
+     ],
+     [
+      12.232674,
+      44.1430819
+     ],
+     [
+      12.2330348,
+      44.1431632
+     ],
+     [
+      12.2354371,
+      44.1437325
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S021",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 3236.0,
+    "to_m": 3519.7,
+    "length_m": 283.7,
+    "surface": "concrete",
+    "maxspeed": "not_tagged",
+    "flags": "osm_footway_with_bicycle_access_verify_signs_and_escooter_legality;surface_unknown_in_osm;surface_paving_stones_check_grip_and_vibration",
+    "official_cycle_overlap": 0.5535714285714286,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "711388108;1416534354;69488578;137735231"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2354371,
+      44.1437325
+     ],
+     [
+      12.235466,
+      44.1436703
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S022",
+    "infrastructure_class": "crossing",
+    "osm_class": "pedestrian_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 3519.7,
+    "to_m": 3527.0,
+    "length_m": 7.3,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "pedestrian_crossing_without_cycle_crossing_in_osm_verify_marking_or_dismount",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "1505664755"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.235466,
+      44.1436703
+     ],
+     [
+      12.2355935,
+      44.1436979
+     ],
+     [
+      12.2356344,
+      44.1436819
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S023",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Ponte Europa Unita",
+    "from_m": 3527.0,
+    "to_m": 3541.3,
+    "length_m": 14.3,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;oneway_same_direction_for_both_vehicles;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "137735210;1265232973"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2356344,
+      44.1436819
+     ],
+     [
+      12.2356594,
+      44.1436599
+     ],
+     [
+      12.2356923,
+      44.1436443
+     ],
+     [
+      12.2357302,
+      44.1436364
+     ],
+     [
+      12.2357767,
+      44.1436035
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S024",
+    "infrastructure_class": "roundabout",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "(unnamed)",
+    "from_m": 3541.3,
+    "to_m": 3556.0,
+    "length_m": 14.7,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "1265232969;1265232974"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2357767,
+      44.1436035
+     ],
+     [
+      12.2358739,
+      44.1436246
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S025",
+    "infrastructure_class": "crossing",
+    "osm_class": "cycle_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 3556.0,
+    "to_m": 3564.1,
+    "length_m": 8.1,
+    "surface": "paved",
+    "maxspeed": "not_tagged",
+    "flags": "",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "137735224"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2358739,
+      44.1436246
+     ],
+     [
+      12.2358606,
+      44.1436648
+     ],
+     [
+      12.2359005,
+      44.1436896
+     ],
+     [
+      12.2359323,
+      44.1437052
+     ],
+     [
+      12.2361142,
+      44.1437334
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S026",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 3564.1,
+    "to_m": 3590.8,
+    "length_m": 26.7,
+    "surface": "paved",
+    "maxspeed": "not_tagged",
+    "flags": "osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "698046165"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2361142,
+      44.1437334
+     ],
+     [
+      12.2361283,
+      44.1437041
+     ],
+     [
+      12.2362842,
+      44.1437369
+     ],
+     [
+      12.2365675,
+      44.1437935
+     ],
+     [
+      12.2370884,
+      44.1439018
+     ],
+     [
+      12.2372157,
+      44.1439288
+     ],
+     [
+      12.2378387,
+      44.1440578
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S027",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "shared_pedestrian_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 3590.8,
+    "to_m": 3736.3,
+    "length_m": 145.5,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "shared_with_pedestrians_verify_signs",
+    "official_cycle_overlap": 0.5357142857142857,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "137735214"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2378387,
+      44.1440578
+     ],
+     [
+      12.2378065,
+      44.1441452
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S028",
+    "infrastructure_class": "crossing",
+    "osm_class": "pedestrian_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 3736.3,
+    "to_m": 3746.4,
+    "length_m": 10.1,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "pedestrian_crossing_without_cycle_crossing_in_osm_verify_marking_or_dismount",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "1507430717"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2378065,
+      44.1441452
+     ],
+     [
+      12.237904,
+      44.1441638
+     ],
+     [
+      12.2379615,
+      44.1441983
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S029",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Italo Calvino",
+    "from_m": 3746.4,
+    "to_m": 3760.4,
+    "length_m": 14.0,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "718496901"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2379615,
+      44.1441983
+     ],
+     [
+      12.2378685,
+      44.1443008
+     ],
+     [
+      12.2368891,
+      44.1453812
+     ],
+     [
+      12.2368385,
+      44.1454363
+     ],
+     [
+      12.2364279,
+      44.1458834
+     ],
+     [
+      12.2363859,
+      44.1459291
+     ],
+     [
+      12.2363158,
+      44.146006
+     ],
+     [
+      12.2361569,
+      44.1461805
+     ],
+     [
+      12.2358543,
+      44.1465128
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S030",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Salvatore Quasimodo",
+    "from_m": 3760.4,
+    "to_m": 4067.8,
+    "length_m": 307.4,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.10344827586206896,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "23063960;719461432"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2358543,
+      44.1465128
+     ],
+     [
+      12.2359489,
+      44.1465583
+     ],
+     [
+      12.2367515,
+      44.1469442
+     ],
+     [
+      12.2368409,
+      44.1469872
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S031",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Natalino Sapegno",
+    "from_m": 4067.8,
+    "to_m": 4162.6,
+    "length_m": 94.8,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.0,
+    "official_cycle_category": "",
+    "official_zone": "",
+    "osm_way_ids": "23775235"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2368409,
+      44.1469872
+     ],
+     [
+      12.2364024,
+      44.1474702
+     ],
+     [
+      12.2363377,
+      44.1475399
+     ],
+     [
+      12.2363104,
+      44.1475717
+     ],
+     [
+      12.236284,
+      44.1475929
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362059,
+      44.1476039
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_A",
+    "segment_id": "CES_A_S032",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Umberto Saba",
+    "from_m": 4162.6,
+    "to_m": 4250.3,
+    "length_m": 87.8,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.8333333333333334,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "70792303;719463166"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2362492,
+     44.1476119
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P001",
+    "kind": "intersection",
+    "at_m": 3.6,
+    "detail": "Via Umberto Saba / Via dell'Università",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2362619,
+     44.1476793
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P002",
+    "kind": "crossing_node",
+    "at_m": 11.1,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.235466,
+     44.1436703
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P003",
+    "kind": "crossing_node",
+    "at_m": 617.9,
+    "detail": "uncontrolled",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.235466,
+     44.1436703
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P004",
+    "kind": "crossing_node",
+    "at_m": 617.9,
+    "detail": "uncontrolled",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2366741,
+     44.1424905
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P005",
+    "kind": "crossing_node",
+    "at_m": 802.8,
+    "detail": "traffic_signals",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367963,
+     44.1424047
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P006",
+    "kind": "traffic_signals",
+    "at_m": 816.4,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367963,
+     44.1424047
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P007",
+    "kind": "intersection",
+    "at_m": 816.4,
+    "detail": "Via Niccolò Machiavelli / Via Zuccherificio / Viale Europa",
+    "major_road": "Via Zuccherificio;Viale Europa"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2378554,
+     44.1419604
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P008",
+    "kind": "roundabout_entry",
+    "at_m": 915.6,
+    "detail": "Rotonda dei Mulini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2402988,
+     44.1418996
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P009",
+    "kind": "traffic_signals",
+    "at_m": 1250.5,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2402988,
+     44.1418996
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P010",
+    "kind": "intersection",
+    "at_m": 1250.5,
+    "detail": "Via Eugenio Curiel / Via Mulini / Viale Rasi e Spinelli",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2420883,
+     44.1417278
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P011",
+    "kind": "intersection",
+    "at_m": 1396.1,
+    "detail": "Piazzetta Porta Trova / Via Mulini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2397461,
+     44.1380329
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P012",
+    "kind": "intersection",
+    "at_m": 1931.1,
+    "detail": "Via Carlo Armellini / Via Mura Porta Fiume",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.239983,
+     44.1386796
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P013",
+    "kind": "intersection",
+    "at_m": 2005.5,
+    "detail": "Via Carlo Armellini / Via Cesare Battisti / Via Martiri della Libertà",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2391765,
+     44.1388487
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P014",
+    "kind": "traffic_signals",
+    "at_m": 2072.5,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2390263,
+     44.1388802
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P015",
+    "kind": "intersection",
+    "at_m": 2085.0,
+    "detail": "Via Cesare Battisti / Via Eugenio Curiel / Via Fratelli Rosselli",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.238749,
+     44.1389367
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P016",
+    "kind": "traffic_signals",
+    "at_m": 2108.0,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2371946,
+     44.1392301
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P017",
+    "kind": "intersection",
+    "at_m": 2236.3,
+    "detail": "Via Anita Garibaldi / Via Cesare Battisti / Via Felice Orsini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2363648,
+     44.1393939
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P018",
+    "kind": "intersection",
+    "at_m": 2305.0,
+    "detail": "Piazzale del Risorgimento / Via Cesare Battisti",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2360929,
+     44.1394496
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P019",
+    "kind": "traffic_signals",
+    "at_m": 2327.6,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2357879,
+     44.139512
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P020",
+    "kind": "intersection",
+    "at_m": 2352.9,
+    "detail": "Ponte del Risorgimento / Via Cesare Battisti / Via Zuccherificio / Viale Quattro Novembre",
+    "major_road": "Ponte del Risorgimento;Via Zuccherificio"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2321453,
+     44.1402684
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P021",
+    "kind": "crossing_node",
+    "at_m": 2906.7,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2322537,
+     44.1414186
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P022",
+    "kind": "intersection",
+    "at_m": 3059.6,
+    "detail": "Via Giarabub / Via Gondar / Viale Antonio Gramsci",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2319764,
+     44.1427499
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P023",
+    "kind": "crossing_node",
+    "at_m": 3209.9,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2319898,
+     44.142789
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P024",
+    "kind": "roundabout_entry",
+    "at_m": 3214.4,
+    "detail": "(unnamed)",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2321423,
+     44.1429069
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P025",
+    "kind": "crossing_node",
+    "at_m": 3233.5,
+    "detail": "uncontrolled",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2321325,
+     44.1429275
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P026",
+    "kind": "crossing_node",
+    "at_m": 3236.0,
+    "detail": "uncontrolled",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2356344,
+     44.1436819
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P027",
+    "kind": "roundabout_entry",
+    "at_m": 3541.3,
+    "detail": "(unnamed)",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2357767,
+     44.1436035
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P028",
+    "kind": "crossing_node",
+    "at_m": 3556.0,
+    "detail": "traffic_signals",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2378065,
+     44.1441452
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P029",
+    "kind": "crossing_node",
+    "at_m": 3746.4,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2379615,
+     44.1441983
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P030",
+    "kind": "intersection",
+    "at_m": 3760.4,
+    "detail": "Via Arturo Carlo Jemolo / Via Italo Calvino / Via Salvatore Quasimodo",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2378685,
+     44.1443008
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P031",
+    "kind": "crossing_node",
+    "at_m": 3774.0,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2368385,
+     44.1454363
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P032",
+    "kind": "crossing_node",
+    "at_m": 3924.6,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2364279,
+     44.1458834
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P033",
+    "kind": "crossing_node",
+    "at_m": 3984.2,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2363158,
+     44.146006
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P034",
+    "kind": "crossing_node",
+    "at_m": 4000.5,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2359489,
+     44.1465583
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P035",
+    "kind": "crossing_node",
+    "at_m": 4076.9,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367515,
+     44.1469442
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_A",
+    "point_id": "CES_A_P036",
+    "kind": "crossing_node",
+    "at_m": 4154.0,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2362059,
+      44.1476039
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362619,
+      44.1476793
+     ],
+     [
+      12.2353255,
+      44.1474176
+     ],
+     [
+      12.2353013,
+      44.1474172
+     ],
+     [
+      12.2351914,
+      44.1474155
+     ],
+     [
+      12.2351308,
+      44.1474335
+     ],
+     [
+      12.2350719,
+      44.1474511
+     ],
+     [
+      12.2349641,
+      44.1475117
+     ],
+     [
+      12.2348854,
+      44.1475849
+     ],
+     [
+      12.2348679,
+      44.1476707
+     ],
+     [
+      12.2347414,
+      44.1476643
+     ],
+     [
+      12.2346248,
+      44.147658
+     ],
+     [
+      12.2347109,
+      44.1469058
+     ],
+     [
+      12.2347133,
+      44.1468845
+     ],
+     [
+      12.2347869,
+      44.1464064
+     ],
+     [
+      12.2350009,
+      44.1454755
+     ],
+     [
+      12.2351497,
+      44.1449851
+     ],
+     [
+      12.2355438,
+      44.1438481
+     ],
+     [
+      12.2355457,
+      44.143799
+     ],
+     [
+      12.2354741,
+      44.1437413
+     ],
+     [
+      12.2354371,
+      44.1437325
+     ],
+     [
+      12.235466,
+      44.1436703
+     ],
+     [
+      12.2354947,
+      44.1436071
+     ],
+     [
+      12.2355214,
+      44.1436135
+     ],
+     [
+      12.2356119,
+      44.1436321
+     ],
+     [
+      12.2356486,
+      44.1436228
+     ],
+     [
+      12.2356805,
+      44.1435855
+     ],
+     [
+      12.2357991,
+      44.1432505
+     ],
+     [
+      12.2358814,
+      44.143098
+     ],
+     [
+      12.2361385,
+      44.1427868
+     ],
+     [
+      12.2362828,
+      44.142647
+     ],
+     [
+      12.236593,
+      44.142432
+     ],
+     [
+      12.2366741,
+      44.1424905
+     ],
+     [
+      12.2367963,
+      44.1424047
+     ],
+     [
+      12.2370618,
+      44.1422822
+     ],
+     [
+      12.2375266,
+      44.1421287
+     ],
+     [
+      12.2376877,
+      44.1420882
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2382441,
+      44.1420122
+     ],
+     [
+      12.2382155,
+      44.142045
+     ],
+     [
+      12.2381759,
+      44.1420711
+     ],
+     [
+      12.2381247,
+      44.1420899
+     ],
+     [
+      12.2380681,
+      44.1420976
+     ],
+     [
+      12.2380108,
+      44.1420936
+     ],
+     [
+      12.2379574,
+      44.1420783
+     ],
+     [
+      12.237912,
+      44.1420529
+     ],
+     [
+      12.2378831,
+      44.1420256
+     ],
+     [
+      12.2378639,
+      44.1419942
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2383335,
+      44.1420491
+     ],
+     [
+      12.2384368,
+      44.1421296
+     ],
+     [
+      12.238555,
+      44.1421563
+     ],
+     [
+      12.23873,
+      44.1421894
+     ],
+     [
+      12.2389054,
+      44.1422109
+     ],
+     [
+      12.2390442,
+      44.142213
+     ],
+     [
+      12.2391916,
+      44.1421976
+     ],
+     [
+      12.2394971,
+      44.1421537
+     ],
+     [
+      12.2402988,
+      44.1418996
+     ],
+     [
+      12.240603,
+      44.1418169
+     ],
+     [
+      12.240872,
+      44.1417582
+     ],
+     [
+      12.2415031,
+      44.1417183
+     ],
+     [
+      12.2419706,
+      44.1417263
+     ],
+     [
+      12.2420883,
+      44.1417278
+     ],
+     [
+      12.2421843,
+      44.1416734
+     ],
+     [
+      12.2422114,
+      44.1415601
+     ],
+     [
+      12.2421091,
+      44.1414814
+     ],
+     [
+      12.2420405,
+      44.1413893
+     ],
+     [
+      12.2419468,
+      44.1411501
+     ],
+     [
+      12.2419189,
+      44.1410058
+     ],
+     [
+      12.2419292,
+      44.1408223
+     ],
+     [
+      12.2419549,
+      44.1406012
+     ],
+     [
+      12.2419847,
+      44.1403229
+     ],
+     [
+      12.2420105,
+      44.1400487
+     ],
+     [
+      12.2419796,
+      44.1395626
+     ],
+     [
+      12.2419884,
+      44.1394524
+     ],
+     [
+      12.2420265,
+      44.1392537
+     ],
+     [
+      12.2419057,
+      44.1390102
+     ],
+     [
+      12.2416801,
+      44.1387359
+     ],
+     [
+      12.2414797,
+      44.1385606
+     ],
+     [
+      12.2412605,
+      44.1384244
+     ],
+     [
+      12.2410989,
+      44.1382816
+     ],
+     [
+      12.2408228,
+      44.1381282
+     ],
+     [
+      12.2405123,
+      44.1380173
+     ],
+     [
+      12.2397461,
+      44.1380329
+     ],
+     [
+      12.239983,
+      44.1386796
+     ],
+     [
+      12.2391765,
+      44.1388487
+     ],
+     [
+      12.2390263,
+      44.1388802
+     ],
+     [
+      12.238749,
+      44.1389367
+     ],
+     [
+      12.238424,
+      44.1390029
+     ],
+     [
+      12.2381234,
+      44.1390641
+     ],
+     [
+      12.2378652,
+      44.139115
+     ],
+     [
+      12.2375895,
+      44.1391623
+     ],
+     [
+      12.2371946,
+      44.1392301
+     ],
+     [
+      12.2363648,
+      44.1393939
+     ],
+     [
+      12.236272,
+      44.1394887
+     ],
+     [
+      12.2362439,
+      44.1395464
+     ],
+     [
+      12.2362312,
+      44.1396475
+     ],
+     [
+      12.2362516,
+      44.1398019
+     ],
+     [
+      12.2364837,
+      44.1399364
+     ],
+     [
+      12.236535,
+      44.1399888
+     ],
+     [
+      12.2365751,
+      44.1400599
+     ],
+     [
+      12.2371136,
+      44.140725
+     ],
+     [
+      12.2375433,
+      44.1411946
+     ],
+     [
+      12.2375932,
+      44.1412543
+     ],
+     [
+      12.2378845,
+      44.1415791
+     ],
+     [
+      12.2379779,
+      44.141648
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2382441,
+      44.1420122
+     ],
+     [
+      12.2382155,
+      44.142045
+     ],
+     [
+      12.2381759,
+      44.1420711
+     ],
+     [
+      12.2381247,
+      44.1420899
+     ],
+     [
+      12.2380681,
+      44.1420976
+     ],
+     [
+      12.2380108,
+      44.1420936
+     ],
+     [
+      12.2379574,
+      44.1420783
+     ],
+     [
+      12.237912,
+      44.1420529
+     ],
+     [
+      12.2376877,
+      44.1420882
+     ],
+     [
+      12.2375266,
+      44.1421287
+     ],
+     [
+      12.2370618,
+      44.1422822
+     ],
+     [
+      12.2367963,
+      44.1424047
+     ],
+     [
+      12.2366741,
+      44.1424905
+     ],
+     [
+      12.236593,
+      44.142432
+     ],
+     [
+      12.2362828,
+      44.142647
+     ],
+     [
+      12.2361385,
+      44.1427868
+     ],
+     [
+      12.2358814,
+      44.143098
+     ],
+     [
+      12.2357991,
+      44.1432505
+     ],
+     [
+      12.2356805,
+      44.1435855
+     ],
+     [
+      12.2357767,
+      44.1436035
+     ],
+     [
+      12.2358739,
+      44.1436246
+     ],
+     [
+      12.2358606,
+      44.1436648
+     ],
+     [
+      12.2359005,
+      44.1436896
+     ],
+     [
+      12.2359323,
+      44.1437052
+     ],
+     [
+      12.2361142,
+      44.1437334
+     ],
+     [
+      12.2361283,
+      44.1437041
+     ],
+     [
+      12.2362842,
+      44.1437369
+     ],
+     [
+      12.2365675,
+      44.1437935
+     ],
+     [
+      12.2370884,
+      44.1439018
+     ],
+     [
+      12.2372157,
+      44.1439288
+     ],
+     [
+      12.2378387,
+      44.1440578
+     ],
+     [
+      12.2378065,
+      44.1441452
+     ],
+     [
+      12.237904,
+      44.1441638
+     ],
+     [
+      12.2379615,
+      44.1441983
+     ],
+     [
+      12.2378685,
+      44.1443008
+     ],
+     [
+      12.2368891,
+      44.1453812
+     ],
+     [
+      12.2368385,
+      44.1454363
+     ],
+     [
+      12.2364279,
+      44.1458834
+     ],
+     [
+      12.2363859,
+      44.1459291
+     ],
+     [
+      12.2363158,
+      44.146006
+     ],
+     [
+      12.2361569,
+      44.1461805
+     ],
+     [
+      12.2358543,
+      44.1465128
+     ],
+     [
+      12.2359489,
+      44.1465583
+     ],
+     [
+      12.2367515,
+      44.1469442
+     ],
+     [
+      12.2368409,
+      44.1469872
+     ],
+     [
+      12.2364024,
+      44.1474702
+     ],
+     [
+      12.2363377,
+      44.1475399
+     ],
+     [
+      12.2363104,
+      44.1475717
+     ],
+     [
+      12.236284,
+      44.1475929
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362059,
+      44.1476039
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "route",
+    "route_id": "CES_B",
+    "name": "East loop (alternative draft, no river crossing)",
+    "recommended": false,
+    "length_m": 3656.2,
+    "direction": "as drawn (first to last coordinate)",
+    "verification_status": "desk_draft_not_verified_on_site"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2362059,
+      44.1476039
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362619,
+      44.1476793
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S001",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "service_road",
+    "street_name": "Via dell'Università",
+    "from_m": 0.0,
+    "to_m": 11.1,
+    "length_m": 11.1,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "719463166;689431811"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2362619,
+      44.1476793
+     ],
+     [
+      12.2353255,
+      44.1474176
+     ],
+     [
+      12.2353013,
+      44.1474172
+     ],
+     [
+      12.2351914,
+      44.1474155
+     ],
+     [
+      12.2351308,
+      44.1474335
+     ],
+     [
+      12.2350719,
+      44.1474511
+     ],
+     [
+      12.2349641,
+      44.1475117
+     ],
+     [
+      12.2348854,
+      44.1475849
+     ],
+     [
+      12.2348679,
+      44.1476707
+     ],
+     [
+      12.2347414,
+      44.1476643
+     ],
+     [
+      12.2346248,
+      44.147658
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S002",
+    "infrastructure_class": "protected_cycle_path",
+    "osm_class": "protected_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 11.1,
+    "to_m": 162.6,
+    "length_m": 151.5,
+    "surface": "paving_stones",
+    "maxspeed": "not_tagged",
+    "flags": "surface_paving_stones_check_grip_and_vibration",
+    "official_cycle_overlap": 0.9655172413793104,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "689431810"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2346248,
+      44.147658
+     ],
+     [
+      12.2347109,
+      44.1469058
+     ],
+     [
+      12.2347133,
+      44.1468845
+     ],
+     [
+      12.2347869,
+      44.1464064
+     ],
+     [
+      12.2350009,
+      44.1454755
+     ],
+     [
+      12.2351497,
+      44.1449851
+     ],
+     [
+      12.2355438,
+      44.1438481
+     ],
+     [
+      12.2355457,
+      44.143799
+     ],
+     [
+      12.2354741,
+      44.1437413
+     ],
+     [
+      12.2354371,
+      44.1437325
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S003",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 162.6,
+    "to_m": 610.6,
+    "length_m": 447.9,
+    "surface": "paving_stones",
+    "maxspeed": "not_tagged",
+    "flags": "surface_paving_stones_check_grip_and_vibration;osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 0.9886363636363636,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "23775245;25626899;137735231"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2354371,
+      44.1437325
+     ],
+     [
+      12.235466,
+      44.1436703
+     ],
+     [
+      12.2354947,
+      44.1436071
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S004",
+    "infrastructure_class": "crossing",
+    "osm_class": "pedestrian_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 610.6,
+    "to_m": 625.3,
+    "length_m": 14.7,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "pedestrian_crossing_without_cycle_crossing_in_osm_verify_marking_or_dismount",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "1505664755"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2354947,
+      44.1436071
+     ],
+     [
+      12.2355214,
+      44.1436135
+     ],
+     [
+      12.2356119,
+      44.1436321
+     ],
+     [
+      12.2356486,
+      44.1436228
+     ],
+     [
+      12.2356805,
+      44.1435855
+     ],
+     [
+      12.2357991,
+      44.1432505
+     ],
+     [
+      12.2358814,
+      44.143098
+     ],
+     [
+      12.2361385,
+      44.1427868
+     ],
+     [
+      12.2362828,
+      44.142647
+     ],
+     [
+      12.236593,
+      44.142432
+     ],
+     [
+      12.2366741,
+      44.1424905
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S005",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 625.3,
+    "to_m": 802.8,
+    "length_m": 177.5,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "137735218;137735225;137735240"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2366741,
+      44.1424905
+     ],
+     [
+      12.2367963,
+      44.1424047
+     ],
+     [
+      12.2370618,
+      44.1422822
+     ],
+     [
+      12.2375266,
+      44.1421287
+     ],
+     [
+      12.2376877,
+      44.1420882
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S006",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Niccolò Machiavelli",
+    "from_m": 802.8,
+    "to_m": 915.6,
+    "length_m": 112.8,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;oneway_same_direction_for_both_vehicles;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "70792317;70792258"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2382441,
+      44.1420122
+     ],
+     [
+      12.2382155,
+      44.142045
+     ],
+     [
+      12.2381759,
+      44.1420711
+     ],
+     [
+      12.2381247,
+      44.1420899
+     ],
+     [
+      12.2380681,
+      44.1420976
+     ],
+     [
+      12.2380108,
+      44.1420936
+     ],
+     [
+      12.2379574,
+      44.1420783
+     ],
+     [
+      12.237912,
+      44.1420529
+     ],
+     [
+      12.2378831,
+      44.1420256
+     ],
+     [
+      12.2378639,
+      44.1419942
+     ],
+     [
+      12.2378554,
+      44.1419604
+     ],
+     [
+      12.2378622,
+      44.1419131
+     ],
+     [
+      12.2378898,
+      44.1418698
+     ],
+     [
+      12.2379243,
+      44.1418417
+     ],
+     [
+      12.2379677,
+      44.1418207
+     ],
+     [
+      12.2380165,
+      44.1418085
+     ],
+     [
+      12.238068,
+      44.1418054
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S007",
+    "infrastructure_class": "roundabout",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Rotonda dei Mulini",
+    "from_m": 915.6,
+    "to_m": 1071.9,
+    "length_m": 156.4,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.8611111111111112,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "22773339"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2383335,
+      44.1420491
+     ],
+     [
+      12.2384368,
+      44.1421296
+     ],
+     [
+      12.238555,
+      44.1421563
+     ],
+     [
+      12.23873,
+      44.1421894
+     ],
+     [
+      12.2389054,
+      44.1422109
+     ],
+     [
+      12.2390442,
+      44.142213
+     ],
+     [
+      12.2391916,
+      44.1421976
+     ],
+     [
+      12.2394971,
+      44.1421537
+     ],
+     [
+      12.2402988,
+      44.1418996
+     ],
+     [
+      12.240603,
+      44.1418169
+     ],
+     [
+      12.240872,
+      44.1417582
+     ],
+     [
+      12.2415031,
+      44.1417183
+     ],
+     [
+      12.2419706,
+      44.1417263
+     ],
+     [
+      12.2420883,
+      44.1417278
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S008",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Mulini",
+    "from_m": 1071.9,
+    "to_m": 1396.1,
+    "length_m": 324.2,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.41379310344827586,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "70792305;847463933;847463936;69738403;1388751421"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2420883,
+      44.1417278
+     ],
+     [
+      12.2421843,
+      44.1416734
+     ],
+     [
+      12.2422114,
+      44.1415601
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S009",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Piazzetta Porta Trova",
+    "from_m": 1396.1,
+    "to_m": 1418.7,
+    "length_m": 22.5,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.0,
+    "official_cycle_category": "",
+    "official_zone": "B",
+    "osm_way_ids": "23047049"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2422114,
+      44.1415601
+     ],
+     [
+      12.2421091,
+      44.1414814
+     ],
+     [
+      12.2420405,
+      44.1413893
+     ],
+     [
+      12.2419468,
+      44.1411501
+     ],
+     [
+      12.2419189,
+      44.1410058
+     ],
+     [
+      12.2419292,
+      44.1408223
+     ],
+     [
+      12.2419549,
+      44.1406012
+     ],
+     [
+      12.2419847,
+      44.1403229
+     ],
+     [
+      12.2420105,
+      44.1400487
+     ],
+     [
+      12.2419796,
+      44.1395626
+     ],
+     [
+      12.2419884,
+      44.1394524
+     ],
+     [
+      12.2420265,
+      44.1392537
+     ],
+     [
+      12.2419057,
+      44.1390102
+     ],
+     [
+      12.2416801,
+      44.1387359
+     ],
+     [
+      12.2414797,
+      44.1385606
+     ],
+     [
+      12.2412605,
+      44.1384244
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S010",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Mura Federico Comandini",
+    "from_m": 1418.7,
+    "to_m": 1794.0,
+    "length_m": 375.3,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;restricted_traffic_zone_verify_ztl_rules;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.04285714285714286,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "B",
+    "osm_way_ids": "23047051"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2412605,
+      44.1384244
+     ],
+     [
+      12.2410989,
+      44.1382816
+     ],
+     [
+      12.2408228,
+      44.1381282
+     ],
+     [
+      12.2405123,
+      44.1380173
+     ],
+     [
+      12.2397461,
+      44.1380329
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S011",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Mura Porta Fiume",
+    "from_m": 1794.0,
+    "to_m": 1931.1,
+    "length_m": 137.2,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.18518518518518517,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "B",
+    "osm_way_ids": "23574994"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2397461,
+      44.1380329
+     ],
+     [
+      12.239983,
+      44.1386796
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S012",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Carlo Armellini",
+    "from_m": 1931.1,
+    "to_m": 2005.5,
+    "length_m": 74.4,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;inside_official_zone_B_check_access_and_speed_rules",
+    "official_cycle_overlap": 0.3333333333333333,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "B",
+    "osm_way_ids": "23047056"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.239983,
+      44.1386796
+     ],
+     [
+      12.2391765,
+      44.1388487
+     ],
+     [
+      12.2390263,
+      44.1388802
+     ],
+     [
+      12.238749,
+      44.1389367
+     ],
+     [
+      12.238424,
+      44.1390029
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S013",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Cesare Battisti",
+    "from_m": 2005.5,
+    "to_m": 2135.0,
+    "length_m": 129.5,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "",
+    "osm_way_ids": "198967058;717182143"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.238424,
+      44.1390029
+     ],
+     [
+      12.2381234,
+      44.1390641
+     ],
+     [
+      12.2378652,
+      44.139115
+     ],
+     [
+      12.2375895,
+      44.1391623
+     ],
+     [
+      12.2371946,
+      44.1392301
+     ],
+     [
+      12.2363648,
+      44.1393939
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S014",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_30",
+    "street_name": "Via Cesare Battisti",
+    "from_m": 2135.0,
+    "to_m": 2305.0,
+    "length_m": 170.0,
+    "surface": "asphalt",
+    "maxspeed": "30",
+    "flags": "official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.625,
+    "official_cycle_category": "03-PisteCiclabili ESISTENTI (corsia riservata su carreggiata))",
+    "official_zone": "",
+    "osm_way_ids": "23577862;716941549"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2363648,
+      44.1393939
+     ],
+     [
+      12.236272,
+      44.1394887
+     ],
+     [
+      12.2362439,
+      44.1395464
+     ],
+     [
+      12.2362312,
+      44.1396475
+     ],
+     [
+      12.2362516,
+      44.1398019
+     ],
+     [
+      12.2364837,
+      44.1399364
+     ],
+     [
+      12.236535,
+      44.1399888
+     ],
+     [
+      12.2365751,
+      44.1400599
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S015",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Piazzale del Risorgimento",
+    "from_m": 2305.0,
+    "to_m": 2392.7,
+    "length_m": 87.7,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.3333333333333333,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "23574971;23574972"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2365751,
+      44.1400599
+     ],
+     [
+      12.2371136,
+      44.140725
+     ],
+     [
+      12.2375433,
+      44.1411946
+     ],
+     [
+      12.2375932,
+      44.1412543
+     ],
+     [
+      12.2378845,
+      44.1415791
+     ],
+     [
+      12.2379779,
+      44.141648
+     ],
+     [
+      12.2381189,
+      44.1418118
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S016",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Carlo Pisacane",
+    "from_m": 2392.7,
+    "to_m": 2623.5,
+    "length_m": 230.8,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;oneway_same_direction_for_both_vehicles",
+    "official_cycle_overlap": 0.13333333333333333,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "23574974;847463938;70792306;847463937"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2381189,
+      44.1418118
+     ],
+     [
+      12.2381716,
+      44.1418297
+     ],
+     [
+      12.238215,
+      44.1418576
+     ],
+     [
+      12.2382456,
+      44.1418932
+     ],
+     [
+      12.238261,
+      44.1419335
+     ],
+     [
+      12.2382598,
+      44.1419753
+     ],
+     [
+      12.2382441,
+      44.1420122
+     ],
+     [
+      12.2382155,
+      44.142045
+     ],
+     [
+      12.2381759,
+      44.1420711
+     ],
+     [
+      12.2381247,
+      44.1420899
+     ],
+     [
+      12.2380681,
+      44.1420976
+     ],
+     [
+      12.2380108,
+      44.1420936
+     ],
+     [
+      12.2379574,
+      44.1420783
+     ],
+     [
+      12.237912,
+      44.1420529
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S017",
+    "infrastructure_class": "roundabout",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Rotonda dei Mulini",
+    "from_m": 2623.5,
+    "to_m": 2682.5,
+    "length_m": 59.1,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.6428571428571429,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "22773339"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.237912,
+      44.1420529
+     ],
+     [
+      12.2376877,
+      44.1420882
+     ],
+     [
+      12.2375266,
+      44.1421287
+     ],
+     [
+      12.2370618,
+      44.1422822
+     ],
+     [
+      12.2367963,
+      44.1424047
+     ],
+     [
+      12.2366741,
+      44.1424905
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S018",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Niccolò Machiavelli",
+    "from_m": 2682.5,
+    "to_m": 2794.1,
+    "length_m": 111.6,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "22770205;70792317"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2366741,
+      44.1424905
+     ],
+     [
+      12.236593,
+      44.142432
+     ],
+     [
+      12.2362828,
+      44.142647
+     ],
+     [
+      12.2361385,
+      44.1427868
+     ],
+     [
+      12.2358814,
+      44.143098
+     ],
+     [
+      12.2357991,
+      44.1432505
+     ],
+     [
+      12.2356805,
+      44.1435855
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S019",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 2794.1,
+    "to_m": 2953.9,
+    "length_m": 159.8,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "01-PisteCiclabili ESISTENTI (in sede propria)",
+    "official_zone": "",
+    "osm_way_ids": "137735240"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2356805,
+      44.1435855
+     ],
+     [
+      12.2357767,
+      44.1436035
+     ],
+     [
+      12.2358739,
+      44.1436246
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S020",
+    "infrastructure_class": "crossing",
+    "osm_class": "cycle_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 2953.9,
+    "to_m": 2970.0,
+    "length_m": 16.0,
+    "surface": "paved",
+    "maxspeed": "not_tagged",
+    "flags": "",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "137735224"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2358739,
+      44.1436246
+     ],
+     [
+      12.2358606,
+      44.1436648
+     ],
+     [
+      12.2359005,
+      44.1436896
+     ],
+     [
+      12.2359323,
+      44.1437052
+     ],
+     [
+      12.2361142,
+      44.1437334
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S021",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "footway_bicycle_allowed",
+    "street_name": "(unnamed)",
+    "from_m": 2970.0,
+    "to_m": 2996.7,
+    "length_m": 26.7,
+    "surface": "paved",
+    "maxspeed": "not_tagged",
+    "flags": "osm_footway_with_bicycle_access_verify_signs_and_escooter_legality",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "698046165"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2361142,
+      44.1437334
+     ],
+     [
+      12.2361283,
+      44.1437041
+     ],
+     [
+      12.2362842,
+      44.1437369
+     ],
+     [
+      12.2365675,
+      44.1437935
+     ],
+     [
+      12.2370884,
+      44.1439018
+     ],
+     [
+      12.2372157,
+      44.1439288
+     ],
+     [
+      12.2378387,
+      44.1440578
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S022",
+    "infrastructure_class": "shared_pedestrian_cycle_path",
+    "osm_class": "shared_pedestrian_cycle_path",
+    "street_name": "(unnamed)",
+    "from_m": 2996.7,
+    "to_m": 3142.2,
+    "length_m": 145.5,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "shared_with_pedestrians_verify_signs",
+    "official_cycle_overlap": 0.5357142857142857,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "137735214"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2378387,
+      44.1440578
+     ],
+     [
+      12.2378065,
+      44.1441452
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S023",
+    "infrastructure_class": "crossing",
+    "osm_class": "pedestrian_crossing",
+    "street_name": "(unnamed)",
+    "from_m": 3142.2,
+    "to_m": 3152.2,
+    "length_m": 10.1,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "pedestrian_crossing_without_cycle_crossing_in_osm_verify_marking_or_dismount",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "1507430717"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2378065,
+      44.1441452
+     ],
+     [
+      12.237904,
+      44.1441638
+     ],
+     [
+      12.2379615,
+      44.1441983
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S024",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Italo Calvino",
+    "from_m": 3152.2,
+    "to_m": 3166.3,
+    "length_m": 14.0,
+    "surface": "asphalt",
+    "maxspeed": "not_tagged",
+    "flags": "speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 1.0,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "718496901"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2379615,
+      44.1441983
+     ],
+     [
+      12.2378685,
+      44.1443008
+     ],
+     [
+      12.2368891,
+      44.1453812
+     ],
+     [
+      12.2368385,
+      44.1454363
+     ],
+     [
+      12.2364279,
+      44.1458834
+     ],
+     [
+      12.2363859,
+      44.1459291
+     ],
+     [
+      12.2363158,
+      44.146006
+     ],
+     [
+      12.2361569,
+      44.1461805
+     ],
+     [
+      12.2358543,
+      44.1465128
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S025",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Salvatore Quasimodo",
+    "from_m": 3166.3,
+    "to_m": 3473.7,
+    "length_m": 307.4,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.10344827586206896,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "23063960;719461432"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2358543,
+      44.1465128
+     ],
+     [
+      12.2359489,
+      44.1465583
+     ],
+     [
+      12.2367515,
+      44.1469442
+     ],
+     [
+      12.2368409,
+      44.1469872
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S026",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Natalino Sapegno",
+    "from_m": 3473.7,
+    "to_m": 3568.4,
+    "length_m": 94.8,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;oneway_same_direction_for_both_vehicles;speed_limit_not_tagged_verify",
+    "official_cycle_overlap": 0.0,
+    "official_cycle_category": "",
+    "official_zone": "",
+    "osm_way_ids": "23775235"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      12.2368409,
+      44.1469872
+     ],
+     [
+      12.2364024,
+      44.1474702
+     ],
+     [
+      12.2363377,
+      44.1475399
+     ],
+     [
+      12.2363104,
+      44.1475717
+     ],
+     [
+      12.236284,
+      44.1475929
+     ],
+     [
+      12.2362492,
+      44.1476119
+     ],
+     [
+      12.2362059,
+      44.1476039
+     ]
+    ]
+   },
+   "properties": {
+    "feature": "segment",
+    "route_id": "CES_B",
+    "segment_id": "CES_B_S027",
+    "infrastructure_class": "road_shared_with_traffic",
+    "osm_class": "road_shared_with_traffic",
+    "street_name": "Via Umberto Saba",
+    "from_m": 3568.4,
+    "to_m": 3656.2,
+    "length_m": 87.8,
+    "surface": "unknown",
+    "maxspeed": "not_tagged",
+    "flags": "surface_unknown_in_osm;speed_limit_not_tagged_verify;official_cycle_facility_alongside_riders_must_use_it_where_present_cds_art182c9_verify",
+    "official_cycle_overlap": 0.8333333333333334,
+    "official_cycle_category": "02-PisteCiclabili ESISTENTI (corsia riservata su marciapiede)",
+    "official_zone": "",
+    "osm_way_ids": "70792303;719463166"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2362492,
+     44.1476119
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P001",
+    "kind": "intersection",
+    "at_m": 3.6,
+    "detail": "Via Umberto Saba / Via dell'Università",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2362619,
+     44.1476793
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P002",
+    "kind": "crossing_node",
+    "at_m": 11.1,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.235466,
+     44.1436703
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P003",
+    "kind": "crossing_node",
+    "at_m": 617.9,
+    "detail": "uncontrolled",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2366741,
+     44.1424905
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P004",
+    "kind": "crossing_node",
+    "at_m": 802.8,
+    "detail": "traffic_signals",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2366741,
+     44.1424905
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P005",
+    "kind": "crossing_node",
+    "at_m": 802.8,
+    "detail": "traffic_signals",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367963,
+     44.1424047
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P006",
+    "kind": "traffic_signals",
+    "at_m": 816.4,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367963,
+     44.1424047
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P007",
+    "kind": "intersection",
+    "at_m": 816.4,
+    "detail": "Via Niccolò Machiavelli / Via Zuccherificio / Viale Europa",
+    "major_road": "Via Zuccherificio;Viale Europa"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367963,
+     44.1424047
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P008",
+    "kind": "traffic_signals",
+    "at_m": 816.4,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2378554,
+     44.1419604
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P009",
+    "kind": "roundabout_entry",
+    "at_m": 915.6,
+    "detail": "Rotonda dei Mulini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2402988,
+     44.1418996
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P010",
+    "kind": "traffic_signals",
+    "at_m": 1250.5,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2402988,
+     44.1418996
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P011",
+    "kind": "intersection",
+    "at_m": 1250.5,
+    "detail": "Via Eugenio Curiel / Via Mulini / Viale Rasi e Spinelli",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2420883,
+     44.1417278
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P012",
+    "kind": "intersection",
+    "at_m": 1396.1,
+    "detail": "Piazzetta Porta Trova / Via Mulini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2397461,
+     44.1380329
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P013",
+    "kind": "intersection",
+    "at_m": 1931.1,
+    "detail": "Via Carlo Armellini / Via Mura Porta Fiume",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.239983,
+     44.1386796
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P014",
+    "kind": "intersection",
+    "at_m": 2005.5,
+    "detail": "Via Carlo Armellini / Via Cesare Battisti / Via Martiri della Libertà",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2391765,
+     44.1388487
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P015",
+    "kind": "traffic_signals",
+    "at_m": 2072.5,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2390263,
+     44.1388802
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P016",
+    "kind": "intersection",
+    "at_m": 2085.0,
+    "detail": "Via Cesare Battisti / Via Eugenio Curiel / Via Fratelli Rosselli",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.238749,
+     44.1389367
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P017",
+    "kind": "traffic_signals",
+    "at_m": 2108.0,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2371946,
+     44.1392301
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P018",
+    "kind": "intersection",
+    "at_m": 2236.3,
+    "detail": "Via Anita Garibaldi / Via Cesare Battisti / Via Felice Orsini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2363648,
+     44.1393939
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P019",
+    "kind": "intersection",
+    "at_m": 2305.0,
+    "detail": "Piazzale del Risorgimento / Via Cesare Battisti",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2362439,
+     44.1395464
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P020",
+    "kind": "crossing_node",
+    "at_m": 2324.7,
+    "detail": "",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2365751,
+     44.1400599
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P021",
+    "kind": "intersection",
+    "at_m": 2392.7,
+    "detail": "Piazzale del Risorgimento / Via Carlo Pisacane",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2375932,
+     44.1412543
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P022",
+    "kind": "intersection",
+    "at_m": 2548.4,
+    "detail": "Via Carlo Pisacane / Via Tommaso Risso",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2379779,
+     44.141648
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P023",
+    "kind": "intersection",
+    "at_m": 2602.0,
+    "detail": "Via Carlo Pisacane / Via Daniele Manin",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2381189,
+     44.1418118
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P024",
+    "kind": "roundabout_entry",
+    "at_m": 2623.5,
+    "detail": "Rotonda dei Mulini",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2357767,
+     44.1436035
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P025",
+    "kind": "crossing_node",
+    "at_m": 2961.9,
+    "detail": "traffic_signals",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2378065,
+     44.1441452
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P026",
+    "kind": "crossing_node",
+    "at_m": 3152.2,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2379615,
+     44.1441983
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P027",
+    "kind": "intersection",
+    "at_m": 3166.3,
+    "detail": "Via Arturo Carlo Jemolo / Via Italo Calvino / Via Salvatore Quasimodo",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2378685,
+     44.1443008
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P028",
+    "kind": "crossing_node",
+    "at_m": 3179.9,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2368385,
+     44.1454363
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P029",
+    "kind": "crossing_node",
+    "at_m": 3330.5,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2364279,
+     44.1458834
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P030",
+    "kind": "crossing_node",
+    "at_m": 3390.0,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2363158,
+     44.146006
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P031",
+    "kind": "crossing_node",
+    "at_m": 3406.4,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2359489,
+     44.1465583
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P032",
+    "kind": "crossing_node",
+    "at_m": 3482.8,
+    "detail": "marked",
+    "major_road": ""
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     12.2367515,
+     44.1469442
+    ]
+   },
+   "properties": {
+    "feature": "point",
+    "route_id": "CES_B",
+    "point_id": "CES_B_P033",
+    "kind": "crossing_node",
+    "at_m": 3559.8,
+    "detail": "marked",
+    "major_road": ""
+   }
+  }
+ ]
+}

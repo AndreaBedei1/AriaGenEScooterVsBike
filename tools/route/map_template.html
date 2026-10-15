@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cesena candidate routes</title>
+<!-- Leaflet 1.9.4 (BSD-2-Clause). Tiles and Leaflet are loaded from the internet. -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #map { position: absolute; inset: 0; }
+  .panel { background: rgba(255,255,255,0.95); padding: 8px 10px; border-radius: 6px;
+           box-shadow: 0 1px 4px rgba(0,0,0,0.3); font-size: 12px; line-height: 1.35; max-width: 330px; }
+  .panel h3 { margin: 0 0 4px; font-size: 13px; }
+  .warn { color: #a50f15; font-weight: 600; }
+  .sw { display: inline-block; width: 22px; height: 5px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+  .dot { display: inline-block; width: 10px; height: 10px; margin: 0 8px 0 6px; vertical-align: middle; border-radius: 50%; border: 1px solid #222; }
+  .arrow { font-size: 15px; line-height: 15px; color: #08306b; text-shadow: 0 0 2px #fff, 0 0 2px #fff; }
+  table.c { border-collapse: collapse; margin-top: 3px; }
+  table.c td { padding: 0 6px 0 0; }
+  @media (max-width: 600px) { .panel { max-width: 220px; font-size: 11px; } }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+const DATA = /*__PAYLOAD__*/null;
+const map = L.map("map", { preferCanvas: false });
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors (ODbL)'
+}).addTo(map);
+
+const LABELS = {
+  protected_cycle_path: "Cycle path (separated)",
+  shared_pedestrian_cycle_path: "Shared pedestrian-cycle path",
+  painted_cycle_lane: "Painted cycle lane",
+  road_shared_with_traffic: "Road shared with traffic",
+  roundabout: "Roundabout",
+  crossing: "Crossing",
+  pedestrian_or_shared_space: "Pedestrian / shared space"
+};
+const CONTEXT_STYLE = {
+  protected_cycle_path: { color: "#1b9e77", weight: 2, opacity: 0.55 },
+  shared_pedestrian_cycle_path: { color: "#66a61e", weight: 2, opacity: 0.55 },
+  footway_bicycle_allowed: { color: "#66a61e", weight: 2, opacity: 0.4, dashArray: "3 4" },
+  painted_cycle_lane: { color: "#a6761d", weight: 2, opacity: 0.55 },
+  unsuitable_surface: { color: "#fdae61", weight: 2, opacity: 0.6, dashArray: "2 4" },
+  pedestrian_area: { color: "#e6ab02", weight: 2, opacity: 0.45 }
+};
+const POINT_STYLE = {
+  intersection: { radius: 5, color: "#111", fillColor: "#fff", label: "Intersection" },
+  traffic_signals: { radius: 5, color: "#111", fillColor: "#e31a1c", label: "Traffic signals" },
+  roundabout_entry: { radius: 6, color: "#111", fillColor: "#d95f02", label: "Roundabout entry" },
+  crossing_node: { radius: 4, color: "#111", fillColor: "#7570b3", label: "Crossing (OSM node)" }
+};
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+// Context: cycle facilities of the area (OSM)
+const context = L.layerGroup();
+for (const w of DATA.context) {
+  const st = CONTEXT_STYLE[w.kind];
+  if (!st) continue;
+  for (const s of w.segs) L.polyline(s, st).bindTooltip(`${esc(w.kind)}${w.name ? " - " + esc(w.name) : ""} (surface: ${esc(w.surface)}, OSM way ${esc(w.id)})`).addTo(context);
+}
+
+const overlays = { "OSM cycle facilities (context)": context };
+const bounds = L.latLngBounds([]);
+for (const r of DATA.routes) {
+  const g = L.layerGroup();
+  const weight = r.recommended ? 7 : 5;
+  for (const s of r.segments) {
+    const line = L.polyline(s.coords, { color: DATA.colors[s.cls] || "#555", weight, opacity: 0.9,
+      dashArray: r.recommended ? null : "8 6" });
+    line.bindPopup(`<b>${esc(s.id)}</b><br>${esc(LABELS[s.cls] || s.cls)} <i>(OSM: ${esc(s.osm)})</i><br>` +
+      `${esc(s.name)}<br>${s.len} m, from km ${(s.from / 1000).toFixed(2)}<br>surface: ${esc(s.surface)}; ` +
+      `maxspeed: ${esc(s.maxspeed)}` +
+      (s.off_cycle == null ? "" : `<br>official cycle layer: ${Math.round(100 * s.off_cycle)}% of length${s.off_cat ? " (" + esc(s.off_cat) + ")" : ""}`) +
+      (s.off_zone ? `<br>official zone: ${esc(s.off_zone)}` : "") +
+      `<br><small>${esc(s.flags).replaceAll(";", "<br>")}</small>`);
+    line.addTo(g);
+    s.coords.forEach(c => bounds.extend(c));
+  }
+  for (const a of r.arrows) {
+    L.marker([a[0], a[1]], { interactive: false, icon: L.divIcon({ className: "", iconSize: [16, 16], iconAnchor: [8, 8],
+      html: `<div class="arrow" style="transform: rotate(${a[2] - 90}deg)">&#10148;</div>` }) }).addTo(g);
+  }
+  for (const p of r.points) {
+    const st = POINT_STYLE[p.kind];
+    if (!st) continue;
+    L.circleMarker([p.lat, p.lon], { radius: st.radius, color: st.color, weight: 1, fillColor: st.fillColor, fillOpacity: 1 })
+      .bindTooltip(`${esc(st.label)} at ${(p.at / 1000).toFixed(2)} km${p.detail ? ": " + esc(p.detail) : ""}${p.major ? " (major road: " + esc(p.major) + ")" : ""}`)
+      .addTo(g);
+  }
+  L.marker(r.start, { title: "Start / end" }).bindPopup(`<b>${esc(r.route_id)}</b> start and end: campus (Via dell'Universit&agrave; 50)`).addTo(g);
+  const key = `${r.route_id} - ${r.name} (${(r.length_m / 1000).toFixed(2)} km)`;
+  overlays[key] = g;
+  if (r.recommended) g.addTo(map);
+}
+context.addTo(map);
+L.control.layers(null, overlays, { collapsed: false, position: "topright" }).addTo(map);
+map.fitBounds(bounds.pad(0.08));
+L.control.scale({ imperial: false }).addTo(map);
+
+// Info panel
+const info = L.control({ position: "topleft" });
+info.onAdd = () => {
+  const div = L.DomUtil.create("div", "panel");
+  let h = `<h3>Cesena candidate routes &ndash; e-scooter vs bicycle study</h3>`;
+  h += `<div class="warn">DESK DRAFT computed from OpenStreetMap: NOT verified on site. Legal regime, signs, surfaces and crossings must be checked before any acquisition.</div>`;
+  for (const r of DATA.routes) {
+    const d = r.duration;
+    h += `<div style="margin-top:6px"><b>${esc(r.route_id)}</b>${r.recommended ? " (recommended draft)" : ""}: ${(r.length_m / 1000).toFixed(2)} km, ` +
+         `est. ${d.riding_time_min_low.toFixed(0)}&ndash;${d.riding_time_min_high.toFixed(0)} min riding ` +
+         `(${d.assumed_speed_range_kmh[0]}&ndash;${d.assumed_speed_range_kmh[1]} km/h assumed)</div>`;
+  }
+  h += `<div style="margin-top:6px">Direction of travel: arrows (both vehicles ride every segment in the same direction). Click a segment for details.</div>`;
+  h += `<div style="margin-top:4px;color:#555">Generated ${esc(DATA.meta.generated_utc)} by ${esc(DATA.meta.generator)}. ${esc(DATA.meta.attribution)}${DATA.meta.official_data ? "; " + esc(DATA.meta.official_data) : ""}.</div>`;
+  div.innerHTML = h;
+  L.DomEvent.disableClickPropagation(div);
+  return div;
+};
+info.addTo(map);
+
+// Legend
+const legend = L.control({ position: "bottomright" });
+legend.onAdd = () => {
+  const div = L.DomUtil.create("div", "panel");
+  let h = "<h3>Legend</h3><table class='c'>";
+  for (const [k, lab] of Object.entries(LABELS)) h += `<tr><td><span class="sw" style="background:${DATA.colors[k]}"></span></td><td>${lab}</td></tr>`;
+  h += `<tr><td><span class="sw" style="background:#fdae61"></span></td><td>OSM cycle facility with surface unsuitable for e-scooters (context)</td></tr>`;
+  for (const st of Object.values(POINT_STYLE)) h += `<tr><td><span class="dot" style="background:${st.fillColor}"></span></td><td>${st.label}</td></tr>`;
+  h += `<tr><td style="text-align:center">&#10148;</td><td>Direction of travel</td></tr>`;
+  h += `<tr><td><span class="sw" style="background:#555"></span></td><td>Thick solid: recommended draft; dashed: alternative</td></tr></table>`;
+  div.innerHTML = h;
+  return div;
+};
+legend.addTo(map);
+</script>
+</body>
+</html>
