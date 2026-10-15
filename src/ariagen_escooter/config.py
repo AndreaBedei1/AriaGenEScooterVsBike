@@ -296,6 +296,7 @@ class AnalysisConfig(_Strict):
 class SemanticClassDef(_Strict):
     id: int = Field(ge=0)
     name: str
+    parent: str
     description: str
 
 
@@ -303,6 +304,7 @@ class Taxonomy(_Strict):
     taxonomy_version: int = Field(ge=1)
     infrastructure_classes: dict[str, str]
     event_types: dict[str, str]
+    semantic_categories: dict[str, str]
     semantic_classes: list[SemanticClassDef]
     semantic_groups: dict[str, list[str]]
 
@@ -321,6 +323,11 @@ class Taxonomy(_Strict):
         for name in names:
             if not _SNAKE.match(name):
                 raise ValueError(f"semantic class name {name!r} is not snake_case")
+        if "unknown" not in names or "unknown" not in self.semantic_categories:
+            raise ValueError("the taxonomy must contain an 'unknown' class and category")
+        for cls in self.semantic_classes:
+            if cls.parent not in self.semantic_categories:
+                raise ValueError(f"semantic class {cls.name!r}: unknown parent category {cls.parent!r}")
         for group, members in self.semantic_groups.items():
             unknown = sorted(set(members) - set(names))
             if unknown:
@@ -330,6 +337,13 @@ class Taxonomy(_Strict):
     @property
     def semantic_names(self) -> tuple[str, ...]:
         return tuple(c.name for c in self.semantic_classes)
+
+    def semantic_parent(self, name: str) -> str:
+        """Level-1 category of a semantic class (hierarchical taxonomy)."""
+        for cls in self.semantic_classes:
+            if cls.name == name:
+                return cls.parent
+        raise KeyError(f"unknown semantic class {name!r}")
 
     def semantic_id(self, name: str) -> int:
         try:

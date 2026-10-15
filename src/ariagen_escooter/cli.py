@@ -13,6 +13,7 @@ make-synthetic  (re)generate the SYNTHETIC / TEST dataset
 aggregate       study-level tables from processed sessions
 extract-aria    Aria Gen 2 VRS -> canonical streams + raw-stream quality (Linux/macOS, 'aria' extra)
 map-segments    GNSS of a ride -> segments of the planned route (annotations/segments_route.csv)
+plan-rides      counterbalanced ride plan from a protocol file (configs/protocol/)
 segment-frames  EXPERIMENTAL: semantic label maps from VRS frames ('aria' + 'cv' extras)
 """
 
@@ -303,6 +304,24 @@ def cmd_map_segments(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_plan_rides(args: argparse.Namespace) -> int:
+    import json
+
+    from ariagen_escooter.protocol import load_protocol, plan_rides
+
+    cfg = load_protocol(Path(args.protocol))
+    plan = plan_rides(cfg)
+    if args.out:
+        out = Path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        plan.rides.to_csv(out, index=False, lineterminator="\n")
+        print(f"ride plan -> {out}")
+    else:
+        print(plan.rides.to_string(index=False))
+    print(json.dumps(plan.balance, indent=2))
+    return 0
+
+
 def cmd_segment_frames(args: argparse.Namespace) -> int:  # pragma: no cover - needs aria + cv extras
     from ariagen_escooter.aria import AriaGen2Extractor, projectaria_available
     from ariagen_escooter.segmentation import HuggingFaceSegmenter, LabelMapping, segment_frames
@@ -410,6 +429,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--route-id", help="default: trial.route_id or the session route_id")
     p.add_argument("--max-offset-m", type=float, default=25.0, help="fixes farther from the route stay unmatched")
     p.set_defaults(func=cmd_map_segments)
+
+    p = sub.add_parser("plan-rides", help="counterbalanced ride plan from a protocol file")
+    p.add_argument("protocol", help="e.g. configs/protocol/pilot.yaml")
+    p.add_argument("--out", help="CSV output (default: print)")
+    p.set_defaults(func=cmd_plan_rides)
 
     p = with_config(sub.add_parser("segment-frames", help="EXPERIMENTAL label maps from VRS frames"))
     p.add_argument("session_dir")

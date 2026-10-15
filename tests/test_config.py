@@ -130,3 +130,12 @@ def test_vehicle_catalogue_and_overrides(cfg) -> None:
     catalogue["vehicle_types"]["escooter"]["analysis_overrides"] = {"trimming": {"typo_key": 1}}
     with pytest.raises(ConfigError):
         replace(cfg, vehicles=VehicleCatalogue.model_validate(catalogue)).for_vehicle("escooter")
+
+
+def test_semantic_taxonomy_is_hierarchical_with_unknown(cfg) -> None:
+    tax = cfg.taxonomy
+    assert "unknown" in tax.semantic_names and tax.semantic_parent("unknown") == "unknown"
+    assert tax.semantic_parent("cycle_lane") == "path_surface"
+    assert tax.semantic_parent("path_surface_unspecified") == "path_surface"  # fallback when lanes are not separable
+    assert tax.semantic_parent("escooter") == "road_user"
+    assert {c.parent for c in tax.semantic_classes} <= set(tax.semantic_categories)

@@ -4,6 +4,8 @@
 #
 # STATUS: provisional, not validated on Aria imagery. Entries marked
 # "provisional" have no verified official definition or are ambiguous.
+# Classes the model cannot separate reliably on Aria imagery must be remapped to
+# the parent fallback (e.g. path_surface_unspecified) after the CV benchmark.
 # Licence note: Mapillary Vistas is released for research / non-commercial use
 # (CC BY-NC-SA); check the terms before any commercial use of models or outputs.
 backend: mask2former-swin-large-mapillary-vistas-semantic
@@ -12,8 +14,8 @@ map:
   "Bird": other
   "Ground Animal": other
   "Curb": curb
-  "Fence": other
-  "Guard Rail": other
+  "Fence": infrastructure_element
+  "Guard Rail": infrastructure_element
   "Barrier": obstacle
   "Wall": other
   "Bike Lane": cycle_lane
@@ -42,21 +44,21 @@ map:
   "Vegetation": vegetation
   "Water": other
   "Banner": other
-  "Bench": other
-  "Bike Rack": other
-  "Billboard": other
+  "Bench": infrastructure_element
+  "Bike Rack": infrastructure_element
+  "Billboard": infrastructure_element
   "Catch Basin": road
-  "CCTV Camera": other
-  "Fire Hydrant": other
-  "Junction Box": other
-  "Mailbox": other
+  "CCTV Camera": infrastructure_element
+  "Fire Hydrant": infrastructure_element
+  "Junction Box": infrastructure_element
+  "Mailbox": infrastructure_element
   "Manhole": road
-  "Phone Booth": other
+  "Phone Booth": infrastructure_element
   "Pothole": obstacle
-  "Street Light": other
-  "Pole": other
+  "Street Light": infrastructure_element
+  "Pole": infrastructure_element
   "Traffic Sign Frame": traffic_sign
-  "Utility Pole": other
+  "Utility Pole": infrastructure_element
   "Traffic Light": traffic_light
   "Traffic Sign (Back)": traffic_sign
   "Traffic Sign (Front)": traffic_sign
@@ -65,12 +67,12 @@ map:
   "Boat": other
   "Bus": large_vehicle
   "Car": car                       # parked vs moving needs temporal reasoning (planned)
-  "Caravan": large_vehicle
+  "Caravan": other_vehicle
   "Motorcycle": motorcycle
-  "On Rails": large_vehicle        # trams / trains
-  "Other Vehicle": large_vehicle   # provisional
-  "Trailer": large_vehicle
+  "On Rails": other_vehicle        # trams / trains
+  "Other Vehicle": other_vehicle   # provisional
+  "Trailer": other_vehicle
   "Truck": large_vehicle
   "Wheeled Slow": other            # provisional: definition unverified (may include scooters)
   "Car Mount": other
-  "Ego Vehicle": other             # e.g. handlebar of the rider's own e-scooter
+  "Ego Vehicle": unknown           # handlebar / own vehicle in view: excluded from scene classes

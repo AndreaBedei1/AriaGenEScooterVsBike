@@ -1,0 +1,17 @@
+# =============================================================================
+# Pilot protocol (feasibility study, 3 participants) - input of `plan-rides`
+# =============================================================================
+# DRAFT: the final protocol is decided by the project lead and requires the
+# necessary authorisations before any acquisition (docs/ethics/).
+# Change repetitions_per_vehicle (1, 2, ...) and rides_per_session to explore
+# designs; docs/methodology/pilot_protocol.md discusses the trade-offs.
+# =============================================================================
+protocol_id: PILOT_2026_v0.1
+participants: [P001, P002, P003]          # pseudonyms only
+vehicles: [escooter, bicycle]             # keys of configs/vehicles.yaml
+repetitions_per_vehicle: 2                # 2 -> ABBA / BAAB (order balanced within participant)
+rides_per_session: 4                      # 4 rides in one visit; 2 -> two visits (days)
+first_vehicle_assignment: alternate       # alternate | random (random needs a seed)
+seed: null
+route_id: CES_A                           # docs/route/route_segments.csv (desk draft, verify on site)
+minimum_pause_min: 10                     # rest between rides (fatigue, glasses check)

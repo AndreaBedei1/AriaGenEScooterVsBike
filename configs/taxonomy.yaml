@@ -1,5 +1,5 @@
 # =============================================================================
-# AriaGenEScooter - analysis taxonomy
+# AriaGenEScooterVsBike - analysis taxonomy
 # =============================================================================
 # Controlled vocabularies used by annotations, synthetic data and metrics.
 # Names are stable identifiers (snake_case): never rename a class once real
@@ -91,39 +91,59 @@ event_types:
 
 # -----------------------------------------------------------------------------
 # Semantic classes of the scene (pixel/object level), used by segmentation
-# back-ends and by the semantic gaze module. Ids must be 0..N-1, unique.
-# Back-end specific labels are mapped onto these names by mapping files.
+# back-ends and by the semantic gaze module. Ids must be 0..N-1, unique; new
+# classes are appended (never renumbered). Back-end specific labels are mapped
+# onto these names by mapping files (configs/label_mappings/).
+#
+# The taxonomy is HIERARCHICAL: every class has a parent category (level 1).
+# Analyses can be run at class level or at category level; a model that cannot
+# separate two classes reliably (e.g. cycle lane vs carriageway) must map both
+# to the parent-level fallback class (e.g. path_surface_unspecified) or to
+# unknown - never to a guessed class. "unknown" is used for void, uncertain,
+# unlabelled or off-image gaze targets.
 # -----------------------------------------------------------------------------
+semantic_categories:
+  path_surface: "Surfaces on which people move: carriageway, cycle lane/path, sidewalk, crossing, curb."
+  road_user: "People and vehicles, moving or parked."
+  traffic_control: "Signs and signals."
+  street_element: "Static objects on or near the path: obstacles and infrastructure elements."
+  surroundings: "Background: vegetation, buildings, sky, other."
+  unknown: "Unlabelled, void or uncertain."
+
 semantic_classes:
-  - {id: 0, name: unknown, description: "Unlabelled, void or uncertain region."}
-  - {id: 1, name: road, description: "Carriageway for motor traffic."}
-  - {id: 2, name: cycle_lane, description: "Cycle lane or cycle path surface."}
-  - {id: 3, name: sidewalk, description: "Sidewalk / pedestrian surface."}
-  - {id: 4, name: crossing, description: "Zebra or cycle crossing markings/area."}
-  - {id: 5, name: curb, description: "Kerb or curb cut."}
-  - {id: 6, name: pedestrian, description: "Person on foot."}
-  - {id: 7, name: cyclist, description: "Person riding a bicycle."}
-  - {id: 8, name: bicycle, description: "Bicycle (ridden or parked)."}
-  - {id: 9, name: escooter, description: "E-scooter and/or its rider (rider vs vehicle split is TBD)."}
-  - {id: 10, name: motorcycle, description: "Motorcycle or moped."}
-  - {id: 11, name: car, description: "Passenger car."}
-  - {id: 12, name: large_vehicle, description: "Van, truck or bus, when distinguishable."}
-  - {id: 13, name: parked_vehicle, description: "Stationary/parked vehicle (needs temporal reasoning; single-frame models usually output car)."}
-  - {id: 14, name: traffic_sign, description: "Traffic sign."}
-  - {id: 15, name: traffic_light, description: "Traffic light."}
-  - {id: 16, name: obstacle, description: "Static object on or near the path (bollard, bin, works barrier)."}
-  - {id: 17, name: vegetation, description: "Trees, hedges, grass, terrain."}
-  - {id: 18, name: building, description: "Buildings and walls of buildings."}
-  - {id: 19, name: sky, description: "Sky."}
-  - {id: 20, name: other, description: "Known class not listed above (pole, fence, wall, ...)."}
+  - {id: 0, name: unknown, parent: unknown, description: "Unlabelled, void or uncertain region."}
+  - {id: 1, name: road, parent: path_surface, description: "Carriageway for motor traffic."}
+  - {id: 2, name: cycle_lane, parent: path_surface, description: "Cycle lane or cycle path surface."}
+  - {id: 3, name: sidewalk, parent: path_surface, description: "Sidewalk / pedestrian surface."}
+  - {id: 4, name: crossing, parent: path_surface, description: "Zebra or cycle crossing markings/area."}
+  - {id: 5, name: curb, parent: path_surface, description: "Kerb or curb cut."}
+  - {id: 6, name: pedestrian, parent: road_user, description: "Person on foot."}
+  - {id: 7, name: cyclist, parent: road_user, description: "Person riding a bicycle."}
+  - {id: 8, name: bicycle, parent: road_user, description: "Bicycle (ridden or parked)."}
+  - {id: 9, name: escooter, parent: road_user, description: "E-scooter and/or its rider (rider vs vehicle split is TBD)."}
+  - {id: 10, name: motorcycle, parent: road_user, description: "Motorcycle or moped."}
+  - {id: 11, name: car, parent: road_user, description: "Passenger car."}
+  - {id: 12, name: large_vehicle, parent: road_user, description: "Van, truck or bus, when distinguishable."}
+  - {id: 13, name: parked_vehicle, parent: road_user, description: "Stationary/parked vehicle (needs temporal reasoning; single-frame models usually output car)."}
+  - {id: 14, name: traffic_sign, parent: traffic_control, description: "Traffic sign."}
+  - {id: 15, name: traffic_light, parent: traffic_control, description: "Traffic light."}
+  - {id: 16, name: obstacle, parent: street_element, description: "Static object on or near the path (bollard, bin, works barrier)."}
+  - {id: 17, name: vegetation, parent: surroundings, description: "Trees, hedges, grass, terrain."}
+  - {id: 18, name: building, parent: surroundings, description: "Buildings and walls of buildings."}
+  - {id: 19, name: sky, parent: surroundings, description: "Sky."}
+  - {id: 20, name: other, parent: surroundings, description: "Known class not listed above (wall, building parts, animals, ...)."}
+  - {id: 21, name: path_surface_unspecified, parent: path_surface, description: "Path surface whose type (carriageway / cycle lane / sidewalk) cannot be determined reliably."}
+  - {id: 22, name: infrastructure_element, parent: street_element, description: "Pole, street light, bollard, fence, guard rail, bike rack, bench, kiosk and similar fixed elements."}
+  - {id: 23, name: other_vehicle, parent: road_user, description: "Vehicle not covered by the classes above (tram, caravan, trailer, unknown vehicle type)."}
 
 # Groups used for aggregated gaze metrics (a class may belong to several groups).
 semantic_groups:
   pedestrians: [pedestrian]
   other_vulnerable_road_users: [cyclist, bicycle, escooter]
-  vehicles: [motorcycle, car, large_vehicle, parked_vehicle]
-  path_surface: [road, cycle_lane, sidewalk, crossing, curb]
+  vehicles: [motorcycle, car, large_vehicle, parked_vehicle, other_vehicle]
+  path_surface: [road, cycle_lane, sidewalk, crossing, curb, path_surface_unspecified]
   traffic_control: [traffic_sign, traffic_light]
-  infrastructure: [road, cycle_lane, sidewalk, crossing, curb, traffic_sign, traffic_light]
+  infrastructure: [road, cycle_lane, sidewalk, crossing, curb, path_surface_unspecified, traffic_sign, traffic_light, infrastructure_element]
   obstacles: [obstacle]
+  street_elements: [obstacle, infrastructure_element]
   surroundings: [vegetation, building, sky, other]

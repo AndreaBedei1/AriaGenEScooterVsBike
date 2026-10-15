@@ -14,8 +14,8 @@ map:
   "sidewalk": sidewalk
   "building": building
   "wall": other
-  "fence": other
-  "pole": other
+  "fence": infrastructure_element
+  "pole": infrastructure_element
   "traffic light": traffic_light
   "traffic sign": traffic_sign
   "vegetation": vegetation
@@ -26,6 +26,6 @@ map:
   "car": car
   "truck": large_vehicle
   "bus": large_vehicle
-  "train": large_vehicle
+  "train": other_vehicle
   "motorcycle": motorcycle
   "bicycle": bicycle
