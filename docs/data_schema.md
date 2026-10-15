@@ -12,7 +12,8 @@ sync with the code.
 |---|---|---|---|
 | participant | `P001`..`P999` | `P007` | `SYN001`.. reserved for synthetic data |
 | session | `<participant>_S<nn>` | `P007_S02` | one visit / ride session |
-| recording | `<session>_R<nn>` | `P007_S02_R01` | one VRS file (a restarted recording gets `R02`) |
+| recording | `<session>_R<nn>` | `P007_S02_R01` | one VRS file = one ride (a restarted ride gets a new recording with `trial.part: 2`) |
+| trial | (vehicle_type, trial_number) per participant | `bicycle`, `2` | repetition of a vehicle; `ride_order` = position in the participant's whole protocol |
 | route segment | `<recording>_SEG<nnn>` | `P007_S02_R01_SEG004` | |
 | event | `<recording>_EV<nnn>` | `P007_S02_R01_EV012` | |
 
@@ -29,7 +30,8 @@ data/raw/<session>/<recording>/recording.vrs           (+ optional mps/, externa
 data/interim/<session>/<recording>/streams/*.csv       canonical streams (extract-aria)
 data/interim/<session>/<recording>/annotations/*.csv   route segments and events
 data/interim/<session>/<recording>/semantic/labels.npz label maps
-data/interim/<session>/<recording>/inventory.csv, extraction.json
+data/interim/<session>/<recording>/inventory.csv, extraction.json, extraction_quality.json
+data/interim/<session>/<recording>/annotations/segments_route.csv  map-matched route segments (to review)
 data/processed/<session>/<recording>/...               outputs of `run`
 data/processed/_study/                                 outputs of `aggregate`
 data/synthetic/SYN001_S01/...                          SYNTHETIC / TEST DATA (self-contained)
@@ -83,6 +85,9 @@ Eye gaze (combined/cyclopean), eye-in-head angles in the CPF frame and optional 
 | `v_px` | float | px | no | Gaze point row in the full-resolution RGB image. |
 | `confidence` | float | 0-1 | no | Source-provided confidence, if any. |
 | `depth_m` | float | m | no | Vergence-based gaze depth, if provided (unreliable at distance). |
+| `spatial_point_valid` | bool | - | no | 3-D (vergence) gaze point valid (Aria). |
+| `left_valid` | bool | - | no | Left-eye gaze valid (Aria vergence block). |
+| `right_valid` | bool | - | no | Right-eye gaze valid (Aria vergence block). |
 
 #### `imu.csv` - imu
 
@@ -113,6 +118,56 @@ Head (CPF) pose in a gravity-aligned local world frame (z up), e.g. from on-devi
 | `qy` | float | - | no | Orientation quaternion y. |
 | `qz` | float | - | no | Orientation quaternion z. |
 | `quality` | float | 0-1 | no | Source quality indicator, if any. |
+| `valid` | bool | - | no | Sample usable (VIO: status VALID and pose quality GOOD). |
+| `vio_status` | str | - | no | VIO status as reported (VALID, FILTER_NOT_INITIALIZED, INVALID). |
+| `tracking_quality` | str | - | no | VIO pose quality as reported (GOOD, BAD, ...). |
+| `visual_tracking_quality` | str | - | no | VIO visual tracking quality, if reported. |
+| `tracking_session` | str | - | no | VIO session id; a change marks a tracking reset. |
+
+#### `pose_hf.csv` - pose_hf
+
+High-frequency head pose (Aria on-device VIO at ~800 Hz = IMU pre-integration on top of the 10 Hz VIO, NOT independent visual estimates), resampled by nearest sample to a configured rate.
+
+| Column | Type | Unit | Required | Description |
+|---|---|---|---|---|
+| `t_ns` | int | ns | yes | Timestamp in the device clock (Aria DEVICE_TIME). |
+| `x_m` | float | m | yes | Position x (horizontal). |
+| `y_m` | float | m | yes | Position y (horizontal). |
+| `z_m` | float | m | yes | Position z (up). |
+| `qw` | float | - | no | Orientation quaternion w (world <- CPF). |
+| `qx` | float | - | no | Orientation quaternion x. |
+| `qy` | float | - | no | Orientation quaternion y. |
+| `qz` | float | - | no | Orientation quaternion z. |
+| `quality` | float | 0-1 | no | quality_score of the high-frequency VIO sample. |
+| `valid` | bool | - | no | Sample usable (VIO: status VALID and pose quality GOOD). |
+| `vio_status` | str | - | no | VIO status as reported (VALID, FILTER_NOT_INITIALIZED, INVALID). |
+| `tracking_quality` | str | - | no | VIO pose quality as reported (GOOD, BAD, ...). |
+| `visual_tracking_quality` | str | - | no | VIO visual tracking quality, if reported. |
+| `tracking_session` | str | - | no | VIO session id; a change marks a tracking reset. |
+
+#### `hands.csv` - hands
+
+On-device hand tracking: per hand presence, confidence, wrist and palm positions in the CPF frame (x left, y up, z forward). Absent = not detected (occlusion, out of view, tracking loss); it is never evidence that the hand left the handlebar.
+
+| Column | Type | Unit | Required | Description |
+|---|---|---|---|---|
+| `t_ns` | int | ns | yes | Timestamp in the device clock (Aria DEVICE_TIME). |
+| `left_present` | bool | - | yes | Left hand detected by the tracker. |
+| `left_confidence` | float | 0-1 | no | Tracker confidence (empty if absent). |
+| `left_wrist_x_m` | float | m | no | Wrist position x (CPF). |
+| `left_wrist_y_m` | float | m | no | Wrist position y (CPF). |
+| `left_wrist_z_m` | float | m | no | Wrist position z (CPF). |
+| `left_palm_x_m` | float | m | no | Palm centre x (CPF). |
+| `left_palm_y_m` | float | m | no | Palm centre y (CPF). |
+| `left_palm_z_m` | float | m | no | Palm centre z (CPF). |
+| `right_present` | bool | - | yes | Right hand detected by the tracker. |
+| `right_confidence` | float | 0-1 | no | Tracker confidence (empty if absent). |
+| `right_wrist_x_m` | float | m | no | Wrist position x (CPF). |
+| `right_wrist_y_m` | float | m | no | Wrist position y (CPF). |
+| `right_wrist_z_m` | float | m | no | Wrist position z (CPF). |
+| `right_palm_x_m` | float | m | no | Palm centre x (CPF). |
+| `right_palm_y_m` | float | m | no | Palm centre y (CPF). |
+| `right_palm_z_m` | float | m | no | Palm centre z (CPF). |
 
 #### `gps.csv` - gps
 
@@ -126,6 +181,7 @@ GNSS fixes (glasses, companion phone or external logger) mapped to device time.
 | `alt_m` | float | m | no | Altitude. |
 | `accuracy_m` | float | m | no | Horizontal accuracy reported by the receiver. |
 | `speed_mps` | float | m/s | no | Receiver speed (Doppler), if available. |
+| `vertical_accuracy_m` | float | m | no | Vertical accuracy reported by the receiver. |
 
 ### Annotations
 
@@ -139,7 +195,8 @@ Route segments: non-overlapping, semantically homogeneous stretches of the ride.
 | `t_start_ns` | int | ns | yes | Segment start (device clock). |
 | `t_end_ns` | int | ns | yes | Segment end (device clock), > start. |
 | `infrastructure_class` | str | - | yes | One of taxonomy.infrastructure_classes. |
-| `source` | str | - | yes | manual \| map_matching \| synthetic \| ... |
+| `route_segment_id` | str | - | no | Id of the physical route segment (docs/route/route_segments.csv) for comparisons of the same place across rides and vehicles. |
+| `source` | str | - | yes | manual | map_matching | synthetic | ... |
 | `annotator` | str | - | no | Pseudonymous annotator code (never a full name). |
 | `notes` | str | - | no | Free text (no personal data). |
 
@@ -157,7 +214,7 @@ Events/interactions: intervals that may overlap each other and any segment.
 | `tags` | str | - | no | Extra event types, ';'-separated (e.g. overtaking). |
 | `target_class` | str | - | no | Semantic class of the interaction target (for first gaze). |
 | `target_instance_id` | int | - | no | Instance/track id of the target, if known. |
-| `source` | str | - | yes | manual \| synthetic \| detector \| ... |
+| `source` | str | - | yes | manual | synthetic | detector | ... |
 | `annotator` | str | - | no | Pseudonymous annotator code. |
 | `notes` | str | - | no | Free text (no personal data). |
 
@@ -181,20 +238,26 @@ Maps may be lower resolution than the RGB frames; gaze coordinates are scaled.
 ## 5. Session manifest (`manifest.yaml`)
 
 Validated by `SessionManifest` (unknown keys are errors) and scanned for direct identifiers.
-A documented example is `configs/example_session.yaml`.
+A documented example is `configs/example_session.yaml` (version 2, one e-scooter and one
+bicycle ride).
 
 | Field | Description |
 |---|---|
-| `manifest_version` | schema version (1) |
+| `manifest_version` | `2` for the two-vehicle study; `1` (e-scooter-only format) is still read: every recording is then an e-scooter ride, trial 1 |
 | `synthetic` | true only for synthetic data (`SYN` ids) |
 | `participant_id`, `session_id` | pseudonymous ids, consistency checked |
 | `protocol_version` | version of the acquisition / ethics procedure |
-| `route` | `route_id`, `variant`, `description` |
+| `route` | `route_id` (e.g. `CES_A`, see `docs/route/`), `variant`, `description` |
 | `timing` | `date` (may be generalised for sharing), `start_time_local`, `timezone` |
 | `conditions` | `weather`, `road_surface`, `light`, `traffic_density` (coarse categories), `temperature_c`, `notes` |
-| `equipment` | internal codes of Aria device and e-scooter, recording profile, external GPS logger |
-| `recordings[]` | `recording_id`, relative `files` (vrs, mps_dir, external_gps), stream status (`available` / `partial` / `missing` / `unknown`), clock information, device time span, optional `trimming_override` (start/end s, reason, staff code), notes, technical issues |
+| `equipment` | internal code of the Aria device, `recording_profile` (name of `configs/recording_profiles/<name>.json`, used for nominal rates), `vehicles[]` (v2: `vehicle_code`, `vehicle_type` from `configs/vehicles.yaml`, `model`, `characteristics`, `notes`), external GPS logger; v1 only: `escooter_code`, `escooter_model` |
+| `recordings[]` | `recording_id`; v2 `trial` (`vehicle_type`, `vehicle_code`, `trial_number`, `ride_order`, `part`, optional `route_id`/`route_direction`, `rider_reported_issues`); relative `files` (vrs, mps_dir, external_gps); stream status (`available` / `partial` / `missing` / `unknown`) for rgb, eye_gaze, imu, pose, pose_high_frequency, hand_tracking, gps_device, gps_phone, gps_external, ppg, mps_*; clock information; device time span; optional `trimming_override`; notes; technical issues |
 | `notes`, `technical_issues[]` | session-level notes and issues (`description`, `severity`, `streams`) |
+
+Rules (v2): every recording has a trial; a `vehicle_code` must be declared in `equipment.vehicles`
+with the same type; `(vehicle_type, trial_number, part)` is unique within a session. A participant
+may have several sessions (days), each with one or more rides; `ride_order` keeps the global order
+of rides of that participant across sessions (checked by the study team, not by the code).
 
 ## 6. Outputs of `run`
 
@@ -202,7 +265,8 @@ A documented example is `configs/example_session.yaml`.
 
 | File | Content |
 |---|---|
-| `report.json` | deterministic summary: ids, synthetic notice, config hash and sources, input hashes, timestamp checks, synchronisation, trimming, kinematics and gaze summaries, whole-ride metrics, counts, issues, output list |
+| `report.json` | deterministic summary: ids, trial and vehicle, synthetic notice, config hash and sources (including the vehicle type), input hashes, timestamp checks, quality summary, synchronisation, trimming, kinematics and gaze summaries, whole-ride metrics, counts, issues, output list |
+| `quality.json` | data-quality report per stream: timing (effective vs nominal rate, dropout fraction, duplicated / out-of-order / invalid timestamps, classified gaps), VIO status / tracking quality / resets / pose discontinuities, high-frequency VIO quality score, gaze validity, hand detection, GNSS fixes and accuracy, interval fractions; source of the nominal rates |
 | `trimming.json` | trimming decision: method, reason, parameters, all moving runs, recording / detected / trimmed intervals (ns and s), removed durations, manual override and automatic comparison |
 | `effective_config.yaml` | merged configuration actually used |
 | `run_info.json` | non-deterministic metadata (UTC time, versions, platform) |
@@ -213,9 +277,18 @@ A documented example is `configs/example_session.yaml`.
 | `tables/decel_events.csv`, `stops.csv` | detected deceleration events and stops |
 | `tables/gaze_class_time.csv` | long format: window type/id x semantic class -> seconds and share |
 | `tables/fixations.csv`, `dwells.csv`, `lateral_glances.csv` | derived gaze events |
+| `tables/quality_intervals.csv` | per stream: intervals `observed` / `interpolable` / `degraded` / `unusable` with reason (gap class, tracking reset, no valid samples) |
 | `tables/kinematics.csv` | 10 Hz kinematics grid (sample level) |
 | `tables/semantic_gaze.csv` | sample-level gaze: status, frame match, class, instance, angles in all frames of reference |
 | `figures/overview.png`, `trajectory.png` | diagnostic figures |
+
+Every per-window table starts with the identifiers `participant_id`, `session_id`, `recording_id`,
+`synthetic`, `vehicle_type`, `vehicle_code`, `trial_number`, `ride_order`, `trial_part`, `route_id`,
+`recording_profile` and the session conditions. Segment and event tables also carry the window
+quality columns `q_<stream>_<status>` (fractions of observed / interpolable / degraded / unusable
+time for pose, gaze, frames, hands) and `quality_flag` (`ok` / `low_coverage`), and segment tables
+carry `route_segment_id` when the segments come from the planned route and the EXPLORATORY hand
+columns `hand_*` (detection fractions, wrist position medians/IQR in CPF, inter-wrist distance).
 
 Main columns of `segment_metrics.csv` (behaviour): `duration_s`, `kinematics_coverage`,
 `distance_m`, `speed_mean_mps`, `speed_median_mps`, `speed_sd_mps`, `speed_cv`, `speed_p85_mps`,
@@ -238,8 +311,14 @@ Main columns of `event_metrics.csv`: `t_first_gaze_ns`, `first_gaze_status`,
 ## 7. Study level (`aggregate`)
 
 `study_segment_metrics.csv`, `study_event_metrics.csv`, `study_approach_metrics.csv` (rows from
-all processed recordings, real and synthetic never mixed) and `rider_by_infrastructure.csv`
-(participant x infrastructure class: number of segments, total duration, mean of key metrics).
+all processed recordings, real and synthetic never mixed), `rider_by_infrastructure.csv`
+(participant x infrastructure class: number of segments, total duration, mean of key metrics),
+`rider_vehicle_by_infrastructure.csv` (participant x vehicle x infrastructure class) and
+`within_participant_vehicle_contrasts.csv` (participant x place - route segment when aligned to the
+planned route, else infrastructure class - with the per-vehicle means over trials and the difference
+escooter - bicycle; only places observed with both vehicles; windows flagged `low_coverage` are
+excluded). These are DESCRIPTIVE tables: inference follows
+`docs/methodology/statistical_analysis_plan.md`.
 
 Optional participant covariates (`--participants`): one row per pseudonymous `participant_id`
 with coarse categories only (e.g. age band, riding experience, riding frequency, vision

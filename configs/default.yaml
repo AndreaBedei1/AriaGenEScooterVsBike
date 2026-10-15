@@ -1,5 +1,5 @@
 # =============================================================================
-# AriaGenEScooter - default analysis configuration
+# AriaGenEScooterVsBike - default analysis configuration (shared by all vehicles)
 # =============================================================================
 # Every number below is an ANALYSIS PARAMETER, not a validated scientific
 # constant. Values marked "provisional" must be reviewed on pilot data and
@@ -24,6 +24,9 @@ paths:
   data_root: data
   # Taxonomy file, relative to the directory of THIS file.
   taxonomy_file: taxonomy.yaml
+  # Vehicle catalogue (e-scooter, bicycle) with optional per-vehicle
+  # analysis overrides, relative to the directory of THIS file.
+  vehicles_file: vehicles.yaml
 
 timestamps:
   # An inter-sample interval is reported as a gap when it is longer than
@@ -55,6 +58,42 @@ synchronization:
     # The estimate is always reported; it is applied only if it is reliable
     # (correlation >= min_correlation and peak not at the search boundary).
     apply_if_reliable: true
+
+quality:
+  # Data-quality control of every stream (src/ariagen_escooter/quality.py).
+  # Nominal rates come from the recording profile declared in the manifest
+  # (equipment.recording_profile -> <profiles_dir>/<name>.json) when it is
+  # known; a value here overrides it; null = profile, else the median
+  # observed interval (then dropouts are only relative to the stream's cadence).
+  profiles_dir: recording_profiles
+  # Gap classes per stream (all values provisional, to review on pilot data):
+  #   interval <= jitter_factor x nominal period   -> observed
+  #   interval <= short_gap_s                      -> interpolable (smooth signals only, always reported)
+  #   interval <= medium_gap_s                     -> degraded (never interpolated)
+  #   interval >  medium_gap_s                     -> unusable
+  jitter_factor: 1.5
+  streams:
+    frames: {nominal_rate_hz: null, short_gap_s: 0.2, medium_gap_s: 1.0}
+    gaze: {nominal_rate_hz: null, short_gap_s: 0.1, medium_gap_s: 0.5}
+    imu: {nominal_rate_hz: null, short_gap_s: 0.05, medium_gap_s: 0.5}
+    pose: {nominal_rate_hz: null, short_gap_s: 0.5, medium_gap_s: 2.0}
+    pose_hf: {nominal_rate_hz: null, short_gap_s: 0.05, medium_gap_s: 0.5}
+    hands: {nominal_rate_hz: null, short_gap_s: 0.3, medium_gap_s: 1.0}
+    gps: {nominal_rate_hz: null, short_gap_s: 3.0, medium_gap_s: 10.0}
+  # Head-pose plausibility: a displacement / rotation between consecutive
+  # valid samples faster than this is a pose discontinuity, not motion.
+  max_plausible_speed_mps: 15.0
+  max_plausible_angular_rate_degps: 720.0
+  # High-frequency VIO samples with quality_score below this are counted
+  # (0.5 appears only as an example in the official tutorial: not validated).
+  min_hf_quality_score: 0.5
+  # GNSS fixes with horizontal accuracy worse than this are counted (m).
+  gps_max_accuracy_m: 10.0
+  # Hand-tracking detections below this confidence are counted.
+  min_hand_confidence: 0.5
+  # A window (segment, event) whose streams have observed + interpolable time
+  # below this fraction gets quality_flag = low_coverage.
+  min_window_coverage: 0.8
 
 trimming:
   # raw session -> detected riding interval -> trimmed session.
@@ -197,6 +236,12 @@ aria:
   # docs/privacy_pipeline.md before using it).
   pose_source: vio
   pose_rate_hz: 20.0
+  # The high-frequency VIO stream (~800 Hz, IMU pre-integration on top of the
+  # 10 Hz VIO) is also exported as pose_hf.csv, resampled to this rate by
+  # nearest sample (no interpolation); its raw timing is quality-checked first.
+  pose_hf_rate_hz: 100.0
+  # Export on-device hand tracking (hands.csv, wrist/palm in CPF) if present.
+  export_hands: true
   # IMU (800 Hz in the standard profiles) is block-averaged to this rate.
   imu_rate_hz: 100.0
   # Gaze projection into the RGB image. spatial_point_if_valid follows the

@@ -107,6 +107,7 @@ def speed_for_trimming(
     polyorder: int,
     pose_max_gap_s: float,
     gps_max_gap_s: float,
+    pose_breaks_ns: np.ndarray | None = None,
 ) -> SpeedSignal | None:
     """Smoothed speed on the trimming grid from the configured source."""
     order = {"auto": ("pose", "gps"), "pose": ("pose",), "gps": ("gps",)}[cfg.speed_source]
@@ -120,6 +121,7 @@ def speed_for_trimming(
                 window_s=cfg.smoothing_window_s,
                 polyorder=polyorder,
                 max_gap_s=pose_max_gap_s,
+                breaks_ns=pose_breaks_ns,
             )
             return SpeedSignal(grid, speed, "pose")
         if source == "gps" and gps is not None and len(gps) >= 2:

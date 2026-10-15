@@ -4,12 +4,18 @@ Per recording::
 
     load canonical streams + annotations + label maps
       -> validate timestamps
+      -> data-quality control (rates, dropouts, classified gaps, VIO status/resets,
+         gaze/hand validity, GNSS fixes) -> quality.json + quality_intervals.csv
       -> GPS clock-offset check (speed cross-correlation)
       -> ride trimming (raw -> detected riding interval -> trimmed)
       -> kinematics + behaviour metrics
       -> semantic gaze + gaze metrics
       -> segment / approach / event (perception -> action) tables
       -> report.json, tables/*.csv, trimming.json, figures/*.png
+
+Each recording is processed with the configuration of its vehicle type
+(shared parameters + optional ``analysis_overrides`` of configs/vehicles.yaml);
+vehicle, trial number and ride order are carried in every output table.
 
 The input files are only read; outputs go to ``<out_root>/<session>/<recording>/``.
 """
@@ -33,8 +39,18 @@ from ariagen_escooter.behaviour import (
 from ariagen_escooter.config import AnalysisConfig, ConfigError, LoadedConfig, portable_path, read_yaml_mapping
 from ariagen_escooter.events import event_context, perception_action, prepare_annotations
 from ariagen_escooter.gaze import GazeDerived, build_semantic_gaze, derive_gaze, window_gaze_metrics
+from ariagen_escooter.hands import window_hand_metrics
 from ariagen_escooter.io import find_table, read_table, sha256_file, write_json, write_yaml
 from ariagen_escooter.privacy import scan_for_identifiers
+from ariagen_escooter.quality import (
+    GapThresholds,
+    canonical_nominal_rates,
+    load_profile,
+    nominal_rates_from_profile,
+    recording_quality,
+    tracking_breaks,
+    window_quality,
+)
 from ariagen_escooter.reporting import SYNTHETIC_NOTICE, run_info, with_ids, write_report, write_tables
 from ariagen_escooter.segmentation import LabelMapStore
 from ariagen_escooter.session import (
@@ -56,12 +72,15 @@ from ariagen_escooter.synchronization import OffsetEstimate, estimate_offset_xco
 from ariagen_escooter.trajectory import compute_kinematics, latlon_to_local_xy, speed_profile
 from ariagen_escooter.trimming import SpeedSignal, slice_by_time, speed_for_trimming, trim_recording
 
-DEVICE_CLOCK_STREAMS = ("frames", "gaze", "imu", "pose")
+DEVICE_CLOCK_STREAMS = ("frames", "gaze", "imu", "pose", "pose_hf", "hands")
+QUALITY_WINDOW_STREAMS = ("pose", "gaze", "frames", "hands")
 MANIFEST_STREAM_FILES = {
     "rgb": "frames",
     "eye_gaze": "gaze",
     "imu": "imu",
     "pose": "pose",
+    "pose_high_frequency": "pose_hf",
+    "hand_tracking": "hands",
     "gps_device": "gps",
     "gps_phone": "gps",
     "gps_external": "gps",
@@ -178,8 +197,18 @@ def validate_session(session_dir: Path, cfg: LoadedConfig) -> tuple[SessionManif
     if session_dir.name != manifest.session_id:
         issues.append(Issue("warning", "folder_name", f"folder {session_dir.name!r} != session_id", "manifest"))
     a = cfg.analysis
+    profile = manifest.equipment.recording_profile
+    if profile and not manifest.synthetic and _profile_path(cfg, profile) is None:
+        issues.append(Issue("warning", "profile_unknown",
+                            f"recording profile {profile!r} not found in configs/{a.quality.profiles_dir}: "
+                            "nominal rates fall back to observed median intervals", "manifest"))
     for entry in manifest.recordings:
         where = entry.recording_id
+        trial = manifest.trial_of(entry.recording_id)
+        if trial.vehicle_type not in cfg.vehicles.vehicle_types:
+            issues.append(Issue("error", "unknown_vehicle",
+                                f"vehicle_type {trial.vehicle_type!r} not in configs/vehicles.yaml "
+                                f"({sorted(cfg.vehicles.vehicle_types)})", where))
         loc = locate_recording(session_dir, manifest.session_id, entry.recording_id, cfg.data_root)
         if not loc.streams_dir.is_dir():
             issues.append(Issue("warning", "no_streams", "no canonical streams yet (run extract-aria on Linux)", where))
@@ -225,7 +254,42 @@ def validate_session(session_dir: Path, cfg: LoadedConfig) -> tuple[SessionManif
 # --------------------------------------------------------------------------- #
 # Processing
 # --------------------------------------------------------------------------- #
-def _gps_offset(pose: pd.DataFrame, gps: pd.DataFrame, a: AnalysisConfig) -> tuple[OffsetEstimate, SpeedSignal | None]:
+def _profile_path(cfg: LoadedConfig, name: str) -> Path | None:
+    path = cfg.project_root / "configs" / cfg.analysis.quality.profiles_dir / f"{name}.json"
+    return path if path.is_file() else None
+
+
+def nominal_rates(cfg: LoadedConfig, manifest: SessionManifest) -> tuple[dict[str, float], str]:
+    """Nominal canonical-stream rates: recording profile (if known), config overrides."""
+    a = cfg.analysis
+    rates: dict[str, float] = {}
+    source = "observed_median_interval"
+    name = manifest.equipment.recording_profile
+    path = _profile_path(cfg, name) if name else None
+    if path is not None:
+        rates = nominal_rates_from_profile(load_profile(path))
+        source = f"recording_profile:{name}"
+    rates = canonical_nominal_rates(rates, a.aria.imu_rate_hz, a.aria.pose_hf_rate_hz) if rates else rates
+    for stream, sq in a.quality.streams.items():
+        if sq.nominal_rate_hz is not None:
+            rates[stream] = sq.nominal_rate_hz
+            source += f"+config:{stream}"
+    return rates, source
+
+
+def _valid_pose(df: pd.DataFrame | None) -> tuple[pd.DataFrame | None, np.ndarray]:
+    """Keep only valid pose samples; return the tracking-reset instants (breaks)."""
+    if df is None:
+        return None, np.empty(0, dtype=np.int64)
+    breaks = tracking_breaks(df)
+    out = df[df["valid"].astype(bool)].reset_index(drop=True) if "valid" in df.columns else df
+    out.attrs["tracking_breaks_ns"] = breaks
+    return out, breaks
+
+
+def _gps_offset(
+    pose: pd.DataFrame, gps: pd.DataFrame, a: AnalysisConfig, breaks: np.ndarray | None = None
+) -> tuple[OffsetEstimate, SpeedSignal | None]:
     co = a.synchronization.clock_offset
     grid, pose_speed = speed_profile(
         pose["t_ns"].to_numpy(),
@@ -235,6 +299,7 @@ def _gps_offset(pose: pd.DataFrame, gps: pd.DataFrame, a: AnalysisConfig) -> tup
         window_s=a.trimming.smoothing_window_s,
         polyorder=a.kinematics.savgol_polyorder,
         max_gap_s=a.synchronization.pose_max_gap_s,
+        breaks_ns=breaks,
     )
     t_gps = gps["t_ns"].to_numpy()
     if "speed_mps" in gps.columns and gps["speed_mps"].notna().mean() > 0.9:
@@ -278,7 +343,7 @@ def _clip_segments(segments: pd.DataFrame | None, t0: int, t1: int) -> pd.DataFr
 
 
 def _kinematics(
-    trimmed: dict[str, pd.DataFrame], a: AnalysisConfig, t0: int, t1: int
+    trimmed: dict[str, pd.DataFrame], a: AnalysisConfig, t0: int, t1: int, breaks: np.ndarray | None = None
 ) -> tuple[pd.DataFrame | None, str | None]:
     order = {"auto": ("pose", "gps"), "pose": ("pose",), "gps": ("gps",)}[a.kinematics.source]
     for source in order:
@@ -295,7 +360,16 @@ def _kinematics(
                 float(df["lon_deg"].iat[0]),
             )
             gap = a.synchronization.gps_max_gap_s
-        kin = compute_kinematics(df["t_ns"].to_numpy(), x, y, a.kinematics, max_gap_s=gap, start_ns=t0, end_ns=t1)
+        kin = compute_kinematics(
+            df["t_ns"].to_numpy(),
+            x,
+            y,
+            a.kinematics,
+            max_gap_s=gap,
+            start_ns=t0,
+            end_ns=t1,
+            breaks_ns=breaks if source == "pose" else None,
+        )
         return kin, source
     return None, None
 
@@ -323,6 +397,9 @@ def process_recording(
     make_plots: bool | None = None,
 ) -> dict[str, object]:
     """Process one recording; returns the report dictionary (also written to disk)."""
+    trial = manifest.trial_of(entry.recording_id)
+    if cfg.vehicle_type != trial.vehicle_type:
+        cfg = cfg.for_vehicle(trial.vehicle_type)
     a = cfg.analysis
     decimals = a.reporting.float_decimals
     loc = locate_recording(session_dir, manifest.session_id, entry.recording_id, cfg.data_root)
@@ -338,7 +415,9 @@ def process_recording(
         "participant_id": manifest.participant_id,
         "session_id": manifest.session_id,
         "recording_id": entry.recording_id,
-        "config": {"sources": list(cfg.sources), "sha256": cfg.sha256},
+        "trial": trial.model_dump(),
+        "vehicle": cfg.vehicles.vehicle_types[trial.vehicle_type].model_dump(),
+        "config": {"sources": list(cfg.sources), "sha256": cfg.sha256, "vehicle_type": cfg.vehicle_type},
         "inputs": {
             key: {"file": path.relative_to(loc.work_dir).as_posix(), "sha256": sha256_file(path)}
             for key, path in sorted(data.inputs.items())
@@ -374,10 +453,43 @@ def process_recording(
     rec_start, rec_end = span
     streams = dict(data.streams)
 
+    # --- Data quality (on all samples, invalid ones included) ---------------------
+    q = a.quality
+    rates, rate_source = nominal_rates(cfg, manifest)
+    thresholds = {k: GapThresholds(q.jitter_factor, v.short_gap_s, v.medium_gap_s) for k, v in q.streams.items()}
+    quality_report, quality_intervals = recording_quality(
+        streams,
+        span,
+        rates,
+        thresholds,
+        max_speed_mps=q.max_plausible_speed_mps,
+        max_angular_rate_degps=q.max_plausible_angular_rate_degps,
+        min_hf_quality_score=q.min_hf_quality_score,
+        gps_max_accuracy_m=q.gps_max_accuracy_m,
+        min_hand_confidence=q.min_hand_confidence,
+    )
+    quality_report["nominal_rates_source"] = rate_source
+    write_json(quality_report, out_dir / "quality.json", decimals)
+    report["quality_summary"] = {
+        name: {
+            "effective_rate_hz": entry_q["timing"].get("effective_rate_hz"),
+            "nominal_rate_hz": entry_q["timing"].get("nominal_rate_hz"),
+            "dropout_fraction": entry_q["timing"].get("dropout_fraction"),
+            "interval_fractions": entry_q["interval_fractions"],
+        }
+        for name, entry_q in quality_report["streams"].items()
+    }
+    # Only valid pose samples are used from here on; resets break continuity.
+    streams["pose"], pose_breaks = _valid_pose(streams.get("pose"))
+    if streams["pose"] is None:
+        streams.pop("pose")
+    if "pose_hf" in streams:
+        streams["pose_hf"], _ = _valid_pose(streams["pose_hf"])
+
     # --- GPS clock offset ------------------------------------------------------
     sync: dict[str, object] = {"gaze_frame_tolerance_s": a.synchronization.gaze_frame_tolerance_s}
     if "gps" in streams and "pose" in streams and a.synchronization.clock_offset.enabled:
-        estimate, _ = _gps_offset(streams["pose"], streams["gps"], a)
+        estimate, _ = _gps_offset(streams["pose"], streams["gps"], a, pose_breaks)
         applied = bool(estimate.reliable and a.synchronization.clock_offset.apply_if_reliable)
         if applied and estimate.offset_s is not None:
             gps = streams["gps"].copy()
@@ -400,6 +512,7 @@ def process_recording(
         polyorder=a.kinematics.savgol_polyorder,
         pose_max_gap_s=a.synchronization.pose_max_gap_s,
         gps_max_gap_s=a.synchronization.gps_max_gap_s,
+        pose_breaks_ns=pose_breaks,
     )
     trim = trim_recording(
         a.trimming,
@@ -416,13 +529,15 @@ def process_recording(
         issues.append(Issue("warning", "trimming", trim.reason, entry.recording_id))
     t0, t1 = trim.trim_start_ns, trim.trim_end_ns
     trimmed = {name: slice_by_time(df, t0, t1) for name, df in streams.items()}
+    if trimmed.get("pose") is not None:
+        trimmed["pose"].attrs["tracking_breaks_ns"] = pose_breaks
     segments = _clip_segments(data.segments, t0, t1)
     events = None
     if data.events is not None:
         events = data.events[(data.events["t_end_ns"] > t0) & (data.events["t_start_ns"] < t1)].reset_index(drop=True)
 
     # --- Kinematics ---------------------------------------------------------------
-    kin, kin_source = _kinematics(trimmed, a, t0, t1)
+    kin, kin_source = _kinematics(trimmed, a, t0, t1, pose_breaks)
     stops = detect_stops(kin, a.kinematics) if kin is not None else None
     braking = detect_braking_events(kin, a.kinematics) if kin is not None else None
     report["kinematics"] = {
@@ -430,7 +545,9 @@ def process_recording(
         "grid_rate_hz": a.kinematics.grid_rate_hz,
         "n_stops": None if stops is None else len(stops),
         "n_decel_events": None if braking is None else len(braking),
-        "note": "head-mounted sensor: speed/heading describe the rider's head trajectory",
+        "note": "head-mounted sensor: speed/heading describe the rider's head trajectory (an ESTIMATE of the "
+        "vehicle's motion, not a measurement of the vehicle)",
+        "tracking_resets_in_ride": int(np.sum((pose_breaks >= t0) & (pose_breaks <= t1))),
     }
     if kin is None:
         issues.append(
@@ -469,7 +586,13 @@ def process_recording(
         "session_id": manifest.session_id,
         "recording_id": entry.recording_id,
         "synthetic": manifest.synthetic,
-        "route_id": manifest.route.route_id,
+        "vehicle_type": trial.vehicle_type,
+        "vehicle_code": trial.vehicle_code,
+        "trial_number": trial.trial_number,
+        "ride_order": trial.ride_order,
+        "trial_part": trial.part,
+        "route_id": trial.route_id or manifest.route.route_id,
+        "recording_profile": manifest.equipment.recording_profile,
         "weather": manifest.conditions.weather,
         "light": manifest.conditions.light,
         "road_surface": manifest.conditions.road_surface,
@@ -483,6 +606,8 @@ def process_recording(
         metrics, class_time = window_gaze_metrics(derived, t0, t1, a.gaze, cfg.taxonomy)
         ride.update(metrics)
         class_rows += _class_time_rows("ride", entry.recording_id, class_time)
+    ride.update(window_hand_metrics(trimmed.get("hands"), t0, t1, q.min_hand_confidence))
+    ride.update(window_quality(quality_intervals, t0, t1, QUALITY_WINDOW_STREAMS, q.min_window_coverage))
     report["ride_summary"] = ride
 
     segment_table = None
@@ -502,6 +627,17 @@ def process_recording(
                 gaze_rows.append({"segment_id": seg["segment_id"], **metrics})
                 class_rows += _class_time_rows("segment", seg["segment_id"], class_time)
             base = base.merge(pd.DataFrame(gaze_rows).drop(columns=["gaze_duration_s"]), on="segment_id", how="left")
+        extra_rows = []
+        for _, seg in segments.iterrows():
+            s0, s1 = int(seg["t_start_ns"]), int(seg["t_end_ns"])
+            extra_rows.append({
+                "segment_id": seg["segment_id"],
+                **window_hand_metrics(trimmed.get("hands"), s0, s1, q.min_hand_confidence),
+                **window_quality(quality_intervals, s0, s1, QUALITY_WINDOW_STREAMS, q.min_window_coverage),
+            })
+        base = base.merge(pd.DataFrame(extra_rows), on="segment_id", how="left")
+        if "route_segment_id" in segments.columns:
+            base = base.merge(segments[["segment_id", "route_segment_id"]], on="segment_id", how="left")
         segment_table = with_ids(base, ids)
 
     event_table = context_table = None
@@ -526,6 +662,13 @@ def process_recording(
                 extra.append(row)
                 class_rows += _class_time_rows("event", ev["event_id"], class_time)
             pa = pa.merge(pd.DataFrame(extra), on="event_id", how="left")
+        q_rows = [
+            {"event_id": ev["event_id"],
+             **window_quality(quality_intervals, int(ev["t_start_ns"]), int(ev["t_end_ns"]),
+                              QUALITY_WINDOW_STREAMS, q.min_window_coverage)}
+            for _, ev in events.iterrows()
+        ]
+        pa = pa.merge(pd.DataFrame(q_rows), on="event_id", how="left")
         event_table = with_ids(pa, ids)
         if segments is not None:
             context_table = with_ids(event_context(events, segments), ids)
@@ -539,6 +682,7 @@ def process_recording(
         "decel_events": braking,
         "stops": stops,
         "gaze_class_time": pd.DataFrame(class_rows) if class_rows else None,
+        "quality_intervals": with_ids(quality_intervals, ids) if len(quality_intervals) else None,
         "fixations": None if derived is None else derived.fixations,
         "dwells": None if derived is None else derived.dwells,
         "lateral_glances": None if derived is None else derived.glances,
@@ -588,6 +732,7 @@ def process_recording(
     report["outputs"] = {
         "tables": written,
         "trimming": "trimming.json",
+        "quality": "quality.json",
         "effective_config": "effective_config.yaml",
         "run_info": "run_info.json (non-deterministic metadata)",
         "figures": figures,
@@ -675,4 +820,49 @@ def aggregate(
             summary_path = out_dir / "rider_by_infrastructure.csv"
             summary.to_csv(summary_path, index=False, float_format="%.6f", lineterminator="\n")
             out["tables"]["rider_by_infrastructure"] = {"file": summary_path.name, "rows": len(summary)}
+            if "vehicle_type" in study.columns:
+                for table_name, frame in vehicle_tables(study, metrics).items():
+                    path = out_dir / f"{table_name}.csv"
+                    frame.to_csv(path, index=False, float_format="%.6f", lineterminator="\n")
+                    out["tables"][table_name] = {"file": path.name, "rows": len(frame)}
+    return out
+
+
+def vehicle_tables(study: pd.DataFrame, metrics: list[str]) -> dict[str, pd.DataFrame]:
+    """Descriptive vehicle tables (no inference; see docs/methodology/statistical_analysis_plan.md).
+
+    * ``rider_vehicle_by_infrastructure``: participant x vehicle x infrastructure
+      class, means over segments, number of segments and of trials;
+    * ``within_participant_vehicle_contrasts``: for each participant and place
+      (route_segment_id when segments are aligned to the planned route, else
+      infrastructure class), the mean of each metric per vehicle over trials and
+      the difference escooter - bicycle. Rows exist only where BOTH vehicles were
+      observed at that place; low-coverage windows are excluded first.
+    """
+    data = study.copy()
+    if "quality_flag" in data.columns:
+        data = data[data["quality_flag"].fillna("ok") == "ok"]
+    out: dict[str, pd.DataFrame] = {}
+    keys = ["participant_id", "vehicle_type", "infrastructure_class"]
+    out["rider_vehicle_by_infrastructure"] = (
+        data.groupby(keys)
+        .agg(n_segments=("segment_id", "count"), n_trials=("trial_number", "nunique"),
+             total_duration_s=("duration_s", "sum"), **{m: (m, "mean") for m in metrics})
+        .reset_index()
+    )
+    place = "route_segment_id" if "route_segment_id" in data.columns and data["route_segment_id"].notna().any() \
+        else "infrastructure_class"
+    per_trial = data.groupby(["participant_id", place, "vehicle_type", "trial_number"])[metrics].mean().reset_index()
+    per_vehicle = per_trial.groupby(["participant_id", place, "vehicle_type"]).agg(
+        n_trials=("trial_number", "nunique"), **{m: (m, "mean") for m in metrics}).reset_index()
+    wide = per_vehicle.pivot(index=["participant_id", place], columns="vehicle_type")
+    wide.columns = [f"{m}__{v}" for m, v in wide.columns]
+    wide = wide.reset_index()
+    if {"escooter", "bicycle"} <= set(per_vehicle["vehicle_type"]):
+        both = wide[[f"n_trials__{v}" for v in ("escooter", "bicycle")]].notna().all(axis=1)
+        wide = wide[both].copy()
+        for m in metrics:
+            wide[f"{m}__diff_escooter_minus_bicycle"] = wide[f"{m}__escooter"] - wide[f"{m}__bicycle"]
+        wide.insert(2, "place_key", place)
+        out["within_participant_vehicle_contrasts"] = wide.reset_index(drop=True)
     return out

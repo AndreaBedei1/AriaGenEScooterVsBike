@@ -105,3 +105,28 @@ def test_taxonomy_groups_reference_existing_classes(cfg: LoadedConfig) -> None:
 
 def test_effective_yaml_roundtrip(cfg: LoadedConfig) -> None:
     assert yaml.safe_load(cfg.effective_yaml()) == cfg.merged
+
+
+def test_vehicle_catalogue_and_overrides(cfg) -> None:
+    from ariagen_escooter.config import ConfigError
+
+    assert set(cfg.vehicles.vehicle_types) == {"escooter", "bicycle"}
+    bike = cfg.for_vehicle("bicycle")
+    assert bike.vehicle_type == "bicycle" and bike.analysis == cfg.analysis  # no override justified yet
+    with pytest.raises(ConfigError):
+        cfg.for_vehicle("car")
+    import copy
+
+    catalogue = copy.deepcopy(cfg.vehicles.model_dump())
+    catalogue["vehicle_types"]["escooter"]["analysis_overrides"] = {"trimming": {"speed_threshold_mps": 2.5}}
+    from dataclasses import replace
+
+    from ariagen_escooter.config import VehicleCatalogue
+
+    custom = replace(cfg, vehicles=VehicleCatalogue.model_validate(catalogue))
+    esc = custom.for_vehicle("escooter")
+    assert esc.analysis.trimming.speed_threshold_mps == 2.5 and esc.sha256 != cfg.sha256
+    assert "vehicles.yaml:escooter" in esc.sources
+    catalogue["vehicle_types"]["escooter"]["analysis_overrides"] = {"trimming": {"typo_key": 1}}
+    with pytest.raises(ConfigError):
+        replace(cfg, vehicles=VehicleCatalogue.model_validate(catalogue)).for_vehicle("escooter")

@@ -101,13 +101,14 @@ def speed_profile(
     window_s: float,
     polyorder: int,
     max_gap_s: float,
+    breaks_ns: np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Smoothed horizontal speed on a uniform grid -> (grid_ns, speed_mps)."""
     t = np.asarray(t_ns, dtype=np.int64)
     grid = make_grid(int(t[0]), int(t[-1]), rate_hz)
     max_gap = int(max_gap_s * NS_PER_S)
-    xg = interpolate_to_grid(t, x_m, grid, max_gap)
-    yg = interpolate_to_grid(t, y_m, grid, max_gap)
+    xg = interpolate_to_grid(t, x_m, grid, max_gap, breaks_ns)
+    yg = interpolate_to_grid(t, y_m, grid, max_gap, breaks_ns)
     window = odd_window(window_s, rate_hz, polyorder)
     dt = 1.0 / rate_hz
     vx = savgol_nan_aware(xg, window, polyorder, deriv=1, delta=dt)
@@ -124,6 +125,7 @@ def compute_kinematics(
     max_gap_s: float,
     start_ns: int | None = None,
     end_ns: int | None = None,
+    breaks_ns: np.ndarray | None = None,
 ) -> pd.DataFrame:
     """Kinematic signals on a uniform grid from a horizontal trajectory.
 
@@ -134,6 +136,9 @@ def compute_kinematics(
     (direction of the path smoothed over ``lateral_reference_window_s``, i.e.
     without body sway), lateral_dev_m (signed deviation from that smoothed
     path, positive = left), stopped (bool).
+
+    ``breaks_ns`` (e.g. VIO tracking resets) split the trajectory: nothing is
+    interpolated or differentiated across them.
     """
     t = np.asarray(t_ns, dtype=np.int64)
     rate = cfg.grid_rate_hz
@@ -141,8 +146,8 @@ def compute_kinematics(
     end = int(t[-1]) if end_ns is None else min(int(end_ns), int(t[-1]))
     grid = make_grid(start, end, rate)
     max_gap = int(max_gap_s * NS_PER_S)
-    xg = interpolate_to_grid(t, x_m, grid, max_gap)
-    yg = interpolate_to_grid(t, y_m, grid, max_gap)
+    xg = interpolate_to_grid(t, x_m, grid, max_gap, breaks_ns)
+    yg = interpolate_to_grid(t, y_m, grid, max_gap, breaks_ns)
     p = cfg.savgol_polyorder
     w = odd_window(cfg.smoothing_window_s, rate, p)
     dt = 1.0 / rate

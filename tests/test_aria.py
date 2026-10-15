@@ -10,11 +10,14 @@ import pandas as pd
 import pytest
 
 from ariagen_escooter.aria import (
+    bin_average,
     gravity_alignment,
+    parse_file_metadata,
     poses_to_canonical,
     projectaria_available,
     read_mps_closed_loop_trajectory,
     read_mps_eye_gaze,
+    resample_nearest,
     timedelta_to_ns,
 )
 from ariagen_escooter.gaze import quat_to_rotmat
@@ -128,6 +131,70 @@ def test_projectaria_api_surface() -> None:
         "get_gps_data_by_index",
         "get_vio_data_by_index",
         "get_vio_high_freq_data_by_index",
+        "get_hand_pose_data_by_index",
+        "get_sensor_data_by_index",
+        "get_file_tags",
     ):
         assert hasattr(provider_cls, name), name
     assert hasattr(mps, "EyeGaze") and hasattr(mps, "get_eyegaze_point_at_depth")
+
+
+def test_resample_nearest_keeps_dropouts_visible() -> None:
+    t = (np.arange(0, 800) * 1.25e6).astype(np.int64)  # 800 Hz for 1 s
+    t = np.delete(t, np.arange(400, 480))  # 0.1 s dropout
+    grid, idx = resample_nearest(t, 100.0, tolerance_s=0.005)
+    assert grid.size == 100 and (idx == -1).sum() >= 9  # missing grid instants stay missing
+    ok = idx >= 0
+    assert np.all(np.abs(t[idx[ok]] - grid[ok]) <= 5_000_000)
+
+
+def test_bin_average_uses_time_not_index() -> None:
+    t = (np.arange(0, 1600) * 1.25e6).astype(np.int64)
+    v = np.c_[np.arange(1600, dtype=float)]
+    keep = np.r_[0:700, 900:1600]
+    centres, mean, counts = bin_average(t[keep], v[keep], 100.0)
+    assert counts.max() == 8 and len(centres) == 176  # 24 empty 10 ms bins are dropped, not merged
+    assert counts.min() < 8  # the two partially filled bins keep their true sample count
+    assert np.allclose(mean[0, 0], np.mean(np.arange(8)))
+
+
+def test_parse_file_metadata_never_returns_identifiers() -> None:
+    import json
+
+    meta = {"device": {"serial": "SECRET1"}, "client": {"name": "x"},
+            "recording": {"profile_name": "p8", "profile": {"et": {"rate_hz": 30}},
+                          "sensor_health_stats": [{"sensor_type": "VIO_RESULT", "expected_frame_count": 10,
+                                                   "actual_frame_count": 9, "dropped_frame_count": 1, "score": 90.0}]}}
+    out = parse_file_metadata({"metadata": json.dumps(meta), "device_serial": "SECRET2", "session_id": "S"})
+    assert out["profile"] == {"et": {"rate_hz": 30}} and out["sensor_health_stats"][0]["dropped_frame_count"] == 1
+    assert "SECRET" not in json.dumps(out)
+    assert {"device_serial", "session_id", "metadata.device", "metadata.client"} <= set(out["identifying_tags_present"])
+
+
+@pytest.mark.aria
+@pytest.mark.skipif(not projectaria_available(), reason="projectaria-tools not installed (Linux/macOS only)")
+def test_extractor_on_a_real_gen2_vrs(tmp_path: Path, cfg) -> None:
+    """Smoke test on a REAL Gen 2 VRS (e.g. the official projectaria_tools unit-test recordings
+    data/gen2/aria_gen2_unit_test_sequence*.vrs): set ARIAGEN_TEST_VRS to its path."""
+    import os
+
+    from ariagen_escooter.cli import extract_recording
+    from ariagen_escooter.io import read_json
+    from ariagen_escooter.streams import STREAM_SPECS, coerce_table
+
+    vrs = os.environ.get("ARIAGEN_TEST_VRS")
+    if not vrs or not Path(vrs).is_file():
+        pytest.skip("set ARIAGEN_TEST_VRS to a Gen 2 VRS file")
+    summary = extract_recording(Path(vrs), tmp_path / "streams", cfg)
+    for name in ("frames", "gaze", "imu", "pose", "pose_hf", "hands"):
+        path = tmp_path / "streams" / f"{name}.csv"
+        if summary["streams"][name] == "missing":
+            continue
+        _, issues = coerce_table(pd.read_csv(path), STREAM_SPECS[name])
+        assert not issues, (name, issues)
+    pose = pd.read_csv(tmp_path / "streams" / "pose.csv")
+    assert {"valid", "vio_status", "tracking_quality", "tracking_session"} <= set(pose.columns)
+    raw = read_json(tmp_path / "extraction_quality.json")["streams"]
+    assert raw["vio_high_frequency"]["effective_rate_hz"] > 700  # ~800 Hz IMU pre-integration
+    meta = read_json(tmp_path / "extraction.json")["metadata"]
+    assert meta["embedded_profile"] is not None and "device_serial" in meta["identifying_tags_present"]

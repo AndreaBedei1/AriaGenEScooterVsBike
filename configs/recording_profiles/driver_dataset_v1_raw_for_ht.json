@@ -1,0 +1,42 @@
+{
+  "name": "driver_dataset_v1_raw_for_ht",
+  "description": "Driving, motorbike and metro multimodal recording profile. SLAM/CV cameras are recorded only as intermediate input for hand tracking and should be removed from the released dataset after HT extraction.",
+  "imus": {"rateHz": 800},
+  "magnetometer": {"rateHz": 100},
+  "barometer": {"rateHz": 50},
+  "gps": {"rateHz": 1},
+  "slamCameras": {
+    "rateHz": 10,
+    "autoExposure": {},
+    "encoding": "H265",
+    "videoConfig": {"cqp": {"qp": 30}}
+  },
+  "etCameras": {
+    "rateHz": 5,
+    "autoExposure": {},
+    "encoding": "H265",
+    "videoConfig": {"cqp": {"qp": 24}},
+    "resolution": "R_200x200",
+    "irLed": "TRUE"
+  },
+  "rgbCamera": {
+    "rateHz": 15,
+    "autoExposure": {},
+    "encoding": "H265",
+    "videoConfig": {"cqp": {"qp": 28}},
+    "resolution": "R_4032x3024",
+    "width": 2016,
+    "height": 1512
+  },
+  "et": {"rateHz": 30},
+  "ht": {"rateHz": 10},
+  "vio": {"rateHz": 10},
+  "deviceInfo": {"periodMs": 30000},
+  "ppg": {"rateHz": 256},
+  "temperature": {"rateHz": 1},
+  "als": {
+    "rateHz": 9.434000015258789,
+    "exposureTimeUs": 3200
+  },
+  "type": "RECORDING"
+}

@@ -70,6 +70,15 @@ def _c(name: str, kind: ColumnKind, unit: str, description: str, required: bool 
 
 
 T_NS = _c("t_ns", "int", "ns", "Timestamp in the device clock (Aria DEVICE_TIME).")
+# Optional tracking-status columns of pose streams (kept for quality control:
+# invalid samples are written with valid = false instead of being dropped).
+POSE_STATUS_COLUMNS = (
+    _c("valid", "bool", "-", "Sample usable (VIO: status VALID and pose quality GOOD).", required=False),
+    _c("vio_status", "str", "-", "VIO status as reported (VALID, FILTER_NOT_INITIALIZED, INVALID).", required=False),
+    _c("tracking_quality", "str", "-", "VIO pose quality as reported (GOOD, BAD, ...).", required=False),
+    _c("visual_tracking_quality", "str", "-", "VIO visual tracking quality, if reported.", required=False),
+    _c("tracking_session", "str", "-", "VIO session id; a change marks a tracking reset.", required=False),
+)
 
 STREAM_SPECS: dict[str, TableSpec] = {
     "frames": TableSpec(
@@ -110,6 +119,9 @@ STREAM_SPECS: dict[str, TableSpec] = {
                 "Vergence-based gaze depth, if provided (unreliable at distance).",
                 required=False,
             ),
+            _c("spatial_point_valid", "bool", "-", "3-D (vergence) gaze point valid (Aria).", required=False),
+            _c("left_valid", "bool", "-", "Left-eye gaze valid (Aria vergence block).", required=False),
+            _c("right_valid", "bool", "-", "Right-eye gaze valid (Aria vergence block).", required=False),
         ),
     ),
     "imu": TableSpec(
@@ -140,6 +152,49 @@ STREAM_SPECS: dict[str, TableSpec] = {
             _c("qy", "float", "-", "Orientation quaternion y.", required=False),
             _c("qz", "float", "-", "Orientation quaternion z.", required=False),
             _c("quality", "float", "0-1", "Source quality indicator, if any.", required=False),
+            *POSE_STATUS_COLUMNS,
+        ),
+    ),
+    "pose_hf": TableSpec(
+        "pose_hf",
+        "pose_hf",
+        "High-frequency head pose (Aria on-device VIO at ~800 Hz = IMU pre-integration on top of the "
+        "10 Hz VIO, NOT independent visual estimates), resampled by nearest sample to a configured rate.",
+        (
+            T_NS,
+            _c("x_m", "float", "m", "Position x (horizontal)."),
+            _c("y_m", "float", "m", "Position y (horizontal)."),
+            _c("z_m", "float", "m", "Position z (up)."),
+            _c("qw", "float", "-", "Orientation quaternion w (world <- CPF).", required=False),
+            _c("qx", "float", "-", "Orientation quaternion x.", required=False),
+            _c("qy", "float", "-", "Orientation quaternion y.", required=False),
+            _c("qz", "float", "-", "Orientation quaternion z.", required=False),
+            _c("quality", "float", "0-1", "quality_score of the high-frequency VIO sample.", required=False),
+            *POSE_STATUS_COLUMNS,
+        ),
+    ),
+    "hands": TableSpec(
+        "hands",
+        "hands",
+        "On-device hand tracking: per hand presence, confidence, wrist and palm positions in the CPF frame "
+        "(x left, y up, z forward). Absent = not detected (occlusion, out of view, tracking loss); it is never "
+        "evidence that the hand left the handlebar.",
+        (
+            T_NS,
+            *(
+                col
+                for side in ("left", "right")
+                for col in (
+                    _c(f"{side}_present", "bool", "-", f"{side.capitalize()} hand detected by the tracker."),
+                    _c(f"{side}_confidence", "float", "0-1", "Tracker confidence (empty if absent).", required=False),
+                    _c(f"{side}_wrist_x_m", "float", "m", "Wrist position x (CPF).", required=False),
+                    _c(f"{side}_wrist_y_m", "float", "m", "Wrist position y (CPF).", required=False),
+                    _c(f"{side}_wrist_z_m", "float", "m", "Wrist position z (CPF).", required=False),
+                    _c(f"{side}_palm_x_m", "float", "m", "Palm centre x (CPF).", required=False),
+                    _c(f"{side}_palm_y_m", "float", "m", "Palm centre y (CPF).", required=False),
+                    _c(f"{side}_palm_z_m", "float", "m", "Palm centre z (CPF).", required=False),
+                )
+            ),
         ),
     ),
     "gps": TableSpec(
@@ -153,6 +208,7 @@ STREAM_SPECS: dict[str, TableSpec] = {
             _c("alt_m", "float", "m", "Altitude.", required=False),
             _c("accuracy_m", "float", "m", "Horizontal accuracy reported by the receiver.", required=False),
             _c("speed_mps", "float", "m/s", "Receiver speed (Doppler), if available.", required=False),
+            _c("vertical_accuracy_m", "float", "m", "Vertical accuracy reported by the receiver.", required=False),
         ),
     ),
 }
@@ -167,6 +223,14 @@ ANNOTATION_SPECS: dict[str, TableSpec] = {
             _c("t_start_ns", "int", "ns", "Segment start (device clock)."),
             _c("t_end_ns", "int", "ns", "Segment end (device clock), > start."),
             _c("infrastructure_class", "str", "-", "One of taxonomy.infrastructure_classes."),
+            _c(
+                "route_segment_id",
+                "str",
+                "-",
+                "Id of the physical route segment (docs/route/route_segments.csv) for comparisons of the same "
+                "place across rides and vehicles.",
+                required=False,
+            ),
             _c("source", "str", "-", "manual | map_matching | synthetic | ..."),
             _c("annotator", "str", "-", "Pseudonymous annotator code (never a full name).", required=False),
             _c("notes", "str", "-", "Free text (no personal data).", required=False),

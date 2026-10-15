@@ -828,7 +828,7 @@ def generate_session(
     }
 
     manifest = {
-        "manifest_version": 1,
+        "manifest_version": 2,
         "synthetic": True,
         "participant_id": participant,
         "session_id": session_id,
@@ -850,13 +850,30 @@ def generate_session(
         "equipment": {
             "aria_device_code": "SYNTHETIC",
             "recording_profile": "synthetic",
-            "escooter_code": "SYNTHETIC",
-            "escooter_model": None,
+            "vehicles": [
+                {
+                    "vehicle_code": "SYN_ESC",
+                    "vehicle_type": "escooter",
+                    "model": None,
+                    "characteristics": {},
+                    "notes": SYNTHETIC_NOTICE,
+                }
+            ],
             "external_gps_logger": "SYNTHETIC",
         },
         "recordings": [
             {
                 "recording_id": recording_id,
+                "trial": {
+                    "vehicle_type": "escooter",
+                    "vehicle_code": "SYN_ESC",
+                    "trial_number": 1,
+                    "ride_order": 1,
+                    "part": 1,
+                    "route_id": None,
+                    "route_direction": None,
+                    "rider_reported_issues": "",
+                },
                 "files": {"vrs": None, "mps_dir": None, "external_gps": None},
                 "streams": {
                     "rgb": "available",

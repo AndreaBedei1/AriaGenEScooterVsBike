@@ -1,67 +1,110 @@
 # =============================================================================
-# Example session manifest (template for a REAL session)
+# Example session manifest (template for a REAL session) - manifest_version 2
 # =============================================================================
-# Create a new session folder with this structure using:
-#   python -m ariagen_escooter new-session --participant P001
+# One session = one visit of one participant (one day). It can contain rides
+# with one or both vehicles; every recording (one VRS file) declares which
+# ride of the protocol it is (trial block). Create a folder with:
+#   python -m ariagen_escooter new-session --participant P001 \
+#       --ride escooter:1:1 --ride bicycle:1:2
 # which writes data/raw/<session_id>/manifest.yaml. This file documents every
 # field and is validated by the test suite.
 #
-# NEVER write names, e-mail addresses, phone numbers, fiscal codes or exact
-# home/work locations in a manifest (`validate` rejects them). The key that
-# links a pseudonymous participant_id to a person is kept by the study team
-# OUTSIDE this repository and outside the data folders.
+# NEVER write names, e-mail addresses, phone numbers, fiscal codes, vehicle
+# plates/contrassegni or serial numbers in a manifest (`validate` rejects the
+# obvious ones). The key that links a pseudonymous participant_id to a person
+# is kept by the study team OUTSIDE this repository and outside the data folders.
 # Paths are relative to the recording folder and use '/' separators.
+#
+# manifest_version 1 (the former e-scooter-only format with
+# equipment.escooter_code) is still accepted: such recordings are read as
+# e-scooter rides, trial 1.
 # =============================================================================
-manifest_version: 1
+manifest_version: 2
 synthetic: false
 
 participant_id: P001              # pseudonym: P001..P999
-session_id: P001_S01              # participant + session number
-protocol_version: "0.1-draft"     # version of the acquisition/ethics procedure (TBD until approved)
+session_id: P001_S01              # participant + session number (one visit / day)
+protocol_version: "0.2-draft"     # version of the acquisition/ethics procedure (TBD until approved)
 
 route:
-  route_id: ROUTE_A               # identifier in the route catalogue (TBD)
-  variant: null                   # e.g. direction or alternative branch
-  description: "TBD"              # no private addresses
+  route_id: CES_A                 # docs/route/route_segments.csv (draft, to verify on site)
+  variant: clockwise
+  description: "Cesena candidate route A (desk draft)"   # no private addresses
 
 timing:
   date: null                      # YYYY-MM-DD; may be generalised before any sharing
-  start_time_local: null          # "HH:MM"
+  start_time_local: null          # "HH:MM" of the first ride
   timezone: Europe/Rome
 
-conditions:                       # coarse, researcher-rated categories
+conditions:                       # coarse, researcher-rated categories (session level)
   weather: unknown                # dry | drizzle | rain | fog | snow | unknown
   road_surface: unknown           # dry | wet | mixed | unknown
   light: unknown                  # daylight | twilight | dark | unknown
   traffic_density: unknown        # low | medium | high | unknown (subjective rating)
   temperature_c: null
-  notes: ""
+  notes: ""                       # per-ride conditions go in the ride sheet (docs/methodology/pilot_protocol.md)
 
 equipment:
   aria_device_code: ARIA_G2_01    # internal device code (not the serial number)
-  recording_profile: TBD          # e.g. profile8 (RGB 2560x1920 @ 10 Hz, gaze 30 Hz, GNSS 1 Hz) - to be decided
-  escooter_code: ESC_01           # internal code of the e-scooter used
-  escooter_model: TBD
-  external_gps_logger: null       # e.g. code of a phone/logger, if any
+  recording_profile: driver_dataset_v1_raw_for_ht   # configs/recording_profiles/<name>.json
+  vehicles:                       # vehicle units used in this session (internal codes only)
+    - vehicle_code: ESC_01
+      vehicle_type: escooter      # key of configs/vehicles.yaml
+      model: TBD
+      characteristics:            # fields: configs/vehicles.yaml characteristics_fields
+        wheel_diameter_in: null
+        tyre_type: null
+        mass_kg: null
+        motor_power_w: null
+        max_speed_kmh: null
+        speed_mode: null
+        brakes: null
+        has_direction_indicators: null
+      notes: ""
+    - vehicle_code: BIKE_01
+      vehicle_type: bicycle
+      model: TBD
+      characteristics:
+        wheel_diameter_in: null
+        mass_kg: null
+        frame_size: null
+        saddle_height_cm: null
+        gears: null
+        brakes: null
+      notes: ""
+  external_gps_logger: null       # e.g. code of a phone/logger, if any (none planned: Aria only)
 
 recordings:
-  - recording_id: P001_S01_R01    # one entry per VRS file (a restarted recording gets R02, ...)
+  - recording_id: P001_S01_R01    # one entry per VRS file (a restarted ride gets a new recording, part 2)
+    trial:
+      vehicle_type: escooter
+      vehicle_code: ESC_01
+      trial_number: 1             # repetition of this vehicle type for this participant (1, 2, ...)
+      ride_order: 1               # position of this ride in the participant's whole protocol
+      part: 1                     # >1 only if the ride was split over several recordings
+      route_id: null              # overrides route.route_id for this ride, if needed
+      route_direction: null
+      rider_reported_issues: ""
     files:
       vrs: recording.vrs          # data/raw/P001_S01/P001_S01_R01/recording.vrs
-      mps_dir: null               # only if MPS was requested (requires uploading the VRS to Meta: see privacy docs)
+      mps_dir: null               # only if MPS was authorised and requested (cloud upload: see docs/privacy_pipeline.md)
       external_gps: null
     streams:                      # available | partial | missing | unknown (update after extract-aria)
       rgb: unknown
       eye_gaze: unknown
       imu: unknown
-      pose: unknown               # on-device VIO or MPS SLAM
+      pose: unknown               # on-device VIO (10 Hz)
+      pose_high_frequency: unknown   # on-device high-frequency VIO (~800 Hz IMU pre-integration)
+      hand_tracking: unknown
       gps_device: unknown         # GNSS on the glasses ('gps')
-      gps_phone: unknown          # companion-app GNSS ('gps-app')
+      gps_phone: missing          # companion-app GNSS ('gps-app'): not used
       gps_external: missing
+      ppg: unknown
       mps_slam: missing
       mps_eye_gaze: missing
+      mps_hand_tracking: missing
     clock:
-      external_gps_offset_ns: null  # only for external loggers: offset added to logger time
+      external_gps_offset_ns: null  # only for external loggers
       method: null
       uncertainty_s: null
     device_time_start_ns: null
@@ -69,6 +112,43 @@ recordings:
     trimming_override: null       # e.g. {start_rel_s: 41.0, end_rel_s: 1250.0, reason: "...", decided_by: "R01"}
     notes: ""
     technical_issues: []          # e.g. [{description: "gaze calibration repeated", severity: minor, streams: [eye_gaze]}]
+  - recording_id: P001_S01_R02
+    trial:
+      vehicle_type: bicycle
+      vehicle_code: BIKE_01
+      trial_number: 1
+      ride_order: 2
+      part: 1
+      route_id: null
+      route_direction: null
+      rider_reported_issues: ""
+    files:
+      vrs: recording.vrs
+      mps_dir: null
+      external_gps: null
+    streams:
+      rgb: unknown
+      eye_gaze: unknown
+      imu: unknown
+      pose: unknown
+      pose_high_frequency: unknown
+      hand_tracking: unknown
+      gps_device: unknown
+      gps_phone: missing
+      gps_external: missing
+      ppg: unknown
+      mps_slam: missing
+      mps_eye_gaze: missing
+      mps_hand_tracking: missing
+    clock:
+      external_gps_offset_ns: null
+      method: null
+      uncertainty_s: null
+    device_time_start_ns: null
+    device_time_end_ns: null
+    trimming_override: null
+    notes: ""
+    technical_issues: []
 
 notes: ""
 technical_issues: []

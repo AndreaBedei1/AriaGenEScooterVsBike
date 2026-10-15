@@ -11,7 +11,8 @@ validate        validate a session (manifest, privacy rules, streams, annotation
 run             process a session (MVP pipeline) -> data/processed/...
 make-synthetic  (re)generate the SYNTHETIC / TEST dataset
 aggregate       study-level tables from processed sessions
-extract-aria    Aria Gen 2 VRS -> canonical streams (Linux/macOS, 'aria' extra)
+extract-aria    Aria Gen 2 VRS -> canonical streams + raw-stream quality (Linux/macOS, 'aria' extra)
+map-segments    GNSS of a ride -> segments of the planned route (annotations/segments_route.csv)
 segment-frames  EXPERIMENTAL: semantic label maps from VRS frames ('aria' + 'cv' extras)
 """
 
@@ -92,7 +93,20 @@ def cmd_new_session(args: argparse.Namespace) -> int:
     else:
         print("specify --participant P001 or --next")
         return 2
-    manifest = manifest_template(participant, args.session, args.recordings)
+    rides = None
+    if args.ride:
+        rides = []
+        for spec in args.ride:
+            try:
+                vehicle, trial, order = spec.split(":")
+                rides.append((vehicle, int(trial), int(order)))
+            except ValueError:
+                print(f"invalid --ride {spec!r}: expected VEHICLE:TRIAL:ORDER, e.g. escooter:1:2")
+                return 2
+            if vehicle not in cfg.vehicles.vehicle_types:
+                print(f"unknown vehicle {vehicle!r}; known: {sorted(cfg.vehicles.vehicle_types)}")
+                return 2
+    manifest = manifest_template(participant, args.session, args.recordings, rides=rides)
     session_dir = root / manifest["session_id"]
     path = session_dir / "manifest.yaml"
     if path.exists():
@@ -104,7 +118,7 @@ def cmd_new_session(args: argparse.Namespace) -> int:
     print(f"created {path}")
     print(
         "next: copy the VRS into each recording folder as recording.vrs, complete the manifest "
-        "(no names/e-mails/phone numbers!), then run `validate`."
+        "(vehicle units, trial blocks; no names/e-mails/phone numbers!), then run `validate`."
     )
     return 0
 
@@ -191,8 +205,7 @@ def cmd_aggregate(args: argparse.Namespace) -> int:
 
 
 def cmd_extract_aria(args: argparse.Namespace) -> int:  # pragma: no cover - needs projectaria-tools + VRS
-    from ariagen_escooter.aria import INSTALL_HINT, AriaGen2Extractor, projectaria_available
-    from ariagen_escooter.io import write_csv, write_json
+    from ariagen_escooter.aria import INSTALL_HINT, projectaria_available
     from ariagen_escooter.session import load_manifest
 
     if not projectaria_available():
@@ -201,7 +214,6 @@ def cmd_extract_aria(args: argparse.Namespace) -> int:  # pragma: no cover - nee
     cfg = _load(args)
     session_dir = Path(args.session_dir)
     manifest = load_manifest(session_dir / "manifest.yaml")
-    decimals = cfg.analysis.reporting.float_decimals
     for entry in manifest.recordings:
         if args.recording and entry.recording_id != args.recording:
             continue
@@ -211,29 +223,83 @@ def cmd_extract_aria(args: argparse.Namespace) -> int:  # pragma: no cover - nee
         raw_dir = session_dir / entry.recording_id
         vrs = portable_path(raw_dir, entry.files.vrs)
         out = cfg.data_root / "interim" / manifest.session_id / entry.recording_id / "streams"
-        extractor = AriaGen2Extractor(vrs, cfg.analysis.aria)
-        write_csv(extractor.inventory(), out.parent / "inventory.csv", decimals)
-        summary: dict[str, object] = {"metadata": extractor.metadata(), "streams": {}}
         mps_dir = portable_path(raw_dir, entry.files.mps_dir) if entry.files.mps_dir else None
-        gps, gps_label = extractor.gps()
-        for name, df in (
-            ("frames", extractor.frames()),
-            ("gaze", extractor.eye_gaze()),
-            ("imu", extractor.imu()),
-            ("pose", extractor.pose(mps_dir)),
-            ("gps", gps),
-        ):
-            if df is None or df.empty:
-                summary["streams"][name] = "missing"
-                continue
-            write_csv(df, out / f"{name}.csv", decimals if name != "gps" else 8)
-            summary["streams"][name] = {"rows": len(df)}
-        summary["gps_label"] = gps_label
-        summary["extrinsics"] = extractor.sensor_extrinsics()
-        summary["aria_config"] = cfg.analysis.aria.model_dump()
-        write_json(summary, out.parent / "extraction.json", decimals)
+        summary = extract_recording(vrs, out, cfg, mps_dir)
         print(f"{entry.recording_id}: {summary['streams']} -> {out}")
-    print("Check the inventory, then update the stream statuses in the manifest.")
+    print("Check inventory.csv and extraction_quality.json, then update the stream statuses in the manifest.")
+    return 0
+
+
+def extract_recording(vrs: Path, out: Path, cfg: LoadedConfig, mps_dir: Path | None = None) -> dict[str, object]:
+    """VRS -> canonical streams + inventory + raw-stream quality (no data written next to the VRS)."""
+    from ariagen_escooter.aria import AriaGen2Extractor
+    from ariagen_escooter.io import write_csv, write_json
+    from ariagen_escooter.quality import GapThresholds
+
+    decimals = cfg.analysis.reporting.float_decimals
+    a = cfg.analysis.aria
+    q = cfg.analysis.quality
+    extractor = AriaGen2Extractor(vrs, a)
+    write_csv(extractor.inventory(), out.parent / "inventory.csv", decimals)
+    nominal = extractor.nominal_rates()
+    thresholds = {k: GapThresholds(q.jitter_factor, v.short_gap_s, v.medium_gap_s) for k, v in q.streams.items()}
+    summary: dict[str, object] = {"metadata": extractor.metadata(), "nominal_rates_from_profile": nominal,
+                                  "streams": {}}
+    gps, gps_label = extractor.gps()
+    streams = {
+        "frames": extractor.frames(),
+        "gaze": extractor.eye_gaze(),
+        "imu": extractor.imu(),
+        "pose": extractor.pose(mps_dir),
+        "pose_hf": extractor.pose_high_frequency(a.pose_hf_rate_hz),
+        "hands": extractor.hands() if a.export_hands else None,
+        "gps": gps,
+    }
+    for name, df in streams.items():
+        if df is None or df.empty:
+            summary["streams"][name] = "missing"
+            continue
+        write_csv(df, out / f"{name}.csv", decimals if name != "gps" else 8)
+        summary["streams"][name] = {"rows": len(df)}
+    summary["gps_label"] = gps_label
+    summary["extrinsics"] = extractor.sensor_extrinsics()
+    summary["aria_config"] = a.model_dump()
+    write_json(summary, out.parent / "extraction.json", decimals)
+    write_json({"note": "timing quality of the RAW VRS streams, before any resampling",
+                "streams": extractor.raw_quality(nominal, thresholds)},
+               out.parent / "extraction_quality.json", decimals)
+    return summary
+
+
+def cmd_map_segments(args: argparse.Namespace) -> int:
+    from ariagen_escooter.io import read_table, write_csv
+    from ariagen_escooter.pipeline import load_recording_data
+    from ariagen_escooter.route import load_route, route_segments_for_ride
+    from ariagen_escooter.session import load_manifest, locate_recording
+
+    cfg = _load(args)
+    session_dir = Path(args.session_dir)
+    manifest = load_manifest(session_dir / "manifest.yaml")
+    geojson = Path(args.route_geojson) if args.route_geojson else cfg.project_root / "docs" / "route" / "cesena_route.geojson"
+    for entry in manifest.recordings:
+        trial = manifest.trial_of(entry.recording_id)
+        route_id = args.route_id or trial.route_id or manifest.route.route_id
+        loc = locate_recording(session_dir, manifest.session_id, entry.recording_id, cfg.data_root)
+        data = load_recording_data(loc, cfg)
+        gps = data.streams.get("gps")
+        if gps is None:
+            gps_path = loc.streams_dir / "gps.csv"
+            gps = read_table(gps_path) if gps_path.is_file() else None
+        if gps is None or gps.empty:
+            print(f"{entry.recording_id}: no GNSS stream, skipped")
+            continue
+        route = load_route(geojson, route_id)
+        seg = route_segments_for_ride(route, gps.dropna(subset=["lat_deg", "lon_deg"]), entry.recording_id,
+                                      max_offset_m=args.max_offset_m)
+        out = loc.annotations_dir / "segments_route.csv"
+        write_csv(seg, out, cfg.analysis.reporting.float_decimals)
+        print(f"{entry.recording_id}: {len(seg)} of {len(route.segments)} route segments -> {out}")
+    print("Review the boundaries (anonymised video) before copying them into annotations/segments.csv.")
     return 0
 
 
@@ -297,7 +363,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--participant", help="pseudonymous id, e.g. P001")
     p.add_argument("--next", action="store_true", help="use the next free participant id")
     p.add_argument("--session", type=int, default=1, help="session number (default 1)")
-    p.add_argument("--recordings", type=int, default=1, help="number of recordings (default 1)")
+    p.add_argument("--recordings", type=int, default=1, help="number of recordings (default 1; ignored with --ride)")
+    p.add_argument(
+        "--ride",
+        action="append",
+        metavar="VEHICLE:TRIAL:ORDER",
+        help="one recording per ride, e.g. --ride escooter:1:1 --ride bicycle:1:2 (vehicle type, repetition "
+        "number for that vehicle, position in the participant's protocol); repeatable",
+    )
     p.add_argument("--root", help="raw data folder (default <data_root>/raw)")
     p.set_defaults(func=cmd_new_session)
 
@@ -330,6 +403,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("session_dir")
     p.add_argument("--recording", help="only this recording id")
     p.set_defaults(func=cmd_extract_aria)
+
+    p = with_config(sub.add_parser("map-segments", help="GNSS -> segments of the planned route (for review)"))
+    p.add_argument("session_dir")
+    p.add_argument("--route-geojson", help="default docs/route/cesena_route.geojson")
+    p.add_argument("--route-id", help="default: trial.route_id or the session route_id")
+    p.add_argument("--max-offset-m", type=float, default=25.0, help="fixes farther from the route stay unmatched")
+    p.set_defaults(func=cmd_map_segments)
 
     p = with_config(sub.add_parser("segment-frames", help="EXPERIMENTAL label maps from VRS frames"))
     p.add_argument("session_dir")

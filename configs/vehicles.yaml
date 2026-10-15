@@ -1,0 +1,62 @@
+# =============================================================================
+# Vehicle catalogue: the two transport modes compared in the study
+# =============================================================================
+# The ANALYSIS LOGIC is shared by all vehicles; what differs per vehicle lives
+# here, so that the two modes stay distinguishable in every table and every
+# run records which parameters were used.
+#
+# * vehicle_types: the modes of the study (keys are stable snake_case ids used
+#   in manifests - trial.vehicle_type - and in all output tables).
+# * analysis_overrides: OPTIONAL deep-merge on top of configs/default.yaml for
+#   rides with that vehicle. Empty by default: no vehicle-specific threshold is
+#   justified yet. Any override must be motivated in docs/methodology/ and is
+#   saved with the run (effective_config.yaml, config sha256).
+# * characteristics_fields: per-unit characteristics recorded in the session
+#   manifest (equipment.vehicles[].characteristics); units are in the names.
+#
+# Legal notes are summaries for the protocol, not legal advice; see
+# docs/route/route_description.md for sources and dates.
+# =============================================================================
+vehicles_version: 1
+
+vehicle_types:
+  escooter:
+    label: "Electric kick-scooter (monopattino elettrico)"
+    description: >-
+      Standing rider, electric motor with handlebar throttle, hand brakes, small
+      wheels. Speed limited by law (Italy: 20 km/h; lower in pedestrian areas
+      where riding is allowed). Turn indication by arm signals or, where fitted,
+      direction indicators.
+    propulsion: electric_motor
+    rider_posture: standing
+    legal_max_speed_kmh: 20.0
+    analysis_overrides: {}
+  bicycle:
+    label: "Conventional bicycle (no electric assistance)"
+    description: >-
+      Seated rider, human pedalling, hand brakes (and/or coaster brake), larger
+      wheels. Pedalling adds periodic head/trunk motion that is absent on the
+      e-scooter: head-based vibration and oscillation metrics are therefore NOT
+      directly comparable between modes without spectral separation.
+    propulsion: human_pedalling
+    rider_posture: seated
+    legal_max_speed_kmh: null
+    analysis_overrides: {}
+
+characteristics_fields:
+  model: "Make/model as free text (no serial numbers or plates)."
+  wheel_diameter_in: "Nominal wheel diameter (inches)."
+  tyre_type: "pneumatic | solid | honeycomb | other."
+  mass_kg: "Vehicle mass (kg)."
+  motor_power_w: "Rated motor power (W), e-scooter only."
+  max_speed_kmh: "Maximum speed set on the e-scooter controller (km/h)."
+  speed_mode: "Riding mode used (e.g. eco / standard), e-scooter only."
+  brakes: "Brake types (e.g. front drum + rear disc, rim brakes)."
+  suspension: "none | front | rear | full."
+  frame_size: "Bicycle frame size (as labelled) or 'n/a'."
+  saddle_height_cm: "Saddle height set for the participant (cm), bicycle only."
+  handlebar_height_cm: "Handlebar grip height from the ground (cm)."
+  gears: "Number of gears (bicycle) or 'n/a'."
+  has_direction_indicators: "true/false (e-scooters: indicators required by recent Italian rules - verify)."
+  lights: "front/rear light types."
+  bell: "true/false."

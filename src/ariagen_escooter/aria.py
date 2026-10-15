@@ -10,9 +10,11 @@ STATUS
 * The pure-pandas MPS readers below are tested with small fixtures that follow
   the documented column names.
 * :class:`AriaGen2Extractor` follows the official projectaria-tools 2.3.0 Gen 2
-  tutorials and Python bindings, but has NOT yet been run on a real Gen 2
-  recording. Verify it on the first pilot VRS before trusting its output
-  (``ariagen-escooter extract-aria`` writes an inventory to help).
+  tutorials and Python bindings. It has been smoke-tested on the official
+  Gen 2 unit-test recordings shipped with projectaria_tools (a few seconds,
+  indoor; ``tests/test_aria.py`` runs it when ``ARIAGEN_TEST_VRS`` points to
+  one), but NOT on a riding recording: verify it on the first pilot VRS
+  (``extract-aria`` writes an inventory and a raw-stream quality report).
 
 Conventions (official docs): streams are resolved by label; timestamps use
 ``TimeDomain.DEVICE_TIME`` (ns); eye gaze is reported in the CPF frame
@@ -182,10 +184,97 @@ def read_mps_eye_gaze(path: Path) -> pd.DataFrame:
 
 
 # --------------------------------------------------------------------------- #
-# VRS extraction (projectaria-tools; NOT yet validated on a real Gen 2 VRS)
+# Pure helpers used by the extractor (tested without projectaria-tools)
+# --------------------------------------------------------------------------- #
+def resample_nearest(t_ns: np.ndarray, rate_hz: float, tolerance_s: float) -> tuple[np.ndarray, np.ndarray]:
+    """Indices of the samples nearest to a uniform time grid (no interpolation).
+
+    Returns ``(grid_ns, index)`` with ``index = -1`` where no sample lies within
+    ``tolerance_s`` of the grid instant: dropouts stay visible as missing rows
+    instead of being bridged (unlike index-based decimation, which silently
+    shifts time across gaps).
+    """
+    t = np.asarray(t_ns, dtype=np.int64)
+    if t.size == 0:
+        return np.empty(0, np.int64), np.empty(0, np.int64)
+    step = 1e9 / rate_hz
+    grid = (t[0] + np.round(np.arange(int((t[-1] - t[0]) / step) + 1) * step)).astype(np.int64)
+    pos = np.clip(np.searchsorted(t, grid), 1, t.size - 1)
+    left, right = pos - 1, pos
+    best = np.where(np.abs(t[right] - grid) < np.abs(grid - t[left]), right, left)
+    ok = np.abs(t[best] - grid) <= tolerance_s * 1e9
+    return grid, np.where(ok, best, -1)
+
+
+def bin_average(t_ns: np.ndarray, values: np.ndarray, rate_hz: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Average samples in consecutive time bins of 1/rate_hz (low-pass + decimation).
+
+    Returns ``(bin_centre_ns, mean_values, n_samples_per_bin)``; empty bins are
+    dropped (they are gaps, reported by the quality report of the raw stream).
+    """
+    t = np.asarray(t_ns, dtype=np.int64)
+    v = np.asarray(values, dtype=np.float64)
+    if t.size == 0:
+        return np.empty(0, np.int64), np.empty((0,) + v.shape[1:]), np.empty(0, np.int64)
+    width = int(round(1e9 / rate_hz))
+    b = (t - t[0]) // width
+    uniq, inverse, counts = np.unique(b, return_inverse=True, return_counts=True)
+    sums = np.zeros((uniq.size,) + v.shape[1:])
+    np.add.at(sums, inverse, v)
+    centres = t[0] + uniq * width + width // 2
+    return centres.astype(np.int64), sums / counts.reshape((-1,) + (1,) * (v.ndim - 1)), counts
+
+
+def parse_file_metadata(tags: dict[str, str]) -> dict[str, Any]:
+    """Recording profile and on-device sensor health from the VRS file tags (Gen 2).
+
+    The ``metadata`` tag (JSON) carries ``recording.profile`` (full profile) and
+    ``recording.sensor_health_stats``. Identifying fields (device serials,
+    session ids, client name, calibration JSON) are NOT returned: only the
+    names of the tags that contain them, for the privacy log.
+    """
+    import json
+
+    out: dict[str, Any] = {"profile": None, "profile_name": None, "sensor_health_stats": None,
+                           "identifying_tags_present": []}
+    for key in ("device_serial", "session_id", "calib_json", "os_fingerprint"):
+        if key in tags:
+            out["identifying_tags_present"].append(key)
+    raw = tags.get("metadata")
+    if not raw:
+        return out
+    try:
+        meta = json.loads(raw)
+    except (TypeError, ValueError):
+        return out
+    rec = meta.get("recording") or {}
+    out["profile"] = rec.get("profile") if isinstance(rec.get("profile"), dict) else None
+    out["profile_name"] = rec.get("profile_name")
+    stats = rec.get("sensor_health_stats")
+    if isinstance(stats, list):
+        keep = ("sensor_type", "expected_frame_count", "actual_frame_count", "dropped_frame_count",
+                "early_time_error_count", "late_time_error_count", "total_time_error_count", "score")
+        out["sensor_health_stats"] = [{k: s.get(k) for k in keep} for s in stats if isinstance(s, dict)]
+    for section in ("device", "client"):
+        if section in meta:
+            out["identifying_tags_present"].append(f"metadata.{section}")
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# VRS extraction (projectaria-tools 2.3.x)
 # --------------------------------------------------------------------------- #
 class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a VRS file
-    """Extract canonical streams from one Aria Gen 2 VRS file."""
+    """Extract canonical streams (and raw-stream quality) from one Aria Gen 2 VRS file.
+
+    Smoke-tested on the official Gen 2 unit-test recordings of projectaria_tools
+    (a few seconds, indoor); NOT yet validated on a riding recording.
+    Invalid samples are kept with explicit status columns instead of being
+    dropped, so that the quality-control step can measure them.
+    """
+
+    RAW_QC_LABELS = ("camera-rgb", "eyegaze", "handtracking", "vio", "vio_high_frequency", "imu-left", "imu-right",
+                     "gps", "gps-app", "ppg", "slam-front-left", "camera-et-left")
 
     def __init__(self, vrs_path: Path, cfg: AriaConfig):
         try:
@@ -199,6 +288,8 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
             raise ValueError(f"cannot open VRS file {self.vrs_path.name}")
         self.calibration = self.provider.get_device_calibration()
         self.t_device_cpf = np.asarray(self.calibration.get_transform_device_cpf().to_matrix())
+        self.t_cpf_device = np.linalg.inv(self.t_device_cpf)
+        self.file_metadata = parse_file_metadata(dict(self.provider.get_file_tags()))
 
     # -- discovery -------------------------------------------------------------------
     def stream_id(self, label: str) -> Any | None:
@@ -208,6 +299,13 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
         if sid is None or self.provider.get_num_data(sid) == 0:
             return None
         return sid
+
+    def nominal_rates(self) -> dict[str, float]:
+        """Nominal rates of the canonical streams declared in the embedded profile."""
+        from ariagen_escooter.quality import nominal_rates_from_profile
+
+        profile = self.file_metadata.get("profile")
+        return nominal_rates_from_profile(profile) if profile else {}
 
     def inventory(self) -> pd.DataFrame:
         from projectaria_tools.core.sensor_data import TimeDomain
@@ -236,7 +334,24 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
             "recording_profile": getattr(meta, "recording_profile", None),
             "duration_sec": getattr(meta, "duration_sec", None),
             "time_sync_mode": str(getattr(meta, "time_sync_mode", "")),
+            "embedded_profile_name": self.file_metadata.get("profile_name"),
+            "embedded_profile": self.file_metadata.get("profile"),
+            "sensor_health_stats": self.file_metadata.get("sensor_health_stats"),
+            "identifying_tags_present": self.file_metadata.get("identifying_tags_present"),
         }
+
+    def raw_timestamps(self, label: str) -> np.ndarray | None:
+        """Device timestamps of every record of a stream (for raw-stream quality control)."""
+        from projectaria_tools.core.sensor_data import TimeDomain
+
+        sid = self.stream_id(label)
+        if sid is None:
+            return None
+        n = self.provider.get_num_data(sid)
+        out = np.empty(n, dtype=np.int64)
+        for i in range(n):
+            out[i] = self.provider.get_sensor_data_by_index(sid, i).get_time_ns(TimeDomain.DEVICE_TIME)
+        return out
 
     # -- streams -----------------------------------------------------------------------
     def frames(self) -> pd.DataFrame | None:
@@ -262,6 +377,13 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
             yield i, image.to_numpy_array()
 
     def eye_gaze(self) -> pd.DataFrame | None:
+        """On-device eye gaze (CPF angles) with validity flags and RGB projection.
+
+        Gen 2 on-device gaze has no per-sample confidence (the *_low/*_high
+        bounds are not populated): only validity flags are exported. The blink
+        flags are NOT exported: on the official test recordings they were true
+        for every valid sample, so their semantics must be verified first.
+        """
         sid = self.stream_id(self.cfg.eye_gaze_label)
         if sid is None:
             return None
@@ -273,9 +395,10 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
             eg = self.provider.get_eye_gaze_data_by_index(sid, i)
             yaw, pitch = float(eg.yaw), float(eg.pitch)
             valid = bool(eg.combined_gaze_valid) and np.isfinite(yaw) and np.isfinite(pitch)
+            spatial_ok = bool(eg.spatial_gaze_point_valid)
             u = v = np.nan
             if valid:
-                if self.cfg.gaze_projection == "spatial_point_if_valid" and bool(eg.spatial_gaze_point_valid):
+                if self.cfg.gaze_projection == "spatial_point_if_valid" and spatial_ok:
                     p_cpf = np.asarray(eg.spatial_gaze_point_in_cpf, dtype=np.float64).reshape(3)
                 else:
                     d = np.array([np.tan(yaw), np.tan(pitch), 1.0])
@@ -285,6 +408,7 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
                 if uv is not None:
                     u, v = float(uv[0]), float(uv[1])
             depth = float(eg.depth)
+            verg = eg.vergence
             rows.append(
                 {
                     "t_ns": timedelta_to_ns(eg.tracking_timestamp),
@@ -294,41 +418,46 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
                     "u_px": u,
                     "v_px": v,
                     "depth_m": depth if depth > 0 else np.nan,
+                    "spatial_point_valid": spatial_ok,
+                    "left_valid": bool(verg.left_gaze_valid),
+                    "right_valid": bool(verg.right_gaze_valid),
                 }
             )
         return pd.DataFrame(rows)
 
     def imu(self) -> pd.DataFrame | None:
+        """Rectified IMU averaged in time bins of 1/imu_rate_hz (not index blocks:
+        a dropout does not shift the time base)."""
         sid = self.stream_id(self.cfg.imu_label)
         if sid is None:
             return None
         imu_calib = self.calibration.get_imu_calib(self.cfg.imu_label)
-        t, acc, gyr = [], [], []
+        t, vals = [], []
         for i in range(self.provider.get_num_data(sid)):
             m = self.provider.get_imu_data_by_index(sid, i)
             t.append(int(m.capture_timestamp_ns))
-            acc.append(np.asarray(imu_calib.raw_to_rectified_accel(np.asarray(m.accel_msec2))))
-            gyr.append(np.asarray(imu_calib.raw_to_rectified_gyro(np.asarray(m.gyro_radsec))))
-        t_arr, acc_arr, gyr_arr = np.asarray(t, dtype=np.int64), np.asarray(acc), np.asarray(gyr)
-        rate = (len(t_arr) - 1) / ((t_arr[-1] - t_arr[0]) / 1e9) if len(t_arr) > 1 else self.cfg.imu_rate_hz
-        k = max(1, int(round(rate / self.cfg.imu_rate_hz)))
-        n = (len(t_arr) // k) * k
-        block = lambda a: a[:n].reshape(-1, k, *a.shape[1:]).mean(axis=1)  # noqa: E731 - simple low-pass + decimation
-        t_out = t_arr[:n].reshape(-1, k).mean(axis=1).round().astype(np.int64)
-        acc_out, gyr_out = block(acc_arr), block(gyr_arr)
+            acc = np.asarray(imu_calib.raw_to_rectified_accel(np.asarray(m.accel_msec2)))
+            gyr = np.asarray(imu_calib.raw_to_rectified_gyro(np.asarray(m.gyro_radsec)))
+            vals.append(np.r_[acc, gyr])
+        t_arr = np.asarray(t, dtype=np.int64)
+        order = np.argsort(t_arr, kind="stable")
+        centres, mean, counts = bin_average(t_arr[order], np.asarray(vals)[order], self.cfg.imu_rate_hz)
         return pd.DataFrame(
             {
-                "t_ns": t_out,
-                "accel_x_mps2": acc_out[:, 0],
-                "accel_y_mps2": acc_out[:, 1],
-                "accel_z_mps2": acc_out[:, 2],
-                "gyro_x_radps": gyr_out[:, 0],
-                "gyro_y_radps": gyr_out[:, 1],
-                "gyro_z_radps": gyr_out[:, 2],
+                "t_ns": centres,
+                "accel_x_mps2": mean[:, 0],
+                "accel_y_mps2": mean[:, 1],
+                "accel_z_mps2": mean[:, 2],
+                "gyro_x_radps": mean[:, 3],
+                "gyro_y_radps": mean[:, 4],
+                "gyro_z_radps": mean[:, 5],
+                "n_raw_samples": counts,
             }
         )
 
     def gps(self) -> tuple[pd.DataFrame | None, str | None]:
+        """All GNSS records of the first available label (records without a fix are
+        kept with empty coordinates so that the fix rate can be measured)."""
         for label in self.cfg.gps_labels:
             sid = self.stream_id(label)
             if sid is None:
@@ -337,16 +466,16 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
             for i in range(self.provider.get_num_data(sid)):
                 g = self.provider.get_gps_data_by_index(sid, i)
                 lat, lon = float(g.latitude), float(g.longitude)
-                if not (np.isfinite(lat) and np.isfinite(lon)) or (lat == 0.0 and lon == 0.0):
-                    continue
+                fix = np.isfinite(lat) and np.isfinite(lon) and not (lat == 0.0 and lon == 0.0)
                 rows.append(
                     {
                         "t_ns": int(g.capture_timestamp_ns),
-                        "lat_deg": lat,
-                        "lon_deg": lon,
-                        "alt_m": float(g.altitude),
-                        "accuracy_m": float(g.accuracy),
-                        "speed_mps": float(g.speed),
+                        "lat_deg": lat if fix else np.nan,
+                        "lon_deg": lon if fix else np.nan,
+                        "alt_m": float(g.altitude) if fix else np.nan,
+                        "accuracy_m": float(g.accuracy) if fix else np.nan,
+                        "vertical_accuracy_m": float(g.verticalAccuracy) if fix else np.nan,
+                        "speed_mps": float(g.speed) if fix else np.nan,
                     }
                 )
             if rows:
@@ -354,52 +483,127 @@ class AriaGen2Extractor:  # pragma: no cover - requires projectaria-tools and a 
         return None, None
 
     def pose(self, mps_dir: Path | None = None) -> pd.DataFrame | None:
+        """Head (CPF) pose from on-device VIO (10 Hz), MPS closed loop, or - as a
+        fallback configuration - the high-frequency stream resampled to pose_rate_hz.
+
+        On-device VIO: every sample is written; ``valid`` = status VALID and pose
+        quality GOOD (official rule); ``tracking_session`` changes at resets.
+        """
         source = self.cfg.pose_source
         if source == "mps_closed_loop":
             if mps_dir is None:
                 raise ValueError("pose_source mps_closed_loop requires the MPS output folder")
             return read_mps_closed_loop_trajectory(mps_dir / "slam" / "closed_loop_trajectory.csv", self.t_device_cpf)
+        if source == "vio_high_frequency":
+            return self.pose_high_frequency(self.cfg.pose_rate_hz)
         from projectaria_tools.core.sensor_data import TrackingQuality, VioStatus
 
-        if source == "vio":
-            sid = self.stream_id("vio")
-            if sid is None:
-                return None
-            t, mats, gravity = [], [], None
-            for i in range(self.provider.get_num_data(sid)):
-                f = self.provider.get_vio_data_by_index(sid, i)
-                if f.status != VioStatus.VALID or f.pose_quality != TrackingQuality.GOOD:
-                    continue
-                t_odo_device = (f.transform_odometry_bodyimu @ f.transform_bodyimu_device).to_matrix()
-                t.append(int(f.capture_timestamp_ns))
-                mats.append(np.asarray(t_odo_device) @ self.t_device_cpf)
-                if gravity is None:
-                    gravity = np.asarray(f.gravity_in_odometry, dtype=np.float64)
-            quality = None
-        else:
-            sid = self.stream_id("vio_high_frequency")
-            if sid is None:
-                return None
-            n = self.provider.get_num_data(sid)
-            first = self.provider.get_vio_high_freq_data_by_index(sid, 0)
-            t_first = timedelta_to_ns(first.tracking_timestamp)
-            t_last = timedelta_to_ns(self.provider.get_vio_high_freq_data_by_index(sid, n - 1).tracking_timestamp)
-            rate = (n - 1) / ((t_last - t_first) / 1e9) if n > 1 and t_last > t_first else self.cfg.pose_rate_hz
-            step = max(1, int(round(rate / self.cfg.pose_rate_hz)))
-            t, mats, q, gravity = [], [], [], None
-            for i in range(0, n, step):
-                p = self.provider.get_vio_high_freq_data_by_index(sid, i)
-                t.append(timedelta_to_ns(p.tracking_timestamp))
-                mats.append(np.asarray(p.transform_odometry_device.to_matrix()) @ self.t_device_cpf)
-                q.append(float(p.quality_score))
-                if gravity is None:
-                    gravity = np.asarray(p.gravity_odometry, dtype=np.float64)
-            quality = np.asarray(q)
+        sid = self.stream_id("vio")
+        if sid is None:
+            return None
+        t, mats, gravity, rows = [], [], None, []
+        for i in range(self.provider.get_num_data(sid)):
+            f = self.provider.get_vio_data_by_index(sid, i)
+            t_odo_device = (f.transform_odometry_bodyimu @ f.transform_bodyimu_device).to_matrix()
+            t.append(int(f.capture_timestamp_ns))
+            mats.append(np.asarray(t_odo_device) @ self.t_device_cpf)
+            valid = f.status == VioStatus.VALID and f.pose_quality == TrackingQuality.GOOD
+            rows.append(
+                {
+                    "valid": bool(valid),
+                    "vio_status": f.status.name,
+                    "tracking_quality": f.pose_quality.name,
+                    "visual_tracking_quality": f.visual_tracking_quality.name,
+                    "tracking_session": str(f.frontend_session_uid),
+                }
+            )
+            if gravity is None and valid:
+                gravity = np.asarray(f.gravity_in_odometry, dtype=np.float64)
         if not t:
             return None
         align = np.eye(4)
         align[:3, :3] = gravity_alignment(gravity if gravity is not None else np.array([0.0, 0.0, -1.0]))
-        return poses_to_canonical(np.asarray(t), align @ np.asarray(mats), quality)
+        out = poses_to_canonical(np.asarray(t), align @ np.asarray(mats))
+        return pd.concat([out, pd.DataFrame(rows)], axis=1)
+
+    def pose_high_frequency(self, rate_hz: float) -> pd.DataFrame | None:
+        """High-frequency VIO (~800 Hz IMU pre-integration on the 10 Hz VIO) resampled
+        to ``rate_hz`` by nearest sample within half a grid step (no interpolation).
+        It has no status flag: ``valid`` is derived from quality_score > 0."""
+        sid = self.stream_id("vio_high_frequency")
+        if sid is None:
+            return None
+        n = self.provider.get_num_data(sid)
+        t = np.empty(n, dtype=np.int64)
+        for i in range(n):
+            t[i] = timedelta_to_ns(self.provider.get_vio_high_freq_data_by_index(sid, i).tracking_timestamp)
+        order = np.argsort(t, kind="stable")
+        _, idx = resample_nearest(t[order], rate_hz, tolerance_s=0.5 / rate_hz)
+        idx = order[idx[idx >= 0]]
+        times, mats, quality, session, gravity = [], [], [], [], None
+        for i in idx:
+            p = self.provider.get_vio_high_freq_data_by_index(sid, int(i))
+            times.append(timedelta_to_ns(p.tracking_timestamp))
+            mats.append(np.asarray(p.transform_odometry_device.to_matrix()) @ self.t_device_cpf)
+            quality.append(float(p.quality_score))
+            session.append(str(p.session_uid))
+            if gravity is None:
+                gravity = np.asarray(p.gravity_odometry, dtype=np.float64)
+        if not times:
+            return None
+        align = np.eye(4)
+        align[:3, :3] = gravity_alignment(gravity if gravity is not None else np.array([0.0, 0.0, -1.0]))
+        out = poses_to_canonical(np.asarray(times), align @ np.asarray(mats), np.asarray(quality))
+        out["valid"] = out["quality"] > 0
+        out["tracking_session"] = session
+        return out
+
+    def hands(self) -> pd.DataFrame | None:
+        """On-device hand tracking: presence, confidence, wrist and palm centre in CPF.
+
+        A hand is reported absent when the tracker gives no valid pose (official
+        API: ``None``); absence is NOT evidence that the hand left the handlebar.
+        """
+        sid = self.stream_id("handtracking")
+        if sid is None:
+            return None
+        rows = []
+        r = self.t_cpf_device[:3, :3]
+        tr = self.t_cpf_device[:3, 3]
+        for i in range(self.provider.get_num_data(sid)):
+            h = self.provider.get_hand_pose_data_by_index(sid, i)
+            row: dict[str, object] = {"t_ns": timedelta_to_ns(h.tracking_timestamp)}
+            for side, hand in (("left", h.left_hand), ("right", h.right_hand)):
+                row[f"{side}_present"] = hand is not None
+                if hand is None:
+                    for k in ("confidence", "wrist_x_m", "wrist_y_m", "wrist_z_m", "palm_x_m", "palm_y_m", "palm_z_m"):
+                        row[f"{side}_{k}"] = np.nan
+                    continue
+                wrist = r @ np.asarray(hand.get_wrist_position_device(), dtype=np.float64) + tr
+                palm = r @ np.asarray(hand.get_palm_position_device(), dtype=np.float64) + tr
+                row[f"{side}_confidence"] = float(hand.confidence)
+                row.update({f"{side}_wrist_{a}_m": float(x) for a, x in zip("xyz", wrist)})
+                row.update({f"{side}_palm_{a}_m": float(x) for a, x in zip("xyz", palm)})
+            rows.append(row)
+        return pd.DataFrame(rows)
+
+    def raw_quality(self, nominal_rates: dict[str, float], thresholds: dict[str, Any]) -> dict[str, Any]:
+        """Timing quality of the RAW streams (before any resampling)."""
+        from ariagen_escooter.quality import GapThresholds, timing_quality
+
+        canonical = {"camera-rgb": "frames", "eyegaze": "gaze", "handtracking": "hands", "vio": "pose",
+                     "vio_high_frequency": "pose_hf", "imu-left": "imu", "imu-right": "imu", "gps": "gps",
+                     "gps-app": "gps", "ppg": "ppg"}
+        out = {}
+        for label in self.RAW_QC_LABELS:
+            t = self.raw_timestamps(label)
+            if t is None:
+                out[label] = {"status": "absent"}
+                continue
+            name = canonical.get(label)
+            th = thresholds.get(name) or GapThresholds(1.5, 0.25, 1.0)
+            out[label] = timing_quality(t, label, nominal_rates.get(name) if name else None, th, max_listed_gaps=20)
+        return out
 
     def sensor_extrinsics(self) -> dict[str, list[list[float]]]:
         """Transforms needed later (device <- CPF, device <- IMU, device <- RGB camera)."""

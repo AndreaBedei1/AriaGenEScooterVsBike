@@ -94,3 +94,62 @@ def test_load_manifest_reports_file_name(tmp_path: Path) -> None:
     path.write_text("manifest_version: 1\n", encoding="utf-8")
     with pytest.raises(ConfigError, match="manifest.yaml"):
         load_manifest(path)
+
+
+# --------------------------------------------------------------------------- #
+# manifest_version 2: two vehicles, trials and repetitions
+# --------------------------------------------------------------------------- #
+def test_v2_example_has_both_vehicles_and_trials(project_root: Path) -> None:
+    m = load_manifest(project_root / "configs" / "example_session.yaml")
+    assert m.manifest_version == 2
+    trials = [m.trial_of(r.recording_id) for r in m.recordings]
+    assert [(t.vehicle_type, t.trial_number, t.ride_order) for t in trials] == [("escooter", 1, 1), ("bicycle", 1, 2)]
+    assert {v.vehicle_type for v in m.equipment.vehicles} == {"escooter", "bicycle"}
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda d: d["recordings"][0].pop("trial"),  # v2 requires a trial per recording
+        lambda d: d["recordings"][1]["trial"].update(vehicle_code="ESC_01"),  # unit of the other vehicle type
+        lambda d: d["recordings"][1]["trial"].update(vehicle_code="NOPE"),  # unit not declared
+        lambda d: d["recordings"][1]["trial"].update(vehicle_type="escooter", vehicle_code="ESC_01"),  # same trial twice
+        lambda d: d["equipment"].update(escooter_code="ESC_01"),  # v1 field in a v2 manifest
+        lambda d: d["recordings"][0]["trial"].update(trial_number=0),
+        lambda d: d["recordings"][0]["trial"].update(vehicle_type="E-Scooter"),  # not snake_case
+    ],
+)
+def test_v2_inconsistencies_are_rejected(project_root: Path, mutate) -> None:
+    data = _base(project_root)
+    mutate(data)
+    with pytest.raises(ValidationError):
+        SessionManifest.model_validate(data)
+
+
+def test_restarted_ride_uses_part_two(project_root: Path) -> None:
+    data = _base(project_root)
+    data["recordings"][1]["trial"].update(vehicle_type="escooter", vehicle_code="ESC_01", part=2, ride_order=1)
+    m = SessionManifest.model_validate(data)
+    assert m.trial_of("P001_S01_R02").part == 2
+
+
+def test_v1_manifest_is_read_as_escooter_trial_one(project_root: Path) -> None:
+    data = _base(project_root)
+    data["manifest_version"] = 1
+    for rec in data["recordings"]:
+        rec.pop("trial")
+    data["equipment"].pop("vehicles")
+    data["equipment"]["escooter_code"] = "ESC_07"
+    m = SessionManifest.model_validate(data)
+    t = m.trial_of("P001_S01_R02")
+    assert (t.vehicle_type, t.vehicle_code, t.trial_number, t.part) == ("escooter", "ESC_07", 1, 2)
+    data["recordings"][0]["trial"] = {"vehicle_type": "bicycle", "trial_number": 1, "ride_order": 1}
+    with pytest.raises(ValidationError):
+        SessionManifest.model_validate(data)
+
+
+def test_template_with_rides() -> None:
+    m = SessionManifest.model_validate(
+        manifest_template("P003", 1, rides=[("bicycle", 1, 1), ("escooter", 1, 2), ("bicycle", 2, 3)])
+    )
+    assert [m.trial_of(r.recording_id).ride_order for r in m.recordings] == [1, 2, 3]

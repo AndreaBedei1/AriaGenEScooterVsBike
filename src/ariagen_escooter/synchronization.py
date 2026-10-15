@@ -48,14 +48,20 @@ def make_grid(start_ns: int, end_ns: int, rate_hz: float) -> np.ndarray:
 
 
 def interpolate_to_grid(
-    t_src_ns: np.ndarray, values: np.ndarray, t_query_ns: np.ndarray, max_gap_ns: int
+    t_src_ns: np.ndarray,
+    values: np.ndarray,
+    t_query_ns: np.ndarray,
+    max_gap_ns: int,
+    breaks_ns: np.ndarray | None = None,
 ) -> np.ndarray:
     """Gap-aware linear interpolation of one signal at query times.
 
     Returns NaN where the query time is outside the sampled range or falls in
     an interval between two valid samples longer than ``max_gap_ns``. NaN
     values in ``values`` are treated as missing samples. Queries that coincide
-    with a valid sample always return that sample.
+    with a valid sample always return that sample. ``breaks_ns`` are instants
+    where continuity is broken (e.g. a VIO tracking reset, whose first sample
+    is at the break): no interpolation across them, whatever the gap length.
     """
     t = np.asarray(t_src_ns, dtype=np.int64)
     v = np.asarray(values, dtype=np.float64)
@@ -76,6 +82,9 @@ def interpolate_to_grid(
     left = right - 1
     exact = t[np.clip(np.searchsorted(t, q, side="left"), 0, t.size - 1)] == q
     bracket_ok = (t[right] - t[left]) <= max_gap_ns
+    if breaks_ns is not None and len(breaks_ns):
+        seg = np.searchsorted(np.sort(np.asarray(breaks_ns, dtype=np.int64)), t, side="right")
+        bracket_ok &= seg[right] == seg[left]
     use = inside & (bracket_ok | exact)
     out[use] = np.interp(qs[use], ts, v)
     return out

@@ -59,6 +59,7 @@ class _Strict(BaseModel):
 class PathsConfig(_Strict):
     data_root: str
     taxonomy_file: str
+    vehicles_file: str
 
 
 class TimestampsConfig(_Strict):
@@ -80,6 +81,30 @@ class SynchronizationConfig(_Strict):
     pose_max_gap_s: PositiveFloat
     gps_max_gap_s: PositiveFloat
     clock_offset: ClockOffsetConfig
+
+
+class StreamQualityConfig(_Strict):
+    nominal_rate_hz: PositiveFloat | None
+    short_gap_s: PositiveFloat
+    medium_gap_s: PositiveFloat
+
+    @model_validator(mode="after")
+    def _ordered(self) -> StreamQualityConfig:
+        if self.medium_gap_s < self.short_gap_s:
+            raise ValueError("medium_gap_s must be >= short_gap_s")
+        return self
+
+
+class QualityConfig(_Strict):
+    profiles_dir: str
+    jitter_factor: float = Field(gt=1.0)
+    streams: dict[str, StreamQualityConfig]
+    max_plausible_speed_mps: PositiveFloat
+    max_plausible_angular_rate_degps: PositiveFloat
+    min_hf_quality_score: Probability
+    gps_max_accuracy_m: PositiveFloat
+    min_hand_confidence: Probability
+    min_window_coverage: Probability
 
 
 class ImuCheckConfig(_Strict):
@@ -206,6 +231,8 @@ class AriaConfig(_Strict):
     gps_labels: list[str]
     pose_source: Literal["vio", "vio_high_frequency", "mps_closed_loop"]
     pose_rate_hz: PositiveFloat
+    pose_hf_rate_hz: PositiveFloat
+    export_hands: bool
     imu_rate_hz: PositiveFloat
     gaze_projection: Literal["spatial_point_if_valid", "fixed_depth"]
     gaze_fallback_depth_m: PositiveFloat
@@ -252,6 +279,7 @@ class AnalysisConfig(_Strict):
     paths: PathsConfig
     timestamps: TimestampsConfig
     synchronization: SynchronizationConfig
+    quality: QualityConfig
     trimming: TrimmingConfig
     kinematics: KinematicsConfig
     gaze: GazeConfig
@@ -311,6 +339,33 @@ class Taxonomy(_Strict):
 
 
 # --------------------------------------------------------------------------- #
+# Vehicle catalogue (configs/vehicles.yaml)
+# --------------------------------------------------------------------------- #
+class VehicleType(_Strict):
+    label: str
+    description: str
+    propulsion: str
+    rider_posture: str
+    legal_max_speed_kmh: PositiveFloat | None
+    analysis_overrides: dict[str, Any]
+
+
+class VehicleCatalogue(_Strict):
+    vehicles_version: int = Field(ge=1)
+    vehicle_types: dict[str, VehicleType]
+    characteristics_fields: dict[str, str]
+
+    @model_validator(mode="after")
+    def _names(self) -> VehicleCatalogue:
+        for key in self.vehicle_types:
+            if not _SNAKE.match(key):
+                raise ValueError(f"vehicle type {key!r} is not snake_case")
+        if not self.vehicle_types:
+            raise ValueError("at least one vehicle type is required")
+        return self
+
+
+# --------------------------------------------------------------------------- #
 # Loading
 # --------------------------------------------------------------------------- #
 @dataclass(frozen=True)
@@ -323,10 +378,41 @@ class LoadedConfig:
     sources: tuple[str, ...]
     sha256: str
     project_root: Path
+    vehicles: VehicleCatalogue
+    vehicle_type: str | None = None
 
     @property
     def data_root(self) -> Path:
         return resolve_data_root(self.analysis.paths, self.project_root)
+
+    def for_vehicle(self, vehicle_type: str) -> LoadedConfig:
+        """Configuration for rides with ``vehicle_type``: shared parameters plus the
+        vehicle's ``analysis_overrides`` (configs/vehicles.yaml), re-validated.
+
+        With empty overrides the analysis parameters are identical for all
+        vehicles, but the vehicle type is still recorded with the run.
+        """
+        try:
+            vt = self.vehicles.vehicle_types[vehicle_type]
+        except KeyError:
+            known = sorted(self.vehicles.vehicle_types)
+            raise ConfigError(f"unknown vehicle_type {vehicle_type!r}; known: {known}") from None
+        merged = deep_merge(self.merged, vt.analysis_overrides) if vt.analysis_overrides else copy.deepcopy(self.merged)
+        try:
+            analysis = AnalysisConfig.model_validate(merged)
+        except ValidationError as exc:
+            raise ConfigError(f"invalid analysis_overrides for vehicle {vehicle_type!r}:\n{exc}") from exc
+        sources = self.sources + ((f"vehicles.yaml:{vehicle_type}",) if vt.analysis_overrides else ())
+        return LoadedConfig(
+            analysis=analysis,
+            taxonomy=self.taxonomy,
+            merged=merged,
+            sources=sources,
+            sha256=_canonical_sha256(merged),
+            project_root=self.project_root,
+            vehicles=self.vehicles,
+            vehicle_type=vehicle_type,
+        )
 
     def effective_yaml(self) -> str:
         """Human-readable dump of the merged configuration (key order preserved)."""
@@ -417,6 +503,13 @@ def load_taxonomy(path: Path) -> Taxonomy:
         raise ConfigError(f"invalid taxonomy {path}:\n{exc}") from exc
 
 
+def load_vehicles(path: Path) -> VehicleCatalogue:
+    try:
+        return VehicleCatalogue.model_validate(read_yaml_mapping(path))
+    except ValidationError as exc:
+        raise ConfigError(f"invalid vehicle catalogue {path}:\n{exc}") from exc
+
+
 def load_config(
     overrides: Sequence[Path | Mapping[str, Any]] = (),
     *,
@@ -444,6 +537,7 @@ def load_config(
     except ValidationError as exc:
         raise ConfigError(f"invalid configuration ({' + '.join(sources)}):\n{exc}") from exc
     taxonomy = load_taxonomy(portable_path(base_path.parent, analysis.paths.taxonomy_file))
+    vehicles = load_vehicles(portable_path(base_path.parent, analysis.paths.vehicles_file))
     unknown = sorted(set(analysis.kinematics.approach_classes) - set(taxonomy.infrastructure_classes))
     if unknown:
         raise ConfigError(f"kinematics.approach_classes not in taxonomy: {unknown}")
@@ -454,6 +548,7 @@ def load_config(
         sources=tuple(sources),
         sha256=_canonical_sha256(merged),
         project_root=root,
+        vehicles=vehicles,
     )
 
 

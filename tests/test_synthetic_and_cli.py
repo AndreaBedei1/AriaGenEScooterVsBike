@@ -57,7 +57,13 @@ def test_cli_info_and_schema(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_cli_new_session(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    assert main(["new-session", "--participant", "P004", "--session", "2", "--root", str(tmp_path)]) == 0
+    assert (
+        main(
+            ["new-session", "--participant", "P004", "--session", "2", "--root", str(tmp_path),
+             "--ride", "escooter:1:1", "--ride", "bicycle:1:2"]
+        )
+        == 0
+    )
     manifest = tmp_path / "P004_S02" / "manifest.yaml"
     assert manifest.is_file() and (tmp_path / "P004_S02" / "P004_S02_R01").is_dir()
     assert (
@@ -66,6 +72,9 @@ def test_cli_new_session(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> 
     assert main(["new-session", "--next", "--root", str(tmp_path)]) == 0
     assert (tmp_path / "P005_S01" / "manifest.yaml").is_file()
     assert main(["validate", str(tmp_path / "P004_S02")]) == 0  # template is valid (streams still missing)
+    # without --ride the vehicle type is a placeholder that validation rejects
+    assert main(["validate", str(tmp_path / "P005_S01")]) == 1
+    assert main(["new-session", "--participant", "P006", "--ride", "car:1:1", "--root", str(tmp_path)]) == 2
 
 
 def test_cli_validate_rejects_identifiers(

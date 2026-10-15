@@ -1,5 +1,5 @@
 # =============================================================================
-# AriaGenEScooter .gitignore
+# AriaGenEScooterVsBike .gitignore
 # Principle: code, configs, docs and the small SYNTHETIC test dataset are
 # versioned; real data, models, environments and outputs never are.
 # =============================================================================
@@ -80,3 +80,10 @@ desktop.ini
 .vscode/
 *.swp
 ~$*
+
+# --- Literature PDFs: copyrighted, kept locally only (see paper/README.md) ----
+paper/*
+!paper/README.md
+
+# --- Caches (OpenStreetMap / open-data downloads of tools/route) ---------------
+.cache/

@@ -88,7 +88,11 @@ def rotmat_to_quat(r: np.ndarray) -> np.ndarray:
 
 
 def interpolate_quaternions(
-    t_src_ns: np.ndarray, q_src: np.ndarray, t_query_ns: np.ndarray, max_gap_ns: int
+    t_src_ns: np.ndarray,
+    q_src: np.ndarray,
+    t_query_ns: np.ndarray,
+    max_gap_ns: int,
+    breaks_ns: np.ndarray | None = None,
 ) -> np.ndarray:
     """Normalised linear interpolation (nlerp) of orientations, gap-aware.
 
@@ -99,7 +103,9 @@ def interpolate_quaternions(
     for i in range(1, len(q)):
         if np.dot(q[i - 1], q[i]) < 0:
             q[i] = -q[i]
-    out = np.stack([interpolate_to_grid(t_src_ns, q[:, k], t_query_ns, max_gap_ns) for k in range(4)], axis=-1)
+    out = np.stack(
+        [interpolate_to_grid(t_src_ns, q[:, k], t_query_ns, max_gap_ns, breaks_ns) for k in range(4)], axis=-1
+    )
     norm = np.linalg.norm(out, axis=-1, keepdims=True)
     with np.errstate(invalid="ignore"):
         return out / norm
@@ -276,7 +282,11 @@ def _add_world_angles(
     if pose is not None and len(pose) >= 2 and all(c in pose.columns for c in quat_cols):
         t = table["t_ns"].to_numpy()
         q = interpolate_quaternions(
-            pose["t_ns"].to_numpy(), pose[quat_cols].to_numpy(), t, int(pose_max_gap_s * NS_PER_S)
+            pose["t_ns"].to_numpy(),
+            pose[quat_cols].to_numpy(),
+            t,
+            int(pose_max_gap_s * NS_PER_S),
+            pose.attrs.get("tracking_breaks_ns"),
         )
         have_q = np.all(np.isfinite(q), axis=1)
         rot = np.full((n, 3, 3), np.nan)
